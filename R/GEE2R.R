@@ -1,4 +1,25 @@
 
+#' initialize gee2r package by installing the ee python library with all dependencies and creat earth engine credetiales.
+#' @export
+initalize_gee2r <- function(){
+  
+  system2("pip", "install GEE2R")
+  
+  if (Sys.info()["sysname"] == "Linux") {
+    
+    path = "../Python/install_scripts/authenticate_linux.sh"
+    command = "bash"
+    system2(command, args = path)
+  } 
+  
+  if (Sys.info()["sysname"] == "Windows") {
+    print("I am sorry, no implementation on windows yet")
+    #path = "~/Documents/Ms_Arbeit/test/authenticate_windows.sh"
+    #command = "bash"
+    #system2(command, args = path)
+  }
+}
+
 
 #' validate_shapefile
 #' @param asset_path path of asset in GEE
@@ -8,7 +29,7 @@ validate_shapefile <- function(asset_path) {
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- "./scripts/validate_params.py"
+  path2script <- "../Python/GEE2R_python_scripts/validate_params.py"
   # concatenate path and arguments
   AllArgs <- c(path2script, asset_path)
   # invoce system call on the command line get url of data
@@ -16,7 +37,6 @@ validate_shapefile <- function(asset_path) {
   # download data
   return(output)
 }
-
 
 
 #' download_data
@@ -195,7 +215,7 @@ get_data <- function(
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- "./scripts/get_data.py"
+  path2script <- "../Python/GEE2R_python_scripts/get_data.py"
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
   # for information
@@ -240,7 +260,7 @@ get_sys <- function(month_start = 1, month_end = 5, year_start = 2000, year_end 
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- "./scripts/print_sys.py"
+  path2script <- "../Python/GEE2R_python_scripts/test.py"
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
   # invoce system call on the command line get url of data
