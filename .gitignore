@@ -4,7 +4,12 @@
 .Ruserdata
 .httr-oauth
 .GEE2R.Rproj
-.scripts
+*.pyc
+dist/
+GEE2R.egg-info/
+.setup.py
 unused_scripts/
+
+
 
 
