@@ -4,6 +4,6 @@
 .Ruserdata
 .httr-oauth
 .GEE2R.Rproj
-unused_scripts/
+!scripts/unused_scripts/
 
 
