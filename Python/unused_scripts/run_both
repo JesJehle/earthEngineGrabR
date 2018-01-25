@@ -1,0 +1,21 @@
+import ee
+import sys
+# Initialize the Earth Engine object, using the authentication credentials.
+ee.Initialize()
+
+if int(sys.argv[1]) == 0:
+    reducer = ee.Reducer.min()
+else:
+    reducer = ee.Reducer.max()
+
+stripes = ee.FeatureCollection("users/JesJehle/Strips")
+
+chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD")
+
+chirps2000 = ee.Image(chirps.first())
+
+chirpsStripesMax = chirps2000.reduceRegions(stripes, ee.Reducer.max(), 30)
+chirpsStripesMin = chirps2000.reduceRegions(stripes, ee.Reducer.min(), 30)
+all = chirpsStripesMax.merge(chirpsStripesMin)
+
+print chirpsStripes.getDownloadUrl(all)
