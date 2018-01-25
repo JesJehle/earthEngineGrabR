@@ -8,7 +8,7 @@
 dist/
 GEE2R.egg-info/
 .setup.py
-
+unused_scripts/
 
 
 
