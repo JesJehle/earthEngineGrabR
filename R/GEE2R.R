@@ -4,7 +4,6 @@
 initalize_gee2r <- function(){
   
   system2("pip", "install GEE2R")
-  script.dir <- dirname(sys.frame(1)$ofile)
   if (Sys.info()["sysname"] == "Linux") {
     
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
