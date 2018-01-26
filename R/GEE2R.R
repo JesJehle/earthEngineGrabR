@@ -4,10 +4,11 @@
 initalize_gee2r <- function(){
   
   system2("pip", "install GEE2R")
-  
+  script.dir <- dirname(sys.frame(1)$ofile)
   if (Sys.info()["sysname"] == "Linux") {
     
-    path = "../Python/install_scripts/authenticate_linux.sh"
+    path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
+    # path = "../Python/install_scripts/authenticate_linux.sh"
     command = "bash"
     system2(command, args = path)
   } 
@@ -29,8 +30,9 @@ validate_shapefile <- function(asset_path) {
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- "../Python/GEE2R_python_scripts/validate_params.py"
-  # concatenate path and arguments
+  path2script <- system.file("Python/GEE2R_python_scripts/validate_params.py", package="GEE2R")
+  
+    # concatenate path and arguments
   AllArgs <- c(path2script, asset_path)
   # invoce system call on the command line get url of data
   output = system2(command, args =  AllArgs, stdout = T, wait=T)
@@ -118,7 +120,7 @@ get_data <- function(
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- "../Python/GEE2R_python_scripts/get_data.py"
+  path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="GEE2R")
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
   # for information
