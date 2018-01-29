@@ -21,6 +21,12 @@ initialize_gee2r <- function(){
     #command = "bash"
     #system2(command, args = path)
   }
+  message("Google earth python api is installed and authenticated")
+  
+  ## authenticate googledrive
+  test <- googledrive::drive_find()
+  message("Googledrive package to communicate with your google drive account is authenticated")
+  
 }
 
 
@@ -41,6 +47,7 @@ validate_shapefile <- function(asset_path) {
   # download data
   return(output)
 }
+
 
 
 #' download_data
