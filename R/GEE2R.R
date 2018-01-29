@@ -139,15 +139,15 @@ get_data <- function(
                        wait = T)
   
   # clean gee output
-  file_clean <- gsub("'", "\"", output_gee)
-  file_clean <- gsub("u", "", file_clean)
-  file_json <- rjson::fromJSON(file_clean)
-  file_json$output <- casefold(output)
-  file <- file_json
+  #file_clean <- gsub("'", "\"", output_gee)
+  #file_clean <- gsub("u", "", file_clean)
+  #file_json <- rjson::fromJSON(file_clean)
+  #file_json$output <- casefold(output)
+  #file <- file_json
   # print export status
-  print(paste0("Earth Engine export status is: ", file_json$state))  
+  #print(paste0("Earth Engine export status is: ", file_json$state))  
   
-  return(file)
+  return(output_gee)
 }
 
 
