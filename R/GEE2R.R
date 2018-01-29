@@ -1,7 +1,7 @@
 
 #' initialize gee2r package by installing the ee python library with all dependencies and creat earth engine credetiales.
 #' @export
-initalize_gee2r <- function(){
+initialize_gee2r <- function(){
   
   system2("pip", "install GEE2R")
   if (Sys.info()["sysname"] == "Linux") {
@@ -51,11 +51,15 @@ download_data <- function(info, path = getwd(), clear = T){
   filename <- paste0(info$description, ".", info$output)
   path_full <- paste0(path, "/", filename)
   test <- googledrive::drive_find(filename)
-  assertthat::assert_that(nrow(test) == 1, msg = paste0(filename, " is not yet on your Google Drive, be patient!")) 
+  assertthat::assert_that(nrow(test) == 1, msg = paste0(filename, " is not yet transferred to your Google Drive, be patient")) 
   
-  googledrive::drive_download(file = filename, path = path_full)
+  googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
+    # delete file
     googledrive::drive_rm(filename)
+    # delete folder
+    googledrive::drive_rm("GEE2R_temp")
+    
   }
 }
 
@@ -123,7 +127,7 @@ get_data <- function(
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
   # for information
-  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in", asset_path, " consists of ", message, " features."))
+  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", asset_path, " consists of ", message, " features."))
   
   # invoce system call on the commandline 
   output_gee = system2(command,

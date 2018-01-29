@@ -189,7 +189,7 @@ def exportTableToDrive(featureCollection, format, name, export):
         collection=featureCollection,
         description=str(name),
         fileFormat = str(format),
-        folder = str(name))
+        folder = "GEE2R_temp")
 
     if str(export) == str('TRUE'):
         task.start()
