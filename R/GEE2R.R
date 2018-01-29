@@ -146,12 +146,12 @@ get_data <- function(
     file_clean <- gsub("L", "", file_clean)
   }
   file_json <- rjson::fromJSON(file_clean)
-  #file_json$output <- casefold(output)
-  #file <- file_json
+  file_json$output <- casefold(output)
+  file <- file_json
   # print export status
-  #print(paste0("Earth Engine export status is: ", file_json$state))  
+  print(paste0("Earth Engine export status is: ", file_json$state))  
   
-  return(file_json)
+  return(file)
 }
 
 
