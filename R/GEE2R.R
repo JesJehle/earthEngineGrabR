@@ -13,7 +13,10 @@ initialize_gee2r <- function(){
   } 
   
   if (Sys.info()["sysname"] == "Windows") {
-    print("I am sorry, no implementation on windows yet")
+    path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
+    command = "bash"
+    system2(command, args = path)
+    #print("I am sorry, no implementation on windows yet")
     #path = "~/Documents/Ms_Arbeit/test/authenticate_windows.sh"
     #command = "bash"
     #system2(command, args = path)
