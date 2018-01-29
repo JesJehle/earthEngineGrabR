@@ -151,7 +151,7 @@ get_data <- function(
   # print export status
   #print(paste0("Earth Engine export status is: ", file_json$state))  
   
-  return(file_clean)
+  return(file_json)
 }
 
 
