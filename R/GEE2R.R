@@ -56,7 +56,7 @@ download_data <- function(info, path = getwd(), clear = T){
   test <- googledrive::drive_find(filename)
   
   assertthat::assert_that(nrow(test) >= 1, msg = paste0(filename, " is not yet transferred to your Google Drive, be patient")) 
-  assertthat::assert_that(nrow(test) > 1, msg = paste0("Mutiple files have the same name: ", filename)) 
+  assertthat::assert_that(nrow(test) <= 1, msg = paste0("Mutiple files have the same name: ", filename)) 
   
   googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
