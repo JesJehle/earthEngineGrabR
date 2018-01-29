@@ -3,4 +3,4 @@
 export(download_data)
 export(get_data)
 export(get_sys)
-export(initalize_gee2r)
+export(initialize_gee2r)
