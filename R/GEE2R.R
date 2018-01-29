@@ -54,7 +54,9 @@ download_data <- function(info, path = getwd(), clear = T){
   filename <- paste0(info$description, ".", info$output)
   path_full <- paste0(path, "/", filename)
   test <- googledrive::drive_find(filename)
-  assertthat::assert_that(nrow(test) == 1, msg = paste0(filename, " is not yet transferred to your Google Drive, be patient")) 
+  
+  assertthat::assert_that(nrow(test) >= 1, msg = paste0(filename, " is not yet transferred to your Google Drive, be patient")) 
+  assertthat::assert_that(nrow(test) > 1, msg = paste0("Mutiple files have the same name: ", filename)) 
   
   googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
@@ -65,6 +67,7 @@ download_data <- function(info, path = getwd(), clear = T){
     
   }
 }
+
 
 
 
@@ -131,6 +134,11 @@ get_data <- function(
   AllArgs <- c(path2script, arguments)
   # for information
   message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", asset_path, " consists of ", message, " features."))
+  
+  # if a file with the same name is present on google drive it is deleted
+  filename <- paste0(name,".", casefold(output))
+  googledrive::drive_rm(filename)
+  
   
   # invoce system call on the commandline 
   output_gee = system2(command,
