@@ -62,8 +62,8 @@ download_data <- function(info, path = getwd(), clear = T){
   path_full <- paste0(path, "/", filename)
   test <- googledrive::drive_find(filename)
   
-  #if(!(nrow(test) >= 1)) stop(paste0(filename, " is not yet transferred to your Google Drive, be patient"))
-  #if(!(nrow(test) >= 1)) stop(paste0("Mutiple files have the same name: ", filename))
+  if(!(nrow(test) >= 1)) stop(paste0(filename, " is not yet transferred to your Google Drive, be patient"))
+  if(!(nrow(test) >= 1)) stop(paste0("Mutiple files have the same name: ", filename))
   
   googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
@@ -115,13 +115,13 @@ get_data <- function(
   # validate params
   ##############################################################
   
-  #if(!(class(year_start) == "numeric" || year_start >= 2000 & year_start < 2016)) stop("year_start must be an integer between 2000 and 2015")
-  #if(!(class(year_end) == "numeric" || year_end >= 2000 & year_end < 2016)) stop("year_end must be an integer between 2000 and 2015")
-  #if(!(year_start <= year_end)) stop("year_start must be before or equal to year_end")
-  #if(!(class(time_reducer) == "character" || time_reducer %in% c("mean", "median", "mode")) stop("time_reducer must be of class string, either mean, median or mode")
-  #if(!(class(asset_path) == "character")) stop("asset_path must be string consisting of users/username/nameOfPolygons")
-  #if(!(class(name) == "character")) stop("must be a string")
-  #if(!(class(output) == "character" || output %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
+  if(!(class(year_start) == "numeric" || year_start >= 2000 & year_start < 2016)) stop("year_start must be an integer between 2000 and 2015")
+  if(!(class(year_end) == "numeric" || year_end >= 2000 & year_end < 2016)) stop("year_end must be an integer between 2000 and 2015")
+  if(!(year_start <= year_end)) stop("year_start must be before or equal to year_end")
+  if(!(class(time_reducer) == "character" || time_reducer %in% c("mean", "median", "mode"))) stop("time_reducer must be of class string, either mean, median or mode")
+  if(!(class(asset_path) == "character")) stop("asset_path must be string consisting of users/username/nameOfPolygons")
+  if(!(class(name) == "character")) stop("must be a string")
+  if(!(class(output) == "character" || output %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
   
     # validate path to shapefile if no test specified
   message <- validate_shapefile(asset_path = asset_path)
