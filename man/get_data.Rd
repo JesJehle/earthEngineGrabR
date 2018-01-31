@@ -5,7 +5,7 @@
 \title{get_data}
 \usage{
 get_data(year_start = 2000, year_end = 2000, time_reducer = "mean",
-  asset_path = F, output = "GeoJSON", spatial_reducer = "mean",
+  asset_path = NULL, output = "GeoJSON", spatial_reducer = "mean",
   scale = 100, name = "example", products = list("chirps_precipitation",
   "jrc_permanentWater", "modis_treeCover", "modis_nonTreeVegetation",
   "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality"))

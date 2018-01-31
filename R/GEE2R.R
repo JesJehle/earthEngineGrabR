@@ -62,8 +62,8 @@ download_data <- function(info, path = getwd(), clear = T){
   path_full <- paste0(path, "/", filename)
   test <- googledrive::drive_find(filename)
   
-  assertthat::assert_that(nrow(test) >= 1, msg = paste0(filename, " is not yet transferred to your Google Drive, be patient")) 
-  assertthat::assert_that(nrow(test) <= 1, msg = paste0("Mutiple files have the same name: ", filename)) 
+  #if(!(nrow(test) >= 1)) stop(paste0(filename, " is not yet transferred to your Google Drive, be patient"))
+  #if(!(nrow(test) >= 1)) stop(paste0("Mutiple files have the same name: ", filename))
   
   googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
@@ -93,7 +93,7 @@ get_data <- function(
   year_start = 2000,
   year_end = 2000,
   time_reducer = "mean",
-  asset_path = F, 
+  asset_path = NULL, 
   output = "GeoJSON",
   spatial_reducer = "mean", 
   scale = 100,
@@ -115,16 +115,17 @@ get_data <- function(
   # validate params
   ##############################################################
   
-  assertthat::assert_that(assertthat::is.number(year_start), year_start >= 2000 & year_start < 2016, msg = "year_start must be an integer between 2000 and 2015") 
-  assertthat::assert_that(assertthat::is.number(year_end), year_end >= 2000 & year_end < 2016, msg = "year_end must be an integer between 2000 and 2015") 
-  assertthat::assert_that(year_start <= year_end, msg = "year_start must be before or equal to year_end") 
-  assertthat::assert_that(assertthat::is.string(time_reducer), time_reducer == "mean" | time_reducer == "median" | time_reducer == "mode", msg = "time_reducer must be of class string, either mean, median or mode") 
-  assertthat::assert_that(assertthat::is.string(asset_path), msg = "asset_path must be string consisting of users/username/nameOfPolygons") 
-  assertthat::assert_that(assertthat::is.string(name), msg = "must be a string") 
-  assertthat::assert_that(assertthat::is.string(output), output %in% c("CSV", "GeoJSON", "KML", "KMZ"),  msg = "Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ") 
-  # validate path to shapefile if no test specified
+  #if(!(class(year_start) == "numeric" || year_start >= 2000 & year_start < 2016)) stop("year_start must be an integer between 2000 and 2015")
+  #if(!(class(year_end) == "numeric" || year_end >= 2000 & year_end < 2016)) stop("year_end must be an integer between 2000 and 2015")
+  #if(!(year_start <= year_end)) stop("year_start must be before or equal to year_end")
+  #if(!(class(time_reducer) == "character" || time_reducer %in% c("mean", "median", "mode")) stop("time_reducer must be of class string, either mean, median or mode")
+  #if(!(class(asset_path) == "character")) stop("asset_path must be string consisting of users/username/nameOfPolygons")
+  #if(!(class(name) == "character")) stop("must be a string")
+  #if(!(class(output) == "character" || output %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
+  
+    # validate path to shapefile if no test specified
   message <- validate_shapefile(asset_path = asset_path)
-  assertthat::assert_that(assertthat::is.number(as.numeric(message)), msg = cat(message, "Parameter asset_id must be string consisting of users/username/name_of_shapefile")) 
+  #if(!(class(message) == "numeric")) stop("Parameter asset_id must be string consisting of users/username/name_of_shapefile")
   
   
   ##############################################################
