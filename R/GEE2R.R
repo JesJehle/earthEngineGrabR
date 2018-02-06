@@ -98,7 +98,7 @@ get_data <- function(
   name = "example",
   products = list(
     c("chirps_precipitation", "mean"),
-    c("jrc_permanentWater", "mean"),
+    c("jrc_distanceToWater", "mode"),
     c("modis_treeCover","mean"),
     c("modis_nonTreeVegetation","mean"),
     c("modis_nonVegetated","mean"),
@@ -107,8 +107,7 @@ get_data <- function(
     c("modis_quality", "mean"),
     c("oxford_friction", NULL),
     c("oxford_accessibility", NULL)
-    
-    
+  
 ))
 
 {
@@ -123,7 +122,7 @@ get_data <- function(
   names(dataproducts_df) <- c("products", "timeReducer")
   # list of products an reducers
   reducers <- c("mean", "median", "mode", "sum", "min", "max")
-  dataproductNames <- c("chirps_precipitation", "jrc_permanentWater", "modis_treeCover", "modis_nonTreeVegetation", "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality", "oxford_friction", "oxford_accessibility")
+  dataproductNames <- c("chirps_precipitation", "jrc_distanceToWater", "modis_treeCover", "modis_nonTreeVegetation", "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality", "oxford_friction", "oxford_accessibility")
   
   ##############################################################
   # validate params

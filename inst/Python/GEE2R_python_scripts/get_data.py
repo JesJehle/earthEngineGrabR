@@ -34,7 +34,7 @@ polygon = final.getExtractionPolygon(pathToAsset= sysargv[3])
 image = final.creatMultiBandImage(sysargv=sysargv)
 
 if 'jrc_distanceToWater' in sysargv:
-    jrc_distanceToWater = filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
+    jrc_distanceToWater = final.filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_distanceToWater") + 1])
     euclidean =  ee.Kernel.euclidean(100)
     distance = jrc_distanceToWater\
         .distance(euclidean, False)
@@ -45,10 +45,10 @@ if 'jrc_distanceToWater' in sysargv:
 featureClass = final.reduceOverRegion(image=image, extractionPolygon=polygon, scale=int(sysargv[5]), reducer=sysargv[4])
 
 # define filter
-filter = ee.Filter.equals({
-  leftField: 'system:index',
-  rightField: 'system:index'
-})
+filter = ee.Filter.equals(
+  leftField = 'system:index',
+  rightField = 'system:index'
+)
 
 
 # define the join.

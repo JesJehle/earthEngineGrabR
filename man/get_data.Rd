@@ -7,7 +7,7 @@
 get_data(timeIntervall = c(2000, 2000), assetPath = NULL,
   spatialReducer = "mean", outputFormat = "GeoJSON", resolution = 100,
   name = "example", products = list(c("chirps_precipitation", "mean"),
-  c("jrc_permanentWater", "mean"), c("modis_treeCover", "mean"),
+  c("jrc_distanceToWater", "mode"), c("modis_treeCover", "mean"),
   c("modis_nonTreeVegetation", "mean"), c("modis_nonVegetated", "mean"),
   c("srtm_elevation", NULL), c("srtm_slope", NULL), c("modis_quality", "mean"),
   c("oxford_friction", NULL), c("oxford_accessibility", NULL)))

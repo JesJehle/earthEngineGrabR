@@ -97,7 +97,7 @@ def filter_slope():
 # srtm elevation
 def filter_friction():
     friction = ee.Image("Oxford/MAP/friction_surface_2015_v1_0")\
-        .rename('oxford_friction_min/m')
+        .rename('oxford_friction_min.m')
     return friction
 
 # srtm elevation
