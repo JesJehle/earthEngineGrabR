@@ -15,18 +15,23 @@ def select_reducer(reducer):
         reducer = ee.Reducer.mode()
     elif reducer == 'sum':
         reducer = ee.Reducer.sum()
+    elif reducer == 'min':
+        reducer = ee.Reducer.min()
+    elif reducer == 'max':
+        reducer = ee.Reducer.max()
     else:
         print 'Parameter should be mean, median, mode or sum'
         sys.exit()
     return reducer
 
 
-def filter_chirps_precipitation(monthStart, monthEnd, yearStart, yearEnd, reducer):
+def filter_chirps_precipitation(yearStart, yearEnd, reducer):
     'temporal filter chirps data and aggregate to one image with one band with  the given reducer'
+
+    #   .filter(ee.Filter.calendarRange(int(monthStart), int(monthEnd), 'month')) \
     reduce = select_reducer(reducer)
-    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD") \
-        .filter(ee.Filter.calendarRange(int(monthStart), int(monthEnd), 'month')) \
-        .filter(ee.Filter.calendarRange(int(yearStart), int(yearEnd), 'year'))\
+    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY") \
+        .filterDate(ee.String(yearStart).cat('-01-01'),ee.String(yearEnd).cat('-12-31'))\
         .reduce(reduce)\
         .rename('chirps_precipitation_mm')
     return chirps
@@ -89,6 +94,18 @@ def filter_slope():
         .rename('srtm_slope_degrees')
     return slope
 
+# srtm elevation
+def filter_friction():
+    friction = ee.Image("Oxford/MAP/friction_surface_2015_v1_0")\
+        .rename('oxford_friction_min/m')
+    return friction
+
+# srtm elevation
+def filter_accessibility():
+    accessibility = ee.Image("Oxford/MAP/accessibility_to_cities_2015_v1_0")\
+        .rename('oxford_accessibility_min')
+    return accessibility
+
 
 def reduceOverRegions(multiBandImage, extractionPolygon, scale, reducer):
     reduce = select_reducer(reducer)
@@ -147,28 +164,34 @@ def creatMultiBandImage(sysargv):
         elevation = filter_elevation()
         image = image.addBands(elevation)
     if 'chirps_precipitation' in sysargv:
-        chirps_precipitation = filter_chirps_precipitation(1, 12, sysargv[1], sysargv[2], sysargv[3])
+        chirps_precipitation = filter_chirps_precipitation(sysargv[1], sysargv[2], sysargv[sysargv.index("chirps_precipitation") + 1])
         image = image.addBands(chirps_precipitation)
     if 'jrc_permanentWater' in sysargv:
-        jrc_permanentWater = filter_jrc_permanentWater(sysargv[1], sysargv[2], sysargv[3])
+        jrc_permanentWater = filter_jrc_permanentWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
         image = image.addBands(jrc_permanentWater)
     if 'modis_treeCover' in sysargv:
-        modis_treeCover = filter_modis_treeCover(sysargv[1], sysargv[2], sysargv[3])
+        modis_treeCover = filter_modis_treeCover(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_treeCover") + 1])
         image = image.addBands(modis_treeCover)
     if 'modis_nonTreeVegetation' in sysargv:
-        modis_nonTreeCoverVegetation = filter_modis_nonTreeCoverVegetation(sysargv[1], sysargv[2], sysargv[3])
+        modis_nonTreeCoverVegetation = filter_modis_nonTreeCoverVegetation(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_nonTreeVegetation") + 1])
         image = image.addBands(modis_nonTreeCoverVegetation)
     if 'modis_nonVegetated' in sysargv:
-        modis_nonVegetated = filter_modis_nonVegetation(sysargv[1], sysargv[2], sysargv[3])
+        modis_nonVegetated = filter_modis_nonVegetation(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_nonVegetated") + 1])
         image = image.addBands(modis_nonVegetated)
     if 'modis_quality' in sysargv:
-        modis_quality = filter_modis_quality(sysargv[1], sysargv[2], sysargv[3])
+        modis_quality = filter_modis_quality(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_quality") + 1])
         image = image.addBands(modis_quality)
+    if 'oxford_friction' in sysargv:
+        friction = filter_friction()
+        image = image.addBands(friction)
+    if 'oxford_accessibility' in sysargv:
+        accessibility = filter_accessibility()
+        image = image.addBands(accessibility)
+
 
     bandList = ee.List.sequence(1, ee.Number(image.bandNames().length()).subtract(1))
     image = image.select(bandList)
     return image
-
 
 
 def sizeTest(numPolygons):

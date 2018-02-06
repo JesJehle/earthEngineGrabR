@@ -4,28 +4,28 @@
 \alias{get_data}
 \title{get_data}
 \usage{
-get_data(year_start = 2000, year_end = 2000, time_reducer = "mean",
-  asset_path = NULL, output = "GeoJSON", spatial_reducer = "mean",
-  scale = 100, name = "example", products = list("chirps_precipitation",
-  "jrc_permanentWater", "modis_treeCover", "modis_nonTreeVegetation",
-  "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality"))
+get_data(timeIntervall = c(2000, 2000), assetPath = NULL,
+  spatialReducer = "mean", outputFormat = "GeoJSON", resolution = 100,
+  name = "example", products = list(c("chirps_precipitation", "mean"),
+  c("jrc_permanentWater", "mean"), c("modis_treeCover", "mean"),
+  c("modis_nonTreeVegetation", "mean"), c("modis_nonVegetated", "mean"),
+  c("srtm_elevation", NULL), c("srtm_slope", NULL), c("modis_quality", "mean"),
+  c("oxford_friction", NULL), c("oxford_accessibility", NULL)))
 }
 \arguments{
-\item{year_start}{Integer to spedify the beginning of timeperiod to reduce over.}
+\item{timeIntervall}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
 
-\item{year_end}{Integer to spedify the end of timeperiod to reduce over.}
+\item{assetPath}{A string path to earth engine asset}
 
-\item{time_reducer}{Reducer to aggregate data over time, can be: mean, median or mode}
+\item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
 
-\item{asset_path}{A string path to earth engine asset}
+\item{outputFormat}{A string specifying the output format: CSV, GeoJSON, KML or KMZ}
 
-\item{output}{A string specifying the output format: CSV, GeoJSON, KML or KMZ}
+\item{resolution}{Resolution of the dataproducts. modis = 250}
 
-\item{spatial_reducer}{Reducer to spatially aggregate data, can be: mean, median or mode}
+\item{products}{list of vectors as list(c(dataproduct, timeReducer)...)}
 
-\item{scale}{A scale spedifying the basis of analysis}
-
-\item{products}{list("chirps_precipitation","jrc_permanentWater","modis_treeCover","modis_nonTreeVegetation","modis_nonVegetated","srtm_elevation",srtm_slope", "modis_quality")}
+\item{timeReducer}{Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max}
 }
 \value{
 depend on output

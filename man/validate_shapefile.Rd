@@ -4,10 +4,10 @@
 \alias{validate_shapefile}
 \title{validate_shapefile}
 \usage{
-validate_shapefile(asset_path)
+validate_shapefile(assetPath)
 }
 \arguments{
-\item{asset_path}{path of asset in GEE}
+\item{assetPath}{path of asset in GEE}
 }
 \value{
 if shapefile is not valid, returns error

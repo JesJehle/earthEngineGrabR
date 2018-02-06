@@ -3,7 +3,7 @@
 #' @export
 initialize_gee2r <- function(){
   
-  system2("pip", "install GEE2R")
+  # system2("pip", "install GEE2R")
   if (Sys.info()["sysname"] == "Linux") {
     
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
@@ -31,22 +31,23 @@ initialize_gee2r <- function(){
 
 
 #' validate_shapefile
-#' @param asset_path path of asset in GEE
+#' @param assetPath path of asset in GEE
 #' @return if shapefile is not valid, returns error
 #' 
-validate_shapefile <- function(asset_path) {
+validate_shapefile <- function(assetPath) {
   # first command in console
   command = "python"
   # path to python scripts
   path2script <- system.file("Python/GEE2R_python_scripts/validate_params.py", package="GEE2R")
   
     # concatenate path and arguments
-  AllArgs <- c(path2script, asset_path)
+  AllArgs <- c(path2script, assetPath)
   # invoce system call on the command line get url of data
   output = system2(command, args =  AllArgs, stdout = T, wait=T)
   # download data
   return(output)
 }
+
 
 
 
@@ -79,61 +80,79 @@ download_data <- function(info, path = getwd(), clear = T){
 
 
 #' get_data
-#' @param products list("chirps_precipitation","jrc_permanentWater","modis_treeCover","modis_nonTreeVegetation","modis_nonVegetated","srtm_elevation",srtm_slope", "modis_quality")
-#' @param year_start Integer to spedify the beginning of timeperiod to reduce over.
-#' @param year_end Integer to spedify the end of timeperiod to reduce over.
-#' @param time_reducer Reducer to aggregate data over time, can be: mean, median or mode
-#' @param asset_path  A string path to earth engine asset
-#' @param spatial_reducer Reducer to spatially aggregate data, can be: mean, median or mode
-#' @param output A string specifying the output format: CSV, GeoJSON, KML or KMZ
-#' @param scale A scale spedifying the basis of analysis
+#' @param products list of vectors as list(c(dataproduct, timeReducer)...) 
+#' @param timeReducer Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max 
+#' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
+#' @param timeIntervall Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
+#' @param assetPath  A string path to earth engine asset
+#' @param outputFormat A string specifying the output format: CSV, GeoJSON, KML or KMZ
+#' @param resolution Resolution of the dataproducts. modis = 250
 #' @return depend on output
 #' @export
 get_data <- function(
-  year_start = 2000,
-  year_end = 2000,
-  time_reducer = "mean",
-  asset_path = NULL, 
-  output = "GeoJSON",
-  spatial_reducer = "mean", 
-  scale = 100,
+  timeIntervall = c(2000, 2000),
+  assetPath = NULL, 
+  spatialReducer = "mean",
+  outputFormat = "GeoJSON",
+  resolution = 100,
   name = "example",
   products = list(
-    "chirps_precipitation",
-    "jrc_permanentWater",
-    "modis_treeCover",
-    "modis_nonTreeVegetation",
-    "modis_nonVegetated",
-    "srtm_elevation",
-    "srtm_slope", 
-    "modis_quality")
-)
+    c("chirps_precipitation", "mean"),
+    c("jrc_permanentWater", "mean"),
+    c("modis_treeCover","mean"),
+    c("modis_nonTreeVegetation","mean"),
+    c("modis_nonVegetated","mean"),
+    c("srtm_elevation", NULL),
+    c("srtm_slope", NULL),
+    c("modis_quality", "mean"),
+    c("oxford_friction", NULL),
+    c("oxford_accessibility", NULL)
+    
+    
+))
 
 {
+  ##############################################################
+  # vtest data products validation
+  ##############################################################
+  
+  test <- try(as.data.frame(products), silent = T)
+  if(!(class(test) == "data.frame" || nrow(test) == 2)) stop("products has to be a list of vectors as c(dataproduct, timeReducer)")
+  # get products in a more usefull form
+  dataproducts_df <- as.data.frame(do.call(rbind, products)) 
+  names(dataproducts_df) <- c("products", "timeReducer")
+  # list of products an reducers
+  reducers <- c("mean", "median", "mode", "sum", "min", "max")
+  dataproductNames <- c("chirps_precipitation", "jrc_permanentWater", "modis_treeCover", "modis_nonTreeVegetation", "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality", "oxford_friction", "oxford_accessibility")
   
   ##############################################################
   # validate params
   ##############################################################
   
-  if(!(class(year_start) == "numeric" || year_start >= 2000 & year_start < 2016)) stop("year_start must be an integer between 2000 and 2015")
-  if(!(class(year_end) == "numeric" || year_end >= 2000 & year_end < 2016)) stop("year_end must be an integer between 2000 and 2015")
-  if(!(year_start <= year_end)) stop("year_start must be before or equal to year_end")
-  if(!(class(time_reducer) == "character" || time_reducer %in% c("mean", "median", "mode"))) stop("time_reducer must be of class string, either mean, median or mode")
-  if(!(class(asset_path) == "character")) stop("asset_path must be string consisting of users/username/nameOfPolygons")
+  if(!(class(timeIntervall[1]) == "numeric" || timeIntervall[1] >= 2000 & timeIntervall[1] < 2016)) stop("yearStart must be an integer between 2000 and 2015")
+  if(!(class(timeIntervall[2]) == "numeric" || timeIntervall[2] >= 2000 & timeIntervall[2] < 2016)) stop("yearEnd must be an integer between 2000 and 2015")
+  if(!(timeIntervall[1] <= timeIntervall[2])) stop("year_start must be before or equal to year_end")
+  if(!(class(dataproducts_df$timeReducer) == "character" || dataproducts_df$timeReducer %in% reducers)) stop("timeReducer must be of class string, either mean, median mode, sum, min or max")
+  if(!(class(spatialReducer) == "character" || dataproducts_df$spatialReducer %in% c("mean", "median", "mode"))) stop("spatialReducer must be of class string, either mean, median or mode")
+  if(!(class(dataproducts_df$products) == "character" || dataproducts_df$products %in% dataproductNames)) stop(paste0("dataproduct name must be one of: ", dataproductNames))
+  if(!(class(assetPath) == "character")) stop("assetPath must be string consisting of users/username/nameOfPolygons")
   if(!(class(name) == "character")) stop("must be a string")
-  if(!(class(output) == "character" || output %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
+  if(!(class(outputFormat) == "character" || outputFormat %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
   
     # validate path to shapefile if no test specified
-  message <- validate_shapefile(asset_path = asset_path)
-  #if(!(class(message) == "numeric")) stop("Parameter asset_id must be string consisting of users/username/name_of_shapefile")
+  message <- validate_shapefile(assetPath)
+  test <- try(suppressWarnings(as.numeric(message)), silent = T) 
+  if(!(class(test) == "numeric")) stop(paste0(message, " Parameter assetPath must be string pointing to an earth engine asset: users/username/name_of_shapefile"))
   
   
   ##############################################################
   # creat system call
   ##############################################################
+  # paste products with corresponding reducers
+  productPrint <- paste(apply(dataproducts_df, 1, paste), collapse = " ")
   
   # concatenate arguments
-  arguments = c(year_start, year_end, time_reducer, asset_path, spatial_reducer, scale, output, name, products)
+  arguments = c(timeIntervall, assetPath, spatialReducer, resolution, outputFormat, name, productPrint)
   # first command in console
   command = "python"
   # path to python scripts
@@ -141,10 +160,10 @@ get_data <- function(
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
   # for information
-  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", asset_path, " consists of ", message, " features."))
+  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
   
   # if a file with the same name is present on google drive it is deleted
-  filename <- paste0(name,".", casefold(output))
+  filename <- paste0(name,".", casefold(outputFormat))
   googledrive::drive_rm(filename)
   
   
@@ -162,7 +181,7 @@ get_data <- function(
     file_clean <- gsub("L", "", file_clean)
   }
   file_json <- rjson::fromJSON(file_clean)
-  file_json$output <- casefold(output)
+  file_json$output <- casefold(outputFormat)
   file <- file_json
   # print export status
   print(paste0("Earth Engine export status is: ", file_json$state))  
