@@ -3,19 +3,38 @@
 #' @export
 initialize_gee2r <- function(){
   
-  # system2("pip", "install GEE2R")
+  # system2("pip", "install GEE2R") wont work because permission is denied, sudo problem - must be installed manualy
   if (Sys.info()["sysname"] == "Linux") {
     
+  res_install <- system('sudo -kS pip install GEE2R',input=readline("To authorise the installation of the GEE2R python dependencies, enter your sudo password: "))
+    
+    while (!(res_install == 0)) {
+      Sys.sleep(1)
+    }
+    
+    #    Sys.sleep(10)
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
     # path = "../Python/install_scripts/authenticate_linux.sh"
     command = "bash"
     system2(command, args = path)
+    while (!(file.exists("~/.config/earthengine/credentials"))) {
+      Sys.sleep(1)
+    }
+    
   } 
   
   if (Sys.info()["sysname"] == "Windows") {
+    
+    res_install <- system2("pip", "install GEE2R")
+    while (!(res_install == 0)) {
+      Sys.sleep(1)
+    }
     path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
     command = "bash"
     system2(path)
+    while (!(file.exists("~/.config/earthengine/credentials"))) {
+      Sys.sleep(1)
+    }
     #print("I am sorry, no implementation on windows yet")
     #path = "~/Documents/Ms_Arbeit/test/authenticate_windows.sh"
     #command = "bash"
