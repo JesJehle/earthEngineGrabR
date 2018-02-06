@@ -37,13 +37,13 @@ def filter_chirps_precipitation(yearStart, yearEnd, reducer):
     return chirps
 
 ## jrc surface water
-def filter_jrc_permanentWater(yearStart, yearEnd, reducer):
+def filter_jrc_distanceToWater(yearStart, yearEnd, reducer):
     reduce = select_reducer(reducer)
     jrc_permanentWater = ee.ImageCollection("JRC/GSW1_0/YearlyHistory")\
         .filter(ee.Filter.calendarRange(int(yearStart), int(yearEnd), 'year'))\
         .reduce(reduce)\
-        .gte(2)\
-        .rename('jrc_permanentWater')
+        .gte(1)\
+        .rename('jrc_distanceToWater_km')
     return jrc_permanentWater
 
 ## modis treecover
@@ -153,6 +153,10 @@ def exportToAsset(image, name, scale, polygon):
     return task.status()
 
 
+
+
+
+
 def creatMultiBandImage(sysargv):
 
     image = ee.Image(1)
@@ -166,9 +170,9 @@ def creatMultiBandImage(sysargv):
     if 'chirps_precipitation' in sysargv:
         chirps_precipitation = filter_chirps_precipitation(sysargv[1], sysargv[2], sysargv[sysargv.index("chirps_precipitation") + 1])
         image = image.addBands(chirps_precipitation)
-    if 'jrc_permanentWater' in sysargv:
-        jrc_permanentWater = filter_jrc_permanentWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
-        image = image.addBands(jrc_permanentWater)
+#    if 'jrc_distanceToWater' in sysargv:
+#        jrc_distanceToWater = filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
+#        image = image.addBands(jrc_distanceToWater)
     if 'modis_treeCover' in sysargv:
         modis_treeCover = filter_modis_treeCover(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_treeCover") + 1])
         image = image.addBands(modis_treeCover)
