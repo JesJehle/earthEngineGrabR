@@ -42,13 +42,13 @@ initialize_gee2r <- function(){
   
   if (Sys.info()["sysname"] == "Windows") {
     
-    res_install <- system2("pip", "install GEE2R", stdout = NULL)
+    res_install <- system2("pip", "install GEE2R")
     while (!(exists("res_install"))) {
       Sys.sleep(1)
     }
     path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
     command = "bash"
-    system2(path)
+    system2(command,args =  path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
     }
