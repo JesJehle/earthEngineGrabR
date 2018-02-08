@@ -29,6 +29,9 @@ initialize_gee2r <- function(){
     
     #    Sys.sleep(10)
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
+    if (grep(" ", path) > 0) {
+      path <-  shQuote(path)
+    }
     # path = "../Python/install_scripts/authenticate_linux.sh"
     command = "bash"
     
@@ -47,6 +50,9 @@ initialize_gee2r <- function(){
       Sys.sleep(1)
     }
     path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
+    if (grep(" ", path) > 0) {
+      path <-  shQuote(path)
+    }
     system2(path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
@@ -77,6 +83,10 @@ validate_shapefile <- function(assetPath) {
   
     # concatenate path and arguments
   AllArgs <- c(path2script, assetPath)
+  # test for spaces in path
+  if (grep(" ", path2script) > 0) {
+    AllArgs <-  shQuote(AllArgs)
+  }
   # invoce system call on the command line get url of data
   output = system2(command, args =  AllArgs, stdout = T, wait=T)
   # download data
@@ -193,6 +203,10 @@ get_data <- function(
   path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="GEE2R")
   # concatenate path and arguments
   AllArgs <- c(path2script, arguments)
+  # test for spaces in path
+  if (grep(" ", path2script) > 0) {
+    AllArgs <-  shQuote(AllArgs)
+  }
   # for information
   message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
   
