@@ -231,7 +231,7 @@ get_data <- function(
   
   print(paste0("Earth Engine export status is: ", exportInfo$state))  
   
-  return(rdata)
+  return(exportInfo)
 }
 
 
