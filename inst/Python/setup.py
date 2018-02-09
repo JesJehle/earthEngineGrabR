@@ -11,6 +11,8 @@ setup(name='GEE2R',
       install_requires=[
           'google-api-python-client',
           'pyCrypto',
-          'earthengine-api'],
+          'earthengine-api',
+	  'pandas',
+	  'json'],
       zip_safe=False)
 

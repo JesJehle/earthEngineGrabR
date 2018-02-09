@@ -29,9 +29,9 @@ initialize_gee2r <- function(){
     
     #    Sys.sleep(10)
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
-    if (grep(" ", path) > 0) {
-      path <-  shQuote(path)
-    }
+   # if (grep(" ", path) > 0) {
+   #   path <-  shQuote(path)
+   # }
     # path = "../Python/install_scripts/authenticate_linux.sh"
     command = "bash"
     
@@ -50,9 +50,7 @@ initialize_gee2r <- function(){
       Sys.sleep(1)
     }
     path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
-    if (grep(" ", path) > 0) {
-      path <-  shQuote(path)
-    }
+
     system2(path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
@@ -84,7 +82,7 @@ validate_shapefile <- function(assetPath) {
     # concatenate path and arguments
   AllArgs <- c(path2script, assetPath)
   # test for spaces in path
-  if (grep(" ", path2script) > 0) {
+  if (length(grep(" ", path2script) > 0)) {
     AllArgs <-  shQuote(AllArgs)
   }
   # invoce system call on the command line get url of data
@@ -157,7 +155,7 @@ get_data <- function(
 
 {
   ##############################################################
-  # vtest data products validation
+  # test data products validation
   ##############################################################
   
   test <- try(as.data.frame(products), silent = T)
@@ -190,22 +188,27 @@ get_data <- function(
   
   
   ##############################################################
+  # write params to file
+  ##############################################################
+  
+  # cat to data frame
+  dataproducts_df <- as.data.frame(do.call(cbind, products)) 
+  names(dataproducts_df) <- as.character(unlist(dataproducts_df[1,]))
+  dataproducts_df <- dataproducts_df[2,]
+  params <- cbind(dataproducts_df, assetPath, spatialReducer, outputFormat, resolution, name, year_start = timeIntervall[1], year_end = timeIntervall[2])
+
+  write.table(params, file = "./params.csv", sep = ",", row.names = F)
+
+    ##############################################################
   # creat system call
   ##############################################################
-  # paste products with corresponding reducers
-  productPrint <- paste(apply(dataproducts_df, 1, paste), collapse = " ")
   
-  # concatenate arguments
-  arguments = c(timeIntervall, assetPath, spatialReducer, resolution, outputFormat, name, productPrint)
-  # first command in console
   command = "python"
   # path to python scripts
   path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="GEE2R")
-  # concatenate path and arguments
-  AllArgs <- c(path2script, arguments)
   # test for spaces in path
-  if (grep(" ", path2script) > 0) {
-    AllArgs <-  shQuote(AllArgs)
+  if (length(grep(" ", path2script) > 0)) {
+    path2script <-  shQuote(path2script)
   }
   # for information
   message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
@@ -216,26 +219,21 @@ get_data <- function(
   
   
   # invoce system call on the commandline 
-  output_gee = system2(command,
-                       args =  AllArgs,
+  drop = system2(command,
+                       args =  path2script,
                        stdout = T,
                        wait = T)
   
-  # clean gee output
-  file_clean <- gsub("'", "\"", output_gee)
-  file_clean <- gsub("u", "", file_clean)
-  # exlude L character in numbers in windows
-  if (Sys.info()["sysname"] == "Windows") {
-    file_clean <- gsub("L", "", file_clean)
-  }
-  file_json <- rjson::fromJSON(file_clean)
-  file_json$output <- casefold(outputFormat)
-  file <- file_json
-  # print export status
-  print(paste0("Earth Engine export status is: ", file_json$state))  
+  json_data <- rjson::fromJSON(file="./exportInfo.json")
+  exportInfo <- rjson::fromJSON(json_data)
+  file.remove("./exportInfo.json")
+  file.remove("./params.csv")
   
-  return(file)
+  print(paste0("Earth Engine export status is: ", exportInfo$state))  
+  
+  return(rdata)
 }
+
 
 
 #' jsonToShapefile

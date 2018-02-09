@@ -1,7 +1,9 @@
 import sys
 import ee
+from pandas import read_csv as read
+#import pandas.read_csv as read_csv
 import final
-
+import json
 # yearStart = 1
 # yearEnd = 2
 # assetPath = 3
@@ -20,29 +22,36 @@ import final
 # srtm_slope
 # modis_quality
 
+#path = sys.argv[1]
+#print sys.argv[1]
+
+
 
 # load system params from R
+params = read("params.csv", delimiter=',')
+# load system params from R
 
-sysargv = sys.argv[:]
+
+#sysargv = sys.argv[:]
 # print sysargv
 ee.Initialize()
 
 # import polygons
-polygon = final.getExtractionPolygon(pathToAsset= sysargv[3])
+polygon = final.getExtractionPolygon(pathToAsset= params["assetPath"][0])
 
 # combine all selected images into a multiband image
-image = final.creatMultiBandImage(sysargv=sysargv)
+image = final.creatMultiBandImage(params=params)
 
-if 'jrc_distanceToWater' in sysargv:
-    jrc_distanceToWater = final.filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_distanceToWater") + 1])
+if 'jrc_distanceToWater' in params:
+    jrc_distanceToWater = final.filter_jrc_distanceToWater(params["year_start"][0], params["year_end"][0], params["jrc_distanceToWater"][0])
     euclidean =  ee.Kernel.euclidean(100)
     distance = jrc_distanceToWater\
         .distance(euclidean, False)
-    featureClassDistance = final.reduceOverRegion(image=distance, extractionPolygon=polygon, scale=1000, reducer=sysargv[4])
+    featureClassDistance = final.reduceOverRegion(image=distance, extractionPolygon=polygon, scale=1000, reducer=params["spatialReducer"][0])
 
 
 # reduce multiband image with given reducer over polygon
-featureClass = final.reduceOverRegion(image=image, extractionPolygon=polygon, scale=int(sysargv[5]), reducer=sysargv[4])
+featureClass = final.reduceOverRegion(image=image, extractionPolygon=polygon, scale=int(params["resolution"][0]), reducer=params["spatialReducer"][0])
 
 # define filter
 filter = ee.Filter.equals(
@@ -69,6 +78,12 @@ joined_finel = joined.map(catProperties)
 
 
 # export feature collection to drive
-status = final.exportTableToDrive(joined_finel, sysargv[6], sysargv[7], "TRUE")
+status = final.exportTableToDrive(joined_finel, params["outputFormat"][0], params["name"][0], "TRUE")
 
-print status
+jsonData = json.dumps(status)
+
+with open('exportInfo.json', 'w') as f:
+    json.dump(jsonData, f)
+
+
+# print status

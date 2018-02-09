@@ -31,7 +31,7 @@ def filter_chirps_precipitation(yearStart, yearEnd, reducer):
     #   .filter(ee.Filter.calendarRange(int(monthStart), int(monthEnd), 'month')) \
     reduce = select_reducer(reducer)
     chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY") \
-        .filterDate(ee.String(yearStart).cat('-01-01'),ee.String(yearEnd).cat('-12-31'))\
+        .filterDate(ee.String(str(yearStart)).cat('-01-01'),ee.String(str(yearEnd)).cat('-12-31'))\
         .reduce(reduce)\
         .rename('chirps_precipitation_mm')
     return chirps
@@ -154,41 +154,41 @@ def exportToAsset(image, name, scale, polygon):
 
 
 
+def creatMultiBandImage(params):
 
-
-
-def creatMultiBandImage(sysargv):
+    year_start = int(params["year_start"][0])
+    year_end = int(params["year_end"][0])
 
     image = ee.Image(1)
 
-    if 'srtm_slope' in sysargv:
+    if 'srtm_slope' in params:
         slope = filter_slope()
         image = image.addBands(slope)
-    if 'srtm_elevation' in sysargv:
+    if 'srtm_elevation' in params:
         elevation = filter_elevation()
         image = image.addBands(elevation)
-    if 'chirps_precipitation' in sysargv:
-        chirps_precipitation = filter_chirps_precipitation(sysargv[1], sysargv[2], sysargv[sysargv.index("chirps_precipitation") + 1])
+    if 'chirps_precipitation' in params:
+        chirps_precipitation = filter_chirps_precipitation(year_start, year_end, params["chirps_precipitation"][0])
         image = image.addBands(chirps_precipitation)
-#    if 'jrc_distanceToWater' in sysargv:
+#    if 'jrc_distanceToWater' in params:
 #        jrc_distanceToWater = filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
 #        image = image.addBands(jrc_distanceToWater)
-    if 'modis_treeCover' in sysargv:
-        modis_treeCover = filter_modis_treeCover(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_treeCover") + 1])
+    if 'modis_treeCover' in params:
+        modis_treeCover = filter_modis_treeCover(year_start, year_end, params["modis_treeCover"][0])
         image = image.addBands(modis_treeCover)
-    if 'modis_nonTreeVegetation' in sysargv:
-        modis_nonTreeCoverVegetation = filter_modis_nonTreeCoverVegetation(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_nonTreeVegetation") + 1])
+    if 'modis_nonTreeVegetation' in params:
+        modis_nonTreeCoverVegetation = filter_modis_nonTreeCoverVegetation(year_start, year_end, params["modis_nonTreeVegetation"][0])
         image = image.addBands(modis_nonTreeCoverVegetation)
-    if 'modis_nonVegetated' in sysargv:
-        modis_nonVegetated = filter_modis_nonVegetation(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_nonVegetated") + 1])
+    if 'modis_nonVegetated' in params:
+        modis_nonVegetated = filter_modis_nonVegetation(year_start, year_end, params["modis_nonVegetated"][0])
         image = image.addBands(modis_nonVegetated)
-    if 'modis_quality' in sysargv:
-        modis_quality = filter_modis_quality(sysargv[1], sysargv[2], sysargv[sysargv.index("modis_quality") + 1])
+    if 'modis_quality' in params:
+        modis_quality = filter_modis_quality(year_start, year_end, params["modis_quality"][0])
         image = image.addBands(modis_quality)
-    if 'oxford_friction' in sysargv:
+    if 'oxford_friction' in params:
         friction = filter_friction()
         image = image.addBands(friction)
-    if 'oxford_accessibility' in sysargv:
+    if 'oxford_accessibility' in params:
         accessibility = filter_accessibility()
         image = image.addBands(accessibility)
 
