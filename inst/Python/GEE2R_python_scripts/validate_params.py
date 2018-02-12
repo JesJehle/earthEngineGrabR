@@ -14,12 +14,12 @@ try:
     polygon = final.getExtractionPolygon(sysargv[1])
     polygon.limit(1).getInfo()
     size = polygon.size().getInfo()
-    print size
+    print(size)
 except Exception:
     import traceback
     exceptiondata = traceback.format_exc().splitlines()
     exceptionarray = exceptiondata[-1]
-    print exceptionarray
+    print(exceptionarray)
 
 
 

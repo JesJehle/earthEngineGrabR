@@ -73,7 +73,6 @@ def catProperties(pair):
     return f1.set(f2.toDictionary())
 
 
-
 joined_finel = joined.map(catProperties)
 
 
