@@ -37,11 +37,11 @@ params = read("params.csv", delimiter=',')
 ee.Initialize()
 
 # import polygons
-polygon = final.getExtractionPolygon(pathToAsset= params["assetPath"][0])
+polygon = final.sizeTest(params["numPolygons"][0])
+
 
 # combine all selected images into a multiband image
 image = final.creatMultiBandImage(params=params)
-
 
 
 # reduce multiband image with given reducer over polygon

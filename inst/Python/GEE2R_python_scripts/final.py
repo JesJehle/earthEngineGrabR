@@ -28,10 +28,10 @@ def select_reducer(reducer):
 def filter_chirps_precipitation(yearStart, yearEnd, reducer):
     'temporal filter chirps data and aggregate to one image with one band with  the given reducer'
 
-    #   .filter(ee.Filter.calendarRange(int(monthStart), int(monthEnd), 'month')) \
+    #          .filterDate(ee.String(str(yearStart)).cat('-01-01'),ee.String(str(yearEnd)).cat('-12-31'))\
     reduce = select_reducer(reducer)
-    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY") \
-        .filterDate(ee.String(str(yearStart)).cat('-01-01'),ee.String(str(yearEnd)).cat('-12-31'))\
+    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD") \
+        .filter(ee.Filter.calendarRange(int(yearStart), int(yearEnd), 'year')) \
         .reduce(reduce)\
         .rename('chirps_precipitation_mm')
     return chirps
