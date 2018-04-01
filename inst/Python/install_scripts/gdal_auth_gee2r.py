@@ -121,6 +121,7 @@ else:
     print('Please login and authorize access in web browser...')
 
     webbrowser.open(gdal.GOA2GetAuthorizationURL(scope))
+    print()
 
     time.sleep(2.0)
 
@@ -130,9 +131,20 @@ else:
 
     refresh_token = gdal.GOA2GetRefreshToken(auth_token, scope)
 
-    # print(str(refresh_token))
+    #path = os.path.realpath(__file__)
+    #folder = os.path.dirname(path)
+    folder = "earthengine"
+    #"~/.config/earthengine/credentials"
 
-    with open("refresh_token.txt", "w") as text_file:
+    file = "refresh_token.txt"
+
+    home_path = os.path.expanduser('~/.config/')
+
+    full_path = home_path + folder + "/" + file
+
+    # print(str(refresh_token))
+    #path = os.path.realpath(__file__)
+    with open(full_path, "w") as text_file:
         text_file.write(str(refresh_token))
 
 #    print(os.environ["GFT_REFRESH_TOKEN"] + "as environmental variable")

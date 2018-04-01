@@ -25,6 +25,26 @@ def select_reducer(reducer):
     return reducer
 
 
+def select_reducer_with_outputName(reducer, productName):
+    if reducer == 'mean':
+        reducer = ee.Reducer.mean().setOutputs([productName])
+    elif reducer == 'median':
+        reducer = ee.Reducer.median().setOutputs([productName])
+    elif reducer == 'mode':
+        reducer = ee.Reducer.mode().setOutputs([productName])
+    elif reducer == 'sum':
+        reducer = ee.Reducer.sum().setOutputs([productName])
+    elif reducer == 'min':
+        reducer = ee.Reducer.min().setOutputs([productName])
+    elif reducer == 'max':
+        reducer = ee.Reducer.max().setOutputs([productName])
+    else:
+        print 'Parameter should be mean, median, mode or sum'
+        sys.exit()
+    return reducer
+
+
+
 def filter_chirps_precipitation(yearStart, yearEnd, reducer):
     'temporal filter chirps data and aggregate to one image with one band with  the given reducer'
 
@@ -107,17 +127,17 @@ def filter_accessibility():
     return accessibility
 
 
-def reduceOverRegions(multiBandImage, extractionPolygon, scale, reducer):
-    reduce = select_reducer(reducer)
-    bandsPerFeature = multiBandImage\
+def reduceOverRegions(image, extractionPolygon, scale, reducer, productName):
+    reduce = select_reducer_with_outputName(reducer, productName)
+    bandsPerFeature = image\
         .reduceRegions(extractionPolygon, reduce, ee.Number(scale))
     return bandsPerFeature
 
 
 
-def reduceOverRegion(image, extractionPolygon, scale, reducer):
+def reduceOverRegion(image, extractionPolygon, scale, reducer, productName):
     def reduceFeature(feature):
-        reduce = select_reducer(reducer)
+        reduce = select_reducer_with_outputName(reducer, productName)
         feature_new = feature.set(ee.Image(image).reduceRegion(reduce, feature.geometry(), ee.Number(scale),  bestEffort = True))
         return feature_new
     bandsPerFeature = extractionPolygon.map(reduceFeature)
@@ -156,46 +176,46 @@ def exportToAsset(image, name, scale, polygon):
 
 def creatMultiBandImage(params):
 
-    year_start = int(params["year_start"][0])
-    year_end = int(params["year_end"][0])
+    if 'srtm_slope' in params["productName"][0]:
+        image = filter_slope()
+        # image = image.addBands(slope)
+    if 'srtm_elevation' in params["productName"][0]:
+        image = filter_elevation()
+        # image = image.addBands(elevation)
+    if 'chirps_precipitation' in params["productName"][0]:
+        image = filter_chirps_precipitation(int(params["yearStart"][0]), int(params["yearEnd"][0]),
+                                            params["temporalReducer"][0])
+        # image = image.addBands(chirps_precipitation)
+    if 'jrc_distanceToWater' in params["productName"][0]:
+        jrc_Water = filter_jrc_distanceToWater(int(params["yearStart"][0]), int(params["yearEnd"][0]),
+                                               params["temporalReducer"][0])
+        image = jrc_Water.fastDistanceTransform(1000).multiply(ee.Image.pixelArea()).sqrt()
+        # image = image.addBands(jrc_distanceToWater)
+    if 'modis_treeCover' in params["productName"][0]:
+        image = filter_modis_treeCover(int(params["yearStart"][0]), int(params["yearEnd"][0]),
+                                       params["temporalReducer"][0])
+        # image = image.addBands(modis_treeCover)
+    if 'modis_nonTreeVegetation' in params["productName"][0]:
+        image = filter_modis_nonTreeCoverVegetation(int(params["yearStart"][0]),
+                                                    int(params["yearEnd"][0]),
+                                                    params["temporalReducer"][0])
+        # image = image.addBands(modis_nonTreeCoverVegetation)
+    if 'modis_nonVegetated' in params["productName"][0]:
+        image = filter_modis_nonVegetation(int(params["yearStart"][0]), int(params["yearEnd"][0]),
+                                           params["temporalReducer"][0])
+        # image = image.addBands(modis_nonVegetated)
+    if 'modis_quality' in params["productName"][0]:
+        image = filter_modis_quality(int(params["yearStart"][0]), int(params["yearEnd"][0]),
+                                     params["temporalReducer"][0])
+        # image = image.addBands(modis_quality)
+    if 'oxford_friction' in params["productName"][0]:
+        image = filter_friction()
+        # image = image.addBands(friction)
+    if 'oxford_accessibility' in params["productName"][0]:
+        image = filter_accessibility()
+        # image = image.addBands(accessibility)
 
-    image = ee.Image(1)
-
-    if 'srtm_slope' in params:
-        slope = filter_slope()
-        image = image.addBands(slope)
-    if 'srtm_elevation' in params:
-        elevation = filter_elevation()
-        image = image.addBands(elevation)
-    if 'chirps_precipitation' in params:
-        chirps_precipitation = filter_chirps_precipitation(year_start, year_end, params["chirps_precipitation"][0])
-        image = image.addBands(chirps_precipitation)
-#    if 'jrc_distanceToWater' in params:
-#        jrc_distanceToWater = filter_jrc_distanceToWater(sysargv[1], sysargv[2], sysargv[sysargv.index("jrc_permanentWater") + 1])
-#        image = image.addBands(jrc_distanceToWater)
-    if 'modis_treeCover' in params:
-        modis_treeCover = filter_modis_treeCover(year_start, year_end, params["modis_treeCover"][0])
-        image = image.addBands(modis_treeCover)
-    if 'modis_nonTreeVegetation' in params:
-        modis_nonTreeCoverVegetation = filter_modis_nonTreeCoverVegetation(year_start, year_end, params["modis_nonTreeVegetation"][0])
-        image = image.addBands(modis_nonTreeCoverVegetation)
-    if 'modis_nonVegetated' in params:
-        modis_nonVegetated = filter_modis_nonVegetation(year_start, year_end, params["modis_nonVegetated"][0])
-        image = image.addBands(modis_nonVegetated)
-    if 'modis_quality' in params:
-        modis_quality = filter_modis_quality(year_start, year_end, params["modis_quality"][0])
-        image = image.addBands(modis_quality)
-    if 'oxford_friction' in params:
-        friction = filter_friction()
-        image = image.addBands(friction)
-    if 'oxford_accessibility' in params:
-        accessibility = filter_accessibility()
-        image = image.addBands(accessibility)
-
-
-    bandList = ee.List.sequence(1, ee.Number(image.bandNames().length()).subtract(1))
-    image = image.select(bandList)
-    return image
+    return image.rename(str(params["productName"][0]))
 
 
 def sizeTest(numPolygons):

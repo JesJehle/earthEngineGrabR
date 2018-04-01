@@ -4,20 +4,11 @@
 \alias{get_data_one_by_one}
 \title{get_data_one_by_one}
 \usage{
-get_data_one_by_one(timeIntervall = c(2000, 2000), assetPath = NULL,
-  spatialReducer = "mean", outputFormat = "GeoJSON", resolution = 100,
-  name = "example", products = list(c("chirps_precipitation", "mean"),
-  c("jrc_distanceToWater", "mode"), c("modis_treeCover", "mean"),
-  c("modis_nonTreeVegetation", "mean"), c("modis_nonVegetated", "mean"),
-  c("srtm_elevation", NA), c("srtm_slope", NA), c("modis_quality", "mean"),
-  c("oxford_friction", NA), c("oxford_accessibility", NA)))
+get_data_one_by_one(target = NULL, outputFormat = "GeoJSON",
+  resolution = 100, products = list(data_jrc_distanceToWater()))
 }
 \arguments{
-\item{timeIntervall}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
-
-\item{assetPath}{A string path to earth engine asset}
-
-\item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
+\item{target}{A path to a local file or a name of a already uploaded to earth engine}
 
 \item{outputFormat}{A string specifying the output format: CSV, GeoJSON, KML or KMZ}
 
@@ -26,6 +17,10 @@ get_data_one_by_one(timeIntervall = c(2000, 2000), assetPath = NULL,
 \item{products}{list of vectors as list(c(dataproduct, timeReducer)...)}
 
 \item{timeReducer}{Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max}
+
+\item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
+
+\item{timeIntervall}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
 }
 \value{
 depend on output

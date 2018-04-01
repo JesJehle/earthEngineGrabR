@@ -4,10 +4,10 @@
 \alias{validate_shapefile}
 \title{validate_shapefile}
 \usage{
-validate_shapefile(assetPath)
+validate_shapefile(ft_id)
 }
 \arguments{
-\item{assetPath}{path of asset in GEE}
+\item{ft_id}{id of fusion table}
 }
 \value{
 if shapefile is not valid, returns error
