@@ -8,9 +8,9 @@ The earthEngineGrabR package is supposed to provide an interface of R and the Go
 
 The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run sucessfully:
 
-..* [you need a Google Account](https://accounts.google.com/SignUp?hl=de)
-..* [sign up for Earth Engine access](https://signup.earthengine.google.com/#!/)
-..* [you need a Python version > 2.7, with PYTHONPATH set](https://www.python.org/downloads/)
+* [you need a Google Account](https://accounts.google.com/SignUp?hl=de)
+* [sign up for Earth Engine access](https://signup.earthengine.google.com/#!/)
+* [you need a Python version > 2.7, with PYTHONPATH set](https://www.python.org/downloads/)
 
 Next, you can install the earthEngineGrabR with:
 
