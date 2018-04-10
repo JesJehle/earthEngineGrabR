@@ -1,7 +1,8 @@
 
-#' initialize gee2r package by installing the ee python library with all dependencies and creat earth engine credetiales.
+#' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
+#' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 #' @export
-initialize_gee2r <- function() {
+ee_grab_init <- function() {
   # to clear credentials
   delete_credentials()
   
@@ -28,9 +29,8 @@ initialize_gee2r <- function() {
       waitPW = res_install + waitPW
   }
 }
-    
     #    Sys.sleep(10)
-    path <- system.file("Python/install_scripts/authenticate_linux.sh", package="GEE2R")
+    path <- system.file("Python/install_scripts/authenticate_linux.sh", package="earthEngineGrabR")
    # if (grep(" ", path) > 0) {
    #   path <-  shQuote(path)
    # }
@@ -51,7 +51,7 @@ initialize_gee2r <- function() {
     while (!(exists("res_install"))) {
       Sys.sleep(1)
     }
-    path <- system.file("Python/install_scripts/authenticate_windows.bat", package="GEE2R")
+    path <- system.file("Python/install_scripts/authenticate_windows.bat", package="earthEngineGrabR")
 
     system2(path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
@@ -62,20 +62,20 @@ initialize_gee2r <- function() {
     #command = "bash"
     #system2(command, args = path)
     }
-    message("Google earth python api is installed and authenticated")
+    cat("Google earth python api is installed and authenticated")
   
     ## authenticate googledrive
     #try(test <- googledrive::drive_find(), silent = T)
     googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
-   # while (!(file.exists("./.httr-oauth"))) {
-      Sys.sleep(2)
-   # }
+   while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
+      Sys.sleep(1)
+    }
 
-  message("Googledrive package to communicate with your google drive account is authenticated")
+  cat("Googledrive package to communicate with your google drive account is authenticated")
   
   
     # path to authentification script
-    path <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="GEE2R")
+    path <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR")
     call <- paste0("python ", path)
     system(paste0("gnome-terminal -x sh -c ", "\"", call, "\""))
     
@@ -83,11 +83,11 @@ initialize_gee2r <- function() {
       Sys.sleep(1)
     }
     
-    message("Fusiontable API is authenticated")
+    cat("Fusiontable API is authenticated")
     
     ## fusion table upload
     id <- get_ft_id("test")
-    message("Fusiontable API for upload is authenticated")
+    cat("Fusiontable API for upload is authenticated")
 }
 
 #' deletes credentials to re initialize
@@ -118,7 +118,7 @@ delete_if_exist <- function(path) {
   file_name <- get_name_from_path(path)
   test <- try(nrow(googledrive::drive_find(file_name)), silent = T)
   if(!(class(test) == "try-error")){
-    googledrive::drive_rm(file_name)
+    googledrive::drive_rm(file_name, verbose = F)
   }
 }
 
@@ -131,11 +131,11 @@ upload_data_ft <- function(path_file) {
   # check if file allready exist and delete it
   # read refresh token from GEE2R folder
   # path <- system.file("Python/install_scripts/refresh_token.txt", package="GEE2R")
-  if (file.exists("refresh_token.txt")) {
-    refresh_token = readChar("refresh_token.txt", nchars = 100000)
+  if (file.exists("~/.config/earthengine/refresh_token.txt")) {
+    refresh_token = readChar("~/.config/earthengine/refresh_token.txt", nchars = 100000)
   } else {
     stop("Fusion Table API is not authenticated \n
-         run gee2r_initialize()")
+         run ee_grab_init()")
   }
   # creat ogr2ogr system call with refresh token
   ft_refresh <- paste0("GFT:refresh=", refresh_token)
@@ -155,7 +155,7 @@ validate_shapefile <- function(ft_id) {
   # first command in console
   command = "python"
   # path to python scripts
-  path2script <- system.file("Python/GEE2R_python_scripts/validate_ft.py", package="GEE2R")
+  path2script <- system.file("Python/GEE2R_python_scripts/validate_ft.py", package="earthEngineGrabR")
   
     # concatenate path and arguments
   AllArgs <- c(path2script, ft_id)
@@ -192,9 +192,9 @@ download_data <- function(info, path = getwd(), clear = T){
   googledrive::drive_download(file = filename, path = path_full, overwrite = T)
   if(clear == T){
     # delete file
-    googledrive::drive_rm(filename)
+    googledrive::drive_rm(filename, verbose = F)
     # delete folder
-    googledrive::drive_rm("GEE2R_temp")
+    googledrive::drive_rm("GEE2R_temp", verbose = F)
     
   }
 }
@@ -207,7 +207,7 @@ download_data <- function(info, path = getwd(), clear = T){
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
 #' @return depend on output
 #' @export
-data_chirps_precipitation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_chirps_precipitation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
   productInfo <- list(
     productName = "chirps_precipitation_mm",
     spatialReducer = spatialReducer,
@@ -223,9 +223,9 @@ data_chirps_precipitation <- function(spatialReducer = "mean", temporalReducer =
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
 #' @return depend on output
 #' @export
-data_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
   productInfo <- list(
-    productName = "jrc_distanceToWater_m",
+    productName = "jrc_distanceToWater_km",
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
@@ -239,7 +239,7 @@ data_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReducer = 
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
 #' @return depend on output
 #' @export
-data_modis_treeCover <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_modis_treeCover <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
   productInfo <- list(
     productName = "modis_treeCover_percent",
     spatialReducer = spatialReducer,
@@ -255,7 +255,7 @@ data_modis_treeCover <- function(spatialReducer = "mean", temporalReducer = "mea
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
 #' @return depend on output
 #' @export
-data_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
   productInfo <- list(
     productName = "modis_nonTreeVegetation_percent",
     spatialReducer = spatialReducer,
@@ -271,7 +271,7 @@ data_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalReduce
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
 #' @return depend on output
 #' @export
-data_modis_nonVegetated <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_modis_nonVegetated <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
   productInfo <- list(
     productName = "modis_nonVegetated_percent",
     spatialReducer = spatialReducer,
@@ -285,7 +285,7 @@ data_modis_nonVegetated <- function(spatialReducer = "mean", temporalReducer = "
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
 #' @export
-data_srtm_elevation <- function(spatialReducer = "mean") {
+eeProduct_srtm_elevation <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "srtm_elevation_m",
     spatialReducer = spatialReducer
@@ -296,7 +296,7 @@ data_srtm_elevation <- function(spatialReducer = "mean") {
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
 #' @export
-data_srtm_slope <- function(spatialReducer = "mean") {
+eeProduct_srtm_slope <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "srtm_slope_degrees",
     spatialReducer = spatialReducer
@@ -307,7 +307,7 @@ data_srtm_slope <- function(spatialReducer = "mean") {
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
 #' @export
-data_oxford_accessibility <- function(spatialReducer = "mean") {
+eeProduct_oxford_accessibility <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "oxford_accessibility_min",
     spatialReducer = spatialReducer
@@ -319,7 +319,7 @@ data_oxford_accessibility <- function(spatialReducer = "mean") {
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
 #' @export
-data_oxford_friction <- function(spatialReducer = "mean") {
+eeProduct_oxford_friction <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "oxford_friction_min_m",
     spatialReducer = spatialReducer
@@ -341,9 +341,8 @@ get_name_from_path <- function(path){
 
 
 
-################################
 ## parameter testing
-################################
+
 
 #for(i in 1:length(products)) {
 #  if(!(products[[i]]$spatialReducer %in% reducers)){
@@ -360,30 +359,28 @@ get_name_from_path <- function(path){
 #}
 
 
-#' get_data_one_by_one
-#' @param products list of vectors as list(c(dataproduct, timeReducer)...) 
-#' @param timeReducer Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max 
-#' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
-#' @param timeIntervall Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
-#' @param target A path to a local file or a name of a already uploaded to earth engine
-#' @param outputFormat A string specifying the output format: CSV, GeoJSON, KML or KMZ
-#' @param resolution Resolution of the dataproducts. modis = 250
-#' @return depend on output
+#' ee_grab
+#' @param products List of dataproduct functions starting with eeProduct
+#' @param target A path to a local geofile, if file is already uploaded, the upload is skipped. 
+#' @param outputFormat A string specifying the output format: CSV, GeoJSON, KML or KMZ.
+#' @param verbose if true, prints messages about the state of processing
+#' @param resolution Resolution of the dataproducts.
+#' @return Object of class sf.
 #' @export
-get_data_one_by_one <- function(
+ee_grab <- function(
   target = NULL, 
   outputFormat = "GeoJSON",
   resolution = 100,
   products = list(
-    data_jrc_distanceToWater()
-    )
+    eeProduct_modis_treeCover()
+    ), 
+  verbose = T
   )
 
 {
-  ##############################################################
-  # test data products validation
-  ##############################################################
-  
+
+# test data products validation
+
   # test <- try(as.data.frame(products), silent = T)
   # if(!(class(test) == "data.frame" || nrow(test) == 2)) stop("products has to be a list of vectors as c(dataproduct, timeReducer)")
   # # get products in a more usefull form
@@ -393,9 +390,9 @@ get_data_one_by_one <- function(
   # reducers <- c("mean", "median", "mode", "sum", "min", "max")
   # dataproductNames <- c("chirps_precipitation", "jrc_distanceToWater", "modis_treeCover", "modis_nonTreeVegetation", "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality", "oxford_friction", "oxford_accessibility")
   # 
-  # ##############################################################
-  # # validate params
-  # ##############################################################
+  
+# validate params
+
   # 
   # if(!(class(timeIntervall[1]) == "numeric" || timeIntervall[1] >= 2000 & timeIntervall[1] < 2016)) stop("yearStart must be an integer between 2000 and 2015")
   # if(!(class(timeIntervall[2]) == "numeric" || timeIntervall[2] >= 2000 & timeIntervall[2] < 2016)) stop("yearEnd must be an integer between 2000 and 2015")
@@ -408,9 +405,9 @@ get_data_one_by_one <- function(
   # if(!(class(outputFormat) == "character" || outputFormat %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
   # extensions <- c("CSV", "GeoJSON", "KML", "KMZ")
     # validate path to shapefile if no test specified
-  ##############################################################
-  # validate fusion table and get info about feature collection in earth engine
-  ##############################################################
+
+# validate fusion table and get info about feature collection in earth engine
+
   # decide if target is fusion table name or local file
   
   #upload data
@@ -419,11 +416,13 @@ get_data_one_by_one <- function(
   
   target_name =   get_name_from_path(target)
   test <- try(nrow(googledrive::drive_find(target_name)) == 1, silent = T)
+  
   if (!test) {
+    if (verbose == T) cat("upload:", target_name, "\n")
     response_ft_upload <- upload_data_ft(target)
-    message("file upload finished")
+    # cat("upload:", target_name, "is uploaded", "\n")
   } else {
-    message("file alredy uploaded")
+    if (verbose == T) cat("upload:", target_name, "is already uploaded", "\n")
   }
   
 
@@ -434,6 +433,11 @@ get_data_one_by_one <- function(
   
   
   table_id <- get_ft_id(target_name)
+  if(is.na(table_id)) {
+    file.remove("~/.config/earthengine/.httr-oauth")
+    table_id <- get_ft_id(target_name)
+  }
+  
   if(is.na(table_id)) stop("problem with uploading your files")
   table_id$ft_id <- paste0("ft:",table_id$items.tableId)
 
@@ -443,9 +447,9 @@ get_data_one_by_one <- function(
   #if(!(class(test) == "numeric")) stop(paste0(message, " Parameter target must be string pointing to a local file to upload or a name of a file, that is already uploaded"))
   
   
-  ##############################################################
-  # write params to file
-  ##############################################################
+
+# write params to file
+
   
   # cat to data frame
   #dataproducts_df <- as.data.frame(do.call(cbind, products)) 
@@ -454,9 +458,9 @@ get_data_one_by_one <- function(
   # list for all filnames exported
   list = list()
   
-  ###########
-  # loop over data products
-  ###########
+
+# loop over data products
+
   
   for(i in seq_along(products)) {
     #products[[i]]$productName <- paste0(groupname, "_", products[[i]]$productName)
@@ -467,14 +471,14 @@ get_data_one_by_one <- function(
     #params_json <- jsonlite::toJSON(as.data.frame(t(params)))
     #jsonlite::write_json(x = params_json,
     #                     path = "./params.json")
+    #cat("request for", paste(products[[i]]$productName, "is send to Earth Engine", '\n'))
 
-    ##############################################################
-  # creat system call
-  ##############################################################
+# creat system call
+
   
     command = "python"
   # path to python scripts
-    path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="GEE2R")
+    path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="earthEngineGrabR")
   # test for spaces in path
     if (length(grep(" ", path2script) > 0)) {
      path2script <-  shQuote(path2script)
@@ -484,7 +488,7 @@ get_data_one_by_one <- function(
   
   # if a file with the same name is present on google drive it is deleted
     filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
-    googledrive::drive_rm(filename)
+    googledrive::drive_rm(filename, verbose = F)
     
     list[i] <- filename
 
@@ -500,33 +504,33 @@ get_data_one_by_one <- function(
   file.remove("./exportInfo.json")
   file.remove("./params.csv")
   #print(paste0("the projection of result is", drop))
-  print(paste0("Earth Engine export status of ",  exportInfo$description, " is: ", exportInfo$state))  
-  
+  if (exportInfo$state == "READY") {
+    if (verbose == T) cat("processing:", products[[i]]$productName,'\n') 
+  }
   }
 
-  
    for(i in seq_along(products)) {
-     download_data_waiting(filename = list[i])
+     if (i == 1) {
+       if (verbose == T) cat("waiting for Earth Engine", "\n")
+     }
+     download_data_waiting(filename = list[i], verbose = verbose)
    }
   
 
-  #lig <- unlist(l) %in% unlist(v)
-  
   product_list <- unlist(list) 
-  
-  
   downloads <- list.files(getwd())
   downloads_clean <- grep('geojson', downloads, value = T)
-  
 
   while (sum(product_list %in% downloads_clean) != length(product_list)) {
-    
-    Sys.sleep(1)
+    if (verbose == T) cat("waiting for Earth Engine", "\n")
+    if (verbose == T) cat(".")
+    Sys.sleep(2)
     downloads <- list.files(getwd())
     downloads_clean <- grep('geojson', downloads, value = T)
   }
   
     ## import data
+  if (verbose == T) cat("import: finished", "\n")
     join <- sf::st_read(downloads_clean[1], quiet = TRUE)
     file.remove(downloads_clean[1])
     if(length(downloads_clean) > 1) {
@@ -534,16 +538,14 @@ get_data_one_by_one <- function(
         data <- sf::st_read(downloads_clean[i], quiet = TRUE)
         file.remove(downloads_clean[i])
         data_no_geom <- sf::st_set_geometry(data, NULL)
-        join <- dplyr::left_join(join, data_no_geom)
+        join <- suppressMessages(dplyr::left_join(join, data_no_geom))
       }
     }
     #delete_if_exist(target)
-    googledrive::drive_rm("GEE2R_temp")
+    googledrive::drive_rm("GEE2R_temp", verbose = F)
   
    return(join)
 }
-
-
 
 
 
@@ -554,22 +556,24 @@ get_data_one_by_one <- function(
 #' @param clear If the file should be removed from Google Drive after the download.
 #' @return nothing
 #' @export
-download_data_waiting <- function(filename, path = getwd(), clear = T){
+download_data_waiting <- function(filename, path = getwd(), clear = T, verbose = T){
   
   filename <- as.character(filename)
   path_full <- paste0(path, "/", filename)
   test <- googledrive::drive_find(filename)
   
+  # cat("data products are in progress on the Earth Engine servers")
   while (nrow(test) < 1) {
-    Sys.sleep(1)
+    Sys.sleep(2)
+    if (verbose == T) cat(".")
     test <- googledrive::drive_find(filename)
   }
-  
-  googledrive::drive_download(file = filename, path = path_full, overwrite = T)
-  message(paste0('download: ', filename))
+  if (verbose == T) cat("\n")
+  googledrive::drive_download(file = filename, path = path_full, overwrite = T, verbose = F)
+  if (verbose == T) cat(paste0('download: ', get_name_from_path(filename), "\n"))
   if(clear == T){
     # delete file
-    googledrive::drive_rm(filename)
+    googledrive::drive_rm(filename, verbose = F)
     # delete folder
     # googledrive::drive_rm("GEE2R_temp")
     
@@ -607,7 +611,9 @@ get_ft_id <- function(ft_name) {
     app =  myapp,
     scope = scope,
     cache = "~/.config/earthengine/.httr-oauth")
+  
   gtoken <- httr::config(token = ft_token)
+
   # request for FT ID
   request <- httr::GET("https://www.googleapis.com/fusiontables/v1/tables", gtoken) 
   
@@ -625,170 +631,6 @@ get_ft_id <- function(ft_name) {
   
   return(result)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' get_data
-#' @param products list of vectors as list(c(dataproduct, timeReducer)...) 
-#' @param timeReducer Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max 
-#' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
-#' @param timeIntervall Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
-#' @param assetPath  A string path to earth engine asset
-#' @param outputFormat A string specifying the output format: CSV, GeoJSON, KML or KMZ
-#' @param resolution Resolution of the dataproducts. modis = 250
-#' @return depend on output
-#' @export
-get_data<- function(
-  timeIntervall = c(2000, 2000),
-  assetPath = NULL, 
-  spatialReducer = "mean",
-  outputFormat = "GeoJSON",
-  resolution = 100,
-  name = "example",
-  products = list(
-    c("chirps_precipitation", "mean"),
-    c("jrc_distanceToWater", "mode"),
-    c("modis_treeCover","mean"),
-    c("modis_nonTreeVegetation","mean"),
-    c("modis_nonVegetated","mean"),
-    c("srtm_elevation", NA),
-    c("srtm_slope", NA),
-    c("modis_quality", "mean"),
-    c("oxford_friction", NA),
-    c("oxford_accessibility", NA)
-    
-  ))
-
-{
-  ##############################################################
-  # test data products validation
-  ##############################################################
-  
-  test <- try(as.data.frame(products), silent = T)
-  if(!(class(test) == "data.frame" || nrow(test) == 2)) stop("products has to be a list of vectors as c(dataproduct, timeReducer)")
-  # get products in a more usefull form
-  dataproducts_df <- as.data.frame(do.call(rbind, products)) 
-  names(dataproducts_df) <- c("products", "timeReducer")
-  # list of products an reducers
-  reducers <- c("mean", "median", "mode", "sum", "min", "max")
-  dataproductNames <- c("chirps_precipitation", "jrc_distanceToWater", "modis_treeCover", "modis_nonTreeVegetation", "modis_nonVegetated", "srtm_elevation", "srtm_slope", "modis_quality", "oxford_friction", "oxford_accessibility")
-  
-  ##############################################################
-  # validate params
-  ##############################################################
-  
-  if(!(class(timeIntervall[1]) == "numeric" || timeIntervall[1] >= 2000 & timeIntervall[1] < 2016)) stop("yearStart must be an integer between 2000 and 2015")
-  if(!(class(timeIntervall[2]) == "numeric" || timeIntervall[2] >= 2000 & timeIntervall[2] < 2016)) stop("yearEnd must be an integer between 2000 and 2015")
-  if(!(timeIntervall[1] <= timeIntervall[2])) stop("year_start must be before or equal to year_end")
-  if(!(class(dataproducts_df$timeReducer) == "character" || dataproducts_df$timeReducer %in% reducers ||is.na(dataproducts_df$timeReducer))) stop("timeReducer must be of class string, either mean, median mode, sum, min or max")
-  if(!(class(spatialReducer) == "character" || dataproducts_df$spatialReducer %in% c("mean", "median", "mode"))) stop("spatialReducer must be of class string, either mean, median or mode")
-  if(!(class(dataproducts_df$products) == "character" || dataproducts_df$products %in% dataproductNames)) stop(paste0("dataproduct name must be one of: ", dataproductNames))
-  if(!(class(assetPath) == "character")) stop("assetPath must be string consisting of users/username/nameOfPolygons")
-  if(!(class(name) == "character")) stop("must be a string")
-  if(!(class(outputFormat) == "character" || outputFormat %in% c("CSV", "GeoJSON", "KML", "KMZ"))) stop("Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ")
-  
-  # validate path to shapefile if no test specified
-  message <- validate_shapefile(assetPath)
-  test <- try(suppressWarnings(as.numeric(message)), silent = T) 
-  if(!(class(test) == "numeric")) stop(paste0(message, " Parameter assetPath must be string pointing to an earth engine asset: users/username/name_of_shapefile"))
-  
-  
-  ##############################################################
-  # write params to file
-  ##############################################################
-  
-  # cat to data frame
-  dataproducts_df <- as.data.frame(do.call(cbind, products)) 
-  names(dataproducts_df) <- as.character(unlist(dataproducts_df[1,]))
-  dataproducts_df <- dataproducts_df[2,]
-  params <- cbind(dataproducts_df, assetPath, spatialReducer, outputFormat, resolution, name, year_start = timeIntervall[1], year_end = timeIntervall[2])
-  
-  write.table(params, file = "./params.csv", sep = ",", row.names = F)
-  
-  ##############################################################
-  # creat system call
-  ##############################################################
-  
-  command = "python"
-  # path to python scripts
-  path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="GEE2R")
-  # test for spaces in path
-  if (length(grep(" ", path2script) > 0)) {
-    path2script <-  shQuote(path2script)
-  }
-  # for information
-  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
-  
-  # if a file with the same name is present on google drive it is deleted
-  filename <- paste0(name,".", casefold(outputFormat))
-  googledrive::drive_rm(filename)
-  
-
-  # invoce system call on the commandline 
-  drop = system2(command,
-                 args =  path2script,
-                 stdout = T,
-                 wait = T)
-  
-  json_data <- rjson::fromJSON(file ="./exportInfo.json")
-  exportInfo <- rjson::fromJSON(json_data)
-  file.remove("./exportInfo.json")
-  file.remove("./params.csv")
-  #print(paste0("the projection of result is", drop))
-  print(paste0("Earth Engine export status is: ", exportInfo$state))  
-  
-  return(exportInfo)
-}
-
-
-
-
 
 
 
@@ -822,218 +664,6 @@ get_sys <- function(month_start = 1, month_end = 5, year_start = 2000, year_end 
   return(output)
   
 }
-
-
-
-#' get_data_profile_version
-#' @param products list of vectors as list(c(dataproduct, timeReducer)...) 
-#' @param timeReducer Reducer to aggregate data over time, can be: mean, median or mode, sum, min, max 
-#' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
-#' @param timeIntervall Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
-#' @param assetPath  A string path to earth engine asset
-#' @param outputFormat A string specifying the output format: CSV, GeoJSON, KML or KMZ
-#' @param resolution Resolution of the dataproducts. modis = 250
-#' @return depend on output
-#' @export
-get_data_profile <- function(
-  timeIntervall = c(2000, 2000),
-  assetPath = NULL, 
-  spatialReducer = "mean",
-  outputFormat = "GeoJSON",
-  resolution = 100,
-  numPolygons = 10000,
-  name = "example",
-  products = list(
-    c("chirps_precipitation", "mean"),
-    c("jrc_distanceToWater", "mode"),
-    c("modis_treeCover","mean"),
-    c("modis_nonTreeVegetation","mean"),
-    c("modis_nonVegetated","mean"),
-    c("srtm_elevation", NA),
-    c("srtm_slope", NA),
-    c("modis_quality", "mean"),
-    c("oxford_friction", NA),
-    c("oxford_accessibility", NA)
-    
-  ))
-
-{
-  
-  ##############################################################
-  # write params to file
-  ##############################################################
-  
-  # cat to data frame
-  dataproducts_df <- as.data.frame(do.call(cbind, products)) 
-  names(dataproducts_df) <- as.character(unlist(dataproducts_df[1,]))
-  dataproducts_df <- dataproducts_df[2,]
-  params <- cbind(dataproducts_df, assetPath, spatialReducer, outputFormat, resolution, name, year_start = timeIntervall[1], year_end = timeIntervall[2], numPolygons)
-  
-  write.table(params, file = "./params.csv", sep = ",", row.names = F)
-  
-  ##############################################################
-  # creat system call
-  ##############################################################
-  
-  command = "python"
-  # path to python scripts
-  path2script <- system.file("Python/GEE2R_python_scripts/get_data_profile.py", package="GEE2R")
-  # test for spaces in path
-  if (length(grep(" ", path2script) > 0)) {
-    path2script <-  shQuote(path2script)
-  }
-  # for information
-  #message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
-  
-  # if a file with the same name is present on google drive it is deleted
-  filename <- paste0(name,".", casefold(outputFormat))
-  googledrive::drive_rm(filename)
-  
-  
-  # invoce system call on the commandline 
-  drop = system2(command,
-                 args =  path2script,
-                 stdout = T,
-                 wait = T)
-  
-  json_data <- rjson::fromJSON(file="./exportInfo.json")
-  exportInfo <- rjson::fromJSON(json_data)
-  file.remove("./exportInfo.json")
-  file.remove("./params.csv")
-  #print(paste0("the projection of result is", drop))
-  print(paste0("Earth Engine export status is: ", exportInfo$state))  
-  
-  return(exportInfo)
-}
-
-
-
-
-
-#' get_data_test
-#' @param products list("chirps_precipitation","jrc_permanentWater","modis_treeCover","modis_nonTreeVegetation","modis_nonVegetated","srtm_elevation",srtm_slope", "modis_quality")
-#' @param year_start asd
-#' @param year_end  asd
-#' @param time_reducer asd
-#' @param asset_path  
-#' @param output A String specifying the output format: CSV, GeoJSON, KML or KMZ
-#' @param spatial_reducer as
-#' @param scale as
-#' @param test what test to perform, "size_test"
-#' @param numPolygons if test is "size_test", numPolygons sets number of polygons to test
-#' @param raster perPolygon = list(raster = T, asset_id), raster = list(raster = T, extend, resolution), rasterAsDataFrame = list(rasterAsDataFrame = T, extand, resolution)
-#' @return depends on target
-get_data_test <- function(
-                     year_start = 2000,
-                     year_end = 2000,
-                     time_reducer = "mean",
-                     asset_path = "users/JesJehle/Strips", 
-                     output = "GeoJSON",
-                     spatial_reducer = "mean", 
-                     scale = 100,
-                     test = "no_size_test",
-                     numPolygons = 10000,
-                     name = "example",
-                     export = F,
-                     products = list(
-                                    "chirps_precipitation",
-                                    "jrc_permanentWater",
-                                    "modis_treeCover",
-                                    "modis_nonTreeVegetation",
-                                    "modis_nonVegetated",
-                                    "srtm_elevation",
-                                    "srtm_slope", 
-                                    "modis_quality")
-)
-
-{
-  # generate arguments for chirps data
-  month_start = 1
-  month_end = 12
-  
-  ##############################################################
-  # validate params
-  ##############################################################
-  
-  assertthat::assert_that(assertthat::is.number(month_start), month_start > 0 & month_start < 13, msg = "month_start must be an integer between 1 and 12") 
-  assertthat::assert_that(assertthat::is.number(month_end), month_end > 0 & month_end < 13, msg = "month_end must be an integer between 1 and 12") 
-  assertthat::assert_that(assertthat::is.number(year_start), year_start >= 2000 & year_start < 2016, msg = "year_start must be an integer between 2000 and 2015") 
-  assertthat::assert_that(assertthat::is.number(year_end), year_end >= 2000 & year_end < 2016, msg = "year_end must be an integer between 2000 and 2015") 
-  assertthat::assert_that(year_start <= year_end, msg = "year_start must be before or equal to year_end") 
-  assertthat::assert_that(assertthat::is.string(time_reducer), time_reducer == "mean" | time_reducer == "median" | time_reducer == "mode", msg = "time_reducer must be of class string, either mean, median or mode") 
-  assertthat::assert_that(assertthat::is.string(asset_path), msg = "asset_path must be string consisting of users/username/nameOfPolygons") 
-  assertthat::assert_that(assertthat::is.string(name), msg = "name of file") 
-  assertthat::assert_that(assertthat::is.string(output), output %in% c("CSV", "GeoJSON", "KML", "KMZ"),  msg = "Output must be a String specifying the output, use CSV, GeoJSON, KML or KMZ") 
-    # validate path to shapefile if no test specified
-  if(test == "no_size_test") {
-  message <- validate_shapefile(asset_path = asset_path)
-  assertthat::assert_that(assertthat::is.number(as.numeric(message)), msg = cat(message, "Parameter asset_id must be string consisting of users/username/name_of_shapefile")) 
-  }
-  
-  ##############################################################
-  # creat system call
-  ##############################################################
-  
-  # concatenate arguments
-  arguments = c(month_start, month_end, year_start, year_end, time_reducer, asset_path, spatial_reducer, scale, test, format(numPolygons, scientific=F), output, name, export, products)
-  # first command in console
-  command = "python"
-  # path to python scripts
-  path2script <- "./scripts/get_data_test.py"
-  # concatenate path and arguments
-  AllArgs <- c(path2script, arguments)
-  # for information
-  message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in", asset_path, " consists of ", message, " features."))
-  
-  # invoce system call on the commandline 
-  output_gee = system2(command,
-                   args =  AllArgs,
-                   stdout = T,
-                   wait = T)
-  if(export == T){
-    
-  # clean gee output
-  file_clean <- gsub("'", "\"", output_gee)
-  file_clean <- gsub("u", "", file_clean)
-  file_json <- rjson::fromJSON(file_clean)
-  file_json$output <- casefold(output)
-  file <- file_json
-  # print export status
-  print(paste0("Earth Engine export status is: ", file_json$state))  
-  } else {
-    file <- "test"
-  }
-  return(file)
-}
-
-
-
-
-# When? Timeperiode of interest to reduce over
-# year start-end, month start-end
-
-# Where? Region of interest
-# polygon, multipolygon, extend, bounding box, asset_path
-
-# What? Data products
-# list of products with specified reducers
-
-# How? Output
-# as raster or data.frame
-# raster - resolution, projection
-
-
-# iteration example
-
-'  file_list = list()
-  if (length(output) > 1){
-    for(i in 1:length(output)) {
-      file_list[[i]] <- data.table::fread(output[i])
-    }
-     file <-  data.table::rbindlist(file_list)
-  } else {
-    file <- data.table::fread(output)
-  }'
 
 
 

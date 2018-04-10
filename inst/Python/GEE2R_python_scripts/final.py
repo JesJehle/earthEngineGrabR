@@ -50,7 +50,7 @@ def filter_chirps_precipitation(yearStart, yearEnd, reducer):
 
     #          .filterDate(ee.String(str(yearStart)).cat('-01-01'),ee.String(str(yearEnd)).cat('-12-31'))\
     reduce = select_reducer(reducer)
-    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD") \
+    chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY") \
         .filter(ee.Filter.calendarRange(int(yearStart), int(yearEnd), 'year')) \
         .reduce(reduce)\
         .rename('chirps_precipitation_mm')
@@ -189,7 +189,7 @@ def creatMultiBandImage(params):
     if 'jrc_distanceToWater' in params["productName"][0]:
         jrc_Water = filter_jrc_distanceToWater(int(params["yearStart"][0]), int(params["yearEnd"][0]),
                                                params["temporalReducer"][0])
-        image = jrc_Water.fastDistanceTransform(1000).multiply(ee.Image.pixelArea()).sqrt()
+        image = jrc_Water.fastDistanceTransform(1000).multiply(ee.Image.pixelArea()).sqrt().divide(1000)
         # image = image.addBands(jrc_distanceToWater)
     if 'modis_treeCover' in params["productName"][0]:
         image = filter_modis_treeCover(int(params["yearStart"][0]), int(params["yearEnd"][0]),
