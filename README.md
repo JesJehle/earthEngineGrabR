@@ -11,11 +11,15 @@ The earthEngineGrabR R package has some dependencies that need to be satisfied b
 * [you need a Google Account](https://accounts.google.com/SignUp?hl=de)
 * [sign up for Earth Engine access](https://signup.earthengine.google.com/#!/)
 * [you need a Python version > 2.7, with PYTHONPATH set](https://www.python.org/downloads/)
-
+* [install GDAL](https://github.com/domlysz/BlenderGIS/wiki/How-to-install-GDAL)
+* [install sf](https://github.com/r-spatial/sf)
 Next, you can install the earthEngineGrabR with:
 
 ```r
 library(devtools)
-install_github("earthEngineGrabR")
+install_github("JesJehle/earthEngineGrabR")
 library(earthEngineGrabR)
 ```
+
+
+
