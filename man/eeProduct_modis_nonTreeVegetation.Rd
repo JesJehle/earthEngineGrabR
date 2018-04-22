@@ -5,7 +5,7 @@
 \title{modis_nonTreeVegetation}
 \usage{
 eeProduct_modis_nonTreeVegetation(spatialReducer = "mean",
-  temporalReducer = "mean", yearIntervall = c(2000, 2002))
+  temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
@@ -18,5 +18,5 @@ eeProduct_modis_nonTreeVegetation(spatialReducer = "mean",
 depend on output
 }
 \description{
-modis_nonTreeVegetation
+The Terra MODIS Vegetation Continuous Fields (VCF) product is a sub-pixel-level representation of surface vegetation cover estimates globally. Designed to continuously represent Earth's terrestrial surface as a proportion of basic vegetation traits, it provides a gradation of three surface cover components: percent tree cover, percent non-tree cover, and percent bare. VCF products provide a continuous, quantitative portrayal of land surface cover with improved spatial detail, and hence, are widely used in environmental modeling and monitoring applications. Generated yearly, the VCF product is produced using monthly composites of Terra MODIS 250 and 500 meters Land Surface Reflectance data, including all seven bands, and Land Surface Temperature
 }

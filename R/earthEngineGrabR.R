@@ -1,46 +1,45 @@
 
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
-#' @export
-ee_grab_init <- function() {
+ee_grab_init_old <- function() {
   # to clear credentials
   delete_credentials()
   
   if (Sys.info()["sysname"] == "Linux") {
     # try without sudo permission
-  res_nosudo <- system2("pip", "install GEE2R" 
-                     #   stdout = NULL, 
-                     #  stderr=NULL
-                        )
-  
-  # if fails try with sudo permission
-  if(res_nosudo != 0) {
-    waitPW = 1  
-    while(waitPW != 0) {
-      waitPW = 0  
-      res_install <- system('sudo -HkS pip install GEE2R', 
-                      #  ignore.stdout = T, 
-                      #  ignore.stderr = T, 
-                        input=readline("To authorise the installation of the GEE2R python dependencies, enter your sudo password: "))
-      # whait untile credential file is created    
-      while (!(exists("res_install"))) {
-        Sys.sleep(1)
-  }
-      waitPW = res_install + waitPW
-  }
-}
+    res_nosudo <- system2("pip", "install GEE2R" 
+                          #   stdout = NULL, 
+                          #  stderr=NULL
+    )
+    
+    # if fails try with sudo permission
+    if(res_nosudo != 0) {
+      waitPW = 1  
+      while(waitPW != 0) {
+        waitPW = 0  
+        res_install <- system('sudo -HkS pip install GEE2R', 
+                              #  ignore.stdout = T, 
+                              #  ignore.stderr = T, 
+                              input=readline("To authorise the installation of the GEE2R python dependencies, enter your sudo password: "))
+        # whait untile credential file is created    
+        while (!(exists("res_install"))) {
+          Sys.sleep(1)
+        }
+        waitPW = res_install + waitPW
+      }
+    }
     #    Sys.sleep(10)
     path <- system.file("Python/install_scripts/authenticate_linux.sh", package="earthEngineGrabR")
-   # if (grep(" ", path) > 0) {
-   #   path <-  shQuote(path)
-   # }
+    # if (grep(" ", path) > 0) {
+    #   path <-  shQuote(path)
+    # }
     # path = "../Python/install_scripts/authenticate_linux.sh"
     command = "bash"
     
     res_authenticate <- system2(command, args = path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
-
+      
     }
     
   } 
@@ -52,7 +51,7 @@ ee_grab_init <- function() {
       Sys.sleep(1)
     }
     path <- system.file("Python/install_scripts/authenticate_windows.bat", package="earthEngineGrabR")
-
+    
     system2(path)
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
@@ -61,34 +60,149 @@ ee_grab_init <- function() {
     #path = "~/Documents/Ms_Arbeit/test/authenticate_windows.sh"
     #command = "bash"
     #system2(command, args = path)
-    }
-    cat("Google earth python api is installed and authenticated")
+  }
+  cat("Google earth python api is installed and authenticated")
   
-    ## authenticate googledrive
-    #try(test <- googledrive::drive_find(), silent = T)
-    googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
-   while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
-      Sys.sleep(1)
-    }
-
+  ## authenticate googledrive
+  #try(test <- googledrive::drive_find(), silent = T)
+  googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
+  while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
+    Sys.sleep(1)
+  }
+  
   cat("Googledrive package to communicate with your google drive account is authenticated")
   
   
-    # path to authentification script
-    path <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR")
-    call <- paste0("python ", path)
-    system(paste0("gnome-terminal -x sh -c ", "\"", call, "\""))
+  # path to authentification script
+  path <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR")
+  call <- paste0("python ", path)
+  system(paste0("gnome-terminal -x sh -c ", "\"", call, "\""))
+  
+  while (!(file.exists("~/.config/earthengine/refresh_token.txt"))) {
+    Sys.sleep(1)
+  }
+  
+  cat("Fusiontable API is authenticated")
+  
+  ## fusion table upload
+  id <- get_ft_id("test")
+  cat("Fusiontable API for upload is authenticated")
+}
+
+
+
+
+#' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
+#' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
+#' @export
+ee_grab_init <- function() {
+  # to clear credentials
+  delete_credentials()
+  
+  if (Sys.info()["sysname"] %in% c("Linux","macOS")) {
+    # try without sudo permission
+    res_nosudo <- system2("pip", "install GEE2R" 
+                          #   stdout = NULL, 
+                          #  stderr=NULL
+    )
     
-    while (!(file.exists("~/.config/earthengine/refresh_token.txt"))) {
+    # if fails try with sudo permission
+    if(res_nosudo != 0) {
+      waitPW = 1  
+      while(waitPW != 0) {
+        waitPW = 0  
+        res_install <- system('sudo -HkS pip install GEE2R', 
+                              #  ignore.stdout = T, 
+                              #  ignore.stderr = T, 
+                              input=readline("To authorise the installation of the GEE2R python dependencies, enter your sudo password: "))
+        # whait untile credential file is created    
+        while (!(exists("res_install"))) {
+          Sys.sleep(1)
+        }
+        waitPW = res_install + waitPW
+      }
+    }
+  }
+  
+  if (Sys.info()["sysname"] == "Windows") {
+    
+    res_install <- system2("pip", "install GEE2R")
+    while (!(exists("res_install"))) {
+      Sys.sleep(1)
+    }
+    path <- system.file("Python/install_scripts/authenticate_windows.bat", package="earthEngineGrabR")
+    if (length(grep(" ", path) > 0)) {
+      path <-  shQuote(path)
+    }
+    system2(path)
+    while (!(file.exists("~/.config/earthengine/credentials"))) {
+      Sys.sleep(1)
+    }
+  }
+  
+  # run earthengine authenticate
+    command = "python"
+    terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
+    if (length(grep(" ", terminal_path) > 0)) {
+      terminal_path <-  shQuote(terminal_path)
+    }
+
+
+    ee_credentials = "earthengine authenticate"
+    
+    if (Sys.info()["sysname"] %in% c("Linux")) {
+      call = paste(command, terminal_path, "--wait", "-m gnome-terminal", ee_credentials)
+    } else {
+      call = paste(command, terminal_path, "--wait", ee_credentials)
+    } 
+    # invoce installation
+    system(call)
+    
+    while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
     }
     
-    cat("Fusiontable API is authenticated")
-    
-    ## fusion table upload
-    id <- get_ft_id("test")
-    cat("Fusiontable API for upload is authenticated")
+  cat("Google earth python api is installed and authenticated \n")
+  
+  ## authenticate googledrive
+  googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
+  while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
+    Sys.sleep(1)
+  }
+  
+  cat("Googledrive package to communicate with your google drive account is authenticated \n")
+  
+  
+  # fusion table authentication
+  path_ft_init <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR")
+  if (length(grep(" ", path_ft_init) > 0)) {
+    path_ft_init <-  shQuote(path_ft_init)
+  }
+  if (Sys.info()["sysname"] %in% c("Linux")) {
+    system_call = paste(command, terminal_path, "--wait", "-m gnome-terminal", path_ft_init)
+  } else {
+    system_call = paste(command, terminal_path, "--wait", path_ft_init)
+  } 
+  # make gdal_init executable
+  if (Sys.info()["sysname"] %in% c("Linux", "macOS")) {
+  system(paste("chmod +x", path_ft_init))
+  }
+  
+  # invoce installation
+  system(system_call)
+  
+  while (!(file.exists("~/.config/earthengine/refresh_token.txt"))) {
+    Sys.sleep(1)
+  }
+  cat("Fusiontable API is authenticated \n")
+  
+  ## fusion table upload
+  id <- get_ft_id("test")
+  cat("Fusiontable API for upload is authenticated")
 }
+
+
+
 
 #' deletes credentials to re initialize
 #' @export
@@ -108,6 +222,8 @@ delete_credentials = function() {
     file.remove("~/.config/earthengine/refresh_token.txt")
   }
 }
+
+
 
 
 
@@ -205,15 +321,17 @@ download_data <- function(info, path = getwd(), clear = T){
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 #' @return depend on output
 #' @export
-eeProduct_chirps_precipitation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
+eeProduct_chirps_precipitation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F) {
   productInfo <- list(
-    productName = "chirps_precipitation_mm",
+    productName = paste0("chirps_precipitation_mm", "_", yearIntervall[1], "_", yearIntervall[2]),
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
-    yearEnd = yearIntervall[2]
+    yearEnd = yearIntervall[2],
+    byYear = byYear
   )
   return(productInfo)
 }
@@ -221,15 +339,17 @@ eeProduct_chirps_precipitation <- function(spatialReducer = "mean", temporalRedu
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description These data were generated using 3,066,102 scenes from Landsat 5, 7, and 8 acquired between 16 March 1984 and 10 October 2015. Each pixel was individually classified into water / non-water using an expert system and the results were collated into a monthly history for the entire time period and two epochs (1984-1999, 2000-2015) for change detection.This Yearly Seasonality Classification collection contains a year-by-year classification of the seasonality of water based on the occurrence values detected throughout the year.Resolution is 30 METERS. 
 #' @return depend on output
 #' @export
-eeProduct_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
-  productInfo <- list(
-    productName = "jrc_distanceToWater_km",
+eeProduct_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F) {
+  productInfo <- list( 
+    productName = paste0("jrc_distanceToWater_km", "_", yearIntervall[1], "_", yearIntervall[2]),
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
-    yearEnd = yearIntervall[2]
+    yearEnd = yearIntervall[2],
+    byYear = byYear
   )
   return(productInfo)
 }
@@ -237,15 +357,17 @@ eeProduct_jrc_distanceToWater <- function(spatialReducer = "mean", temporalReduc
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description The Terra MODIS Vegetation Continuous Fields (VCF) product is a sub-pixel-level representation of surface vegetation cover estimates globally. Designed to continuously represent Earth's terrestrial surface as a proportion of basic vegetation traits, it provides a gradation of three surface cover components: percent tree cover, percent non-tree cover, and percent bare. VCF products provide a continuous, quantitative portrayal of land surface cover with improved spatial detail, and hence, are widely used in environmental modeling and monitoring applications. Generated yearly, the VCF product is produced using monthly composites of Terra MODIS 250 and 500 meters Land Surface Reflectance data, including all seven bands, and Land Surface Temperature
 #' @return depend on output
 #' @export
-eeProduct_modis_treeCover <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
-  productInfo <- list(
-    productName = "modis_treeCover_percent",
+eeProduct_modis_treeCover <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F) {
+  productInfo <- list( 
+    productName = paste0("modis_treeCover_percent", "_", yearIntervall[1], "_", yearIntervall[2]),
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
-    yearEnd = yearIntervall[2]
+    yearEnd = yearIntervall[2],
+    byYear = byYear
   )
   return(productInfo)
 }
@@ -253,15 +375,17 @@ eeProduct_modis_treeCover <- function(spatialReducer = "mean", temporalReducer =
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description The Terra MODIS Vegetation Continuous Fields (VCF) product is a sub-pixel-level representation of surface vegetation cover estimates globally. Designed to continuously represent Earth's terrestrial surface as a proportion of basic vegetation traits, it provides a gradation of three surface cover components: percent tree cover, percent non-tree cover, and percent bare. VCF products provide a continuous, quantitative portrayal of land surface cover with improved spatial detail, and hence, are widely used in environmental modeling and monitoring applications. Generated yearly, the VCF product is produced using monthly composites of Terra MODIS 250 and 500 meters Land Surface Reflectance data, including all seven bands, and Land Surface Temperature
 #' @return depend on output
 #' @export
-eeProduct_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
-  productInfo <- list(
-    productName = "modis_nonTreeVegetation_percent",
+eeProduct_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F) {
+  productInfo <- list( 
+    productName = paste0("modis_nonTreeVegetation_percent", "_", yearIntervall[1], "_", yearIntervall[2]),
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
-    yearEnd = yearIntervall[2]
+    yearEnd = yearIntervall[2],
+    byYear = byYear
   )
   return(productInfo)
 }
@@ -269,21 +393,24 @@ eeProduct_modis_nonTreeVegetation <- function(spatialReducer = "mean", temporalR
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
 #' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description The Terra MODIS Vegetation Continuous Fields (VCF) product is a sub-pixel-level representation of surface vegetation cover estimates globally. Designed to continuously represent Earth's terrestrial surface as a proportion of basic vegetation traits, it provides a gradation of three surface cover components: percent tree cover, percent non-tree cover, and percent bare. VCF products provide a continuous, quantitative portrayal of land surface cover with improved spatial detail, and hence, are widely used in environmental modeling and monitoring applications. Generated yearly, the VCF product is produced using monthly composites of Terra MODIS 250 and 500 meters Land Surface Reflectance data, including all seven bands, and Land Surface Temperature
 #' @return depend on output
 #' @export
-eeProduct_modis_nonVegetated <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002)) {
-  productInfo <- list(
-    productName = "modis_nonVegetated_percent",
+eeProduct_modis_nonVegetated <- function(spatialReducer = "mean", temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F) {
+  productInfo <- list( 
+    productName = paste0("modis_nonVegetated_percent", "_", yearIntervall[1], "_", yearIntervall[2]),
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     yearStart = yearIntervall[1],
-    yearEnd = yearIntervall[2]
+    yearEnd = yearIntervall[2],
+    byYear = byYear
   )
   return(productInfo)
 }
 #' srtm_elevation
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
+#' @description The Shuttle Radar Topography Mission (SRTM, see Farr et al. 2007) digital elevation data is an international research effort that obtained digital elevation models on a near-global scale. This SRTM V3 product (u201CSRTM Plusu201D) is provided by NASA JPL at a resolution of 1 arc-second (approximately 30m). This dataset has undergone a void-filling process using open-source data (ASTER GDEM2, GMTED2010, and NED), as opposed to other versions that contain voids or have been void-filled with commercial sources. For more information on the different versions see the SRTM Quick Guide .
 #' @export
 eeProduct_srtm_elevation <- function(spatialReducer = "mean") {
   productInfo <- list(
@@ -294,6 +421,7 @@ eeProduct_srtm_elevation <- function(spatialReducer = "mean") {
 }
 #' srtm_slope
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
+#' @description The Shuttle Radar Topography Mission (SRTM, see Farr et al. 2007) digital elevation data is an international research effort that obtained digital elevation models on a near-global scale. This SRTM V3 product (u201CSRTM Plusu201D) is provided by NASA JPL at a resolution of 1 arc-second (approximately 30m). This dataset has undergone a void-filling process using open-source data (ASTER GDEM2, GMTED2010, and NED), as opposed to other versions that contain voids or have been void-filled with commercial sources. For more information on the different versions see the SRTM Quick Guide .
 #' @return depend on output
 #' @export
 eeProduct_srtm_slope <- function(spatialReducer = "mean") {
@@ -306,6 +434,7 @@ eeProduct_srtm_slope <- function(spatialReducer = "mean") {
 #' oxford_accessibility
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
+#' @description This global accessibility map enumerates land-based travel time to the nearest densely-populated area for all areas between 85 degrees north and 60 degrees south for a nominal year 2015.Densely-populated areas are defined as contiguous areas with 1,500 or more inhabitants per square kilometer or a majority of built-up land cover types coincident with a population centre of at least 50,000 inhabitants. This map was produced through a collaboration between the University of Oxford Malaria Atlas Project (MAP), Google, the European Union Joint Research Centre (JRC), and the University of Twente, Netherlands. The underlying datasets used to produce the map include roads (comprising the first ever global-scale use of Open Street Map and Google roads datasets), railways, rivers, lakes, oceans, topographic conditions (slope and elevation), landcover types, and national borders. These datasets were each allocated a speed or speeds of travel in terms of time to cross each pixel of that type. The datasets were then combined to produce a “friction surface”, a map where every pixel is allocated a nominal overall speed of travel based on the types occurring within that pixel. Least-cost-path algorithms (running in Google Earth Engine and, for high-latitude areas, in R) were used in conjunction with this friction surface to calculate the time of travel from all locations to the nearest city (by travel time). Cities were determined using the high-density-cover product created by the Global Human Settlement Project. Each pixel in the resultant accessibility map thus represents the modeled shortest time from that location to a city.
 #' @export
 eeProduct_oxford_accessibility <- function(spatialReducer = "mean") {
   productInfo <- list(
@@ -317,6 +446,7 @@ eeProduct_oxford_accessibility <- function(spatialReducer = "mean") {
 
 #' oxford_friction
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
+#' @description This global friction surface enumerates land-based travel speed for all land pixels between 85 degrees north and 60 degrees south for a nominal year 2015. This map was produced through a collaboration between the University of Oxford Malaria Atlas Project (MAP), Google, the European Union Joint Research Centre (JRC), and the University of Twente, Netherlands. The underlying datasets used to produce the map include roads (comprising the first ever global-scale use of Open Street Map and Google roads datasets), railways, rivers, lakes, oceans, topographic conditions (slope and elevation), landcover types, and national borders. These datasets were each allocated a speed or speeds of travel in terms of time to cross each pixel of that type. The datasets were then combined to produce this “friction surface”, a map where every pixel is allocated a nominal overall speed of travel based on the types occurring within that pixel, with the fastest travel mode intersecting the pixel being used to determine the speed of travel in that pixel (with some exceptions such as national boundaries, which have the effect of imposing a travel time penalty). This map represents the travel speed from this allocation process, expressed in units of minutes required to travel one meter. It forms the underlying dataset behind the global accessibility map described in the referenced paper.
 #' @return depend on output
 #' @export
 eeProduct_oxford_friction <- function(spatialReducer = "mean") {
@@ -337,7 +467,6 @@ get_name_from_path <- function(path){
   return(name)
   
 }
-
 
 
 
@@ -426,11 +555,6 @@ ee_grab <- function(
   }
   
 
-  #extension_full <- paste0(".",tolower(extensions))
-  #grep(extension_full %in% target)
-  #gsub(extension_full[1]," ",target)
-  #gsub("^.*\\.",".",x)
-  
   
   table_id <- get_ft_id(target_name)
   if(is.na(table_id)) {
@@ -448,33 +572,18 @@ ee_grab <- function(
   
   
 
-# write params to file
-
-  
-  # cat to data frame
-  #dataproducts_df <- as.data.frame(do.call(cbind, products)) 
-  #names(dataproducts_df) <- as.character(unlist(dataproducts_df[1,]))
-  #dataproducts_df <- dataproducts_df[2,]
-  # list for all filnames exported
   list = list()
   
 
+  
 # loop over data products
 
-  
   for(i in seq_along(products)) {
-    #products[[i]]$productName <- paste0(groupname, "_", products[[i]]$productName)
     params <- rbind(cbind(products[[i]]), ft_id = table_id$ft_id, outputFormat, resolution)
-    
+     
+    #write params to file
     write.table(t(params), file = "./params.csv", sep = ",", row.names = F, col.names = T)
   
-    #params_json <- jsonlite::toJSON(as.data.frame(t(params)))
-    #jsonlite::write_json(x = params_json,
-    #                     path = "./params.json")
-    #cat("request for", paste(products[[i]]$productName, "is send to Earth Engine", '\n'))
-
-# creat system call
-
   
     command = "python"
   # path to python scripts
@@ -664,6 +773,42 @@ get_sys <- function(month_start = 1, month_end = 5, year_start = 2000, year_end 
   return(output)
   
 }
+
+
+# 
+# products = list(
+#   eeProduct_chirps_precipitation(yearIntervall = c(2000, 2005)),
+#   eeProduct_oxford_accessibility()
+# )
+# 
+# 
+# producs_new = list("first")
+# 
+# start <- length(producs_new) + 1
+# 
+# for (i in seq_along(products)) {
+#   if (sum(names(products[[i]]) %in% "byYear") > 0) {
+#     if (!products[[i]]$byYear) {
+#       diff <- products[[i]]$yearEnd - products[[i]]$yearStart
+#       start <- length(producs_new)
+#       if (length(grep("chirps", products[[i]]$productName)) > 0) {
+#         for (d in 0:diff) {
+#           year = as.numeric(products[[i]]$yearStart) + d
+#           producs_new[[start + d]] <-
+#             eeProduct_chirps_precipitation(
+#               spatialReducer = products[[i]]$spatialReducer,
+#               temporalReducer = products[[i]]$temporalReducer,
+#               yearIntervall = c(year, year)
+#             )
+#         }
+#       }
+#     }
+#   }
+# }
+#       
+# 
+# 
+
 
 
 

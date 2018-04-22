@@ -13,5 +13,5 @@ eeProduct_srtm_slope(spatialReducer = "mean")
 depend on output
 }
 \description{
-srtm_slope
+The Shuttle Radar Topography Mission (SRTM, see Farr et al. 2007) digital elevation data is an international research effort that obtained digital elevation models on a near-global scale. This SRTM V3 product (u201CSRTM Plusu201D) is provided by NASA JPL at a resolution of 1 arc-second (approximately 30m). This dataset has undergone a void-filling process using open-source data (ASTER GDEM2, GMTED2010, and NED), as opposed to other versions that contain voids or have been void-filled with commercial sources. For more information on the different versions see the SRTM Quick Guide .
 }

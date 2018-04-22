@@ -5,7 +5,7 @@
 \title{jrc_distanceToWater}
 \usage{
 eeProduct_jrc_distanceToWater(spatialReducer = "mean",
-  temporalReducer = "mean", yearIntervall = c(2000, 2002))
+  temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
@@ -18,5 +18,5 @@ eeProduct_jrc_distanceToWater(spatialReducer = "mean",
 depend on output
 }
 \description{
-jrc_distanceToWater
+These data were generated using 3,066,102 scenes from Landsat 5, 7, and 8 acquired between 16 March 1984 and 10 October 2015. Each pixel was individually classified into water / non-water using an expert system and the results were collated into a monthly history for the entire time period and two epochs (1984-1999, 2000-2015) for change detection.This Yearly Seasonality Classification collection contains a year-by-year classification of the seasonality of water based on the occurrence values detected throughout the year.Resolution is 30 METERS.
 }

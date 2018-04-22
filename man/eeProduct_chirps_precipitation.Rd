@@ -5,7 +5,7 @@
 \title{chirps_precipitation}
 \usage{
 eeProduct_chirps_precipitation(spatialReducer = "mean",
-  temporalReducer = "mean", yearIntervall = c(2000, 2002))
+  temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
@@ -18,5 +18,5 @@ eeProduct_chirps_precipitation(spatialReducer = "mean",
 depend on output
 }
 \description{
-chirps_precipitation
+Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 }
