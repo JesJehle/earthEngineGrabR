@@ -99,7 +99,24 @@ ee_grab_init <- function() {
   # to clear credentials
   delete_credentials()
   
-  if (Sys.info()["sysname"] %in% c("Linux","macOS")) {
+  
+  if (Sys.info()["sysname"] %in% c("macOS")) {
+  #command = "python"
+  #terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
+  #call = paste(command, terminal_path, "--wait", "-m gnome-terminal", install_GEE2R)
+  #install_GEE2R = "pip3 install GEE2R"
+  #} else {
+  #  call = paste(command, terminal_path, "--wait", install_GEE2R)
+  #} 
+  # invoce installation
+  #system(call)
+  #system("pip3 install GEE2R")
+  }
+  
+  
+  
+  
+  if (Sys.info()["sysname"] %in% c("Linux")) {
     # try without sudo permission
     res_nosudo <- system2("pip", "install GEE2R" 
                           #   stdout = NULL, 
