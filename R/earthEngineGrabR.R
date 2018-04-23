@@ -110,7 +110,7 @@ ee_grab_init <- function() {
   #} 
   # invoce installation
   #system(call)
-  #system("pip3 install GEE2R")
+  system("pip3 install GEE2R")
   }
   
   
