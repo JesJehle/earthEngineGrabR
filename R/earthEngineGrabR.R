@@ -182,11 +182,11 @@ ee_grab_init <- function() {
   cat("Google earth python api is installed and authenticated \n")
   
   ## authenticate googledrive
-  googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
-  while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
-    Sys.sleep(1)
-  }
-  
+  #googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
+  #while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
+  #  Sys.sleep(1)
+  #}
+  print("yea!!")
   cat("Googledrive package to communicate with your google drive account is authenticated \n")
   
   
