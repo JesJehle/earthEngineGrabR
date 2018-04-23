@@ -100,7 +100,7 @@ ee_grab_init <- function() {
   delete_credentials()
   
   
-  if (Sys.info()["sysname"] %in% c("macOS")) {
+  #if (Sys.info()["sysname"] %in% c("macOS")) {
   #command = "python"
   #terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
   #call = paste(command, terminal_path, "--wait", "-m gnome-terminal", install_GEE2R)
@@ -110,13 +110,13 @@ ee_grab_init <- function() {
   #} 
   # invoce installation
   #system(call)
-  system("pip3 install GEE2R")
-  }
+  # system("pip3 install GEE2R")
+  #}
   
   
   
   
-  if (Sys.info()["sysname"] %in% c("Linux")) {
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
     # try without sudo permission
     res_nosudo <- system2("pip", "install GEE2R" 
                           #   stdout = NULL, 
@@ -186,8 +186,7 @@ ee_grab_init <- function() {
   #while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
   #  Sys.sleep(1)
   #}
-  print("yea!!")
-  cat("Googledrive package to communicate with your google drive account is authenticated \n")
+  #cat("Googledrive package to communicate with your google drive account is authenticated \n")
   
   
   # fusion table authentication
@@ -201,7 +200,7 @@ ee_grab_init <- function() {
     system_call = paste(command, terminal_path, "--wait", path_ft_init)
   } 
   # make gdal_init executable
-  if (Sys.info()["sysname"] %in% c("Linux", "macOS")) {
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
   system(paste("chmod +x", path_ft_init))
   }
   
