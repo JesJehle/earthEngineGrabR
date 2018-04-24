@@ -13,6 +13,7 @@ The earthEngineGrabR R package has some dependencies that need to be satisfied b
 * [you need a Python version > 2.7, with PYTHONPATH set](https://www.python.org/downloads/)
 * [install GDAL](https://github.com/domlysz/BlenderGIS/wiki/How-to-install-GDAL)
 * [install sf](https://github.com/r-spatial/sf)
+
 Next, you can install the earthEngineGrabR with:
 
 ```r
