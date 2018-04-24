@@ -1,4 +1,9 @@
 
+
+"/anaconda3/bin/gdal"
+"/anaconda3/bin/pip"
+
+
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 ee_grab_init_old <- function() {
@@ -99,7 +104,7 @@ ee_grab_init <- function() {
   # to clear credentials
   delete_credentials()
   
-  
+  # quick and dirty solution to test package
   if (Sys.info()["sysname"] %in% c("Darwin")) {
   #command = "python"
   #terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
@@ -110,7 +115,10 @@ ee_grab_init <- function() {
   #} 
   # invoce installation
   #system(call)
-  system("pip3 install GEE2R")
+  #  "/anaconda3/bin/ogr2ogr"
+
+    
+  system("/anaconda3/bin/pip install GEE2R")
   }
   
   
@@ -182,11 +190,11 @@ ee_grab_init <- function() {
   cat("Google earth python api is installed and authenticated \n")
   
   ## authenticate googledrive
-  #googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth")
-  #while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
-  #  Sys.sleep(1)
-  #}
-  #cat("Googledrive package to communicate with your google drive account is authenticated \n")
+  googledrive::drive_auth(cache = "~/.config/earthengine/.httr-oauth", verbose = F)
+  while (!(file.exists("~/.config/earthengine/.httr-oauth"))) {
+    Sys.sleep(1)
+  }
+  cat("Googledrive package to communicate with your google drive account is authenticated \n")
   
   
   # fusion table authentication
@@ -248,7 +256,7 @@ delete_credentials = function() {
 #' @export
 delete_if_exist <- function(path) {
   file_name <- get_name_from_path(path)
-  test <- try(nrow(googledrive::drive_find(file_name)), silent = T)
+  test <- try(nrow(googledrive::drive_find(file_name, verbose = F)), silent = T)
   if(!(class(test) == "try-error")){
     googledrive::drive_rm(file_name, verbose = F)
   }
@@ -272,7 +280,11 @@ upload_data_ft <- function(path_file) {
   # creat ogr2ogr system call with refresh token
   ft_refresh <- paste0("GFT:refresh=", refresh_token)
   # upload as fusion table
-  call <- paste0("ogr2ogr -f GFT ", sQuote(ft_refresh), " ", path_file)
+  if (Sys.info()["sysname"] == "Darwin") {
+    call <- paste0("/anaconda3/bin/ogr2ogr -f GFT ", sQuote(ft_refresh), " ", path_file)
+  } else {
+    call <- paste0("ogr2ogr -f GFT ", sQuote(ft_refresh), " ", path_file)
+  }
   result <- system(call)
   return(result)
 }
@@ -316,7 +328,7 @@ download_data <- function(info, path = getwd(), clear = T){
 
   filename <- paste0(info$description, ".", info$output)
   path_full <- paste0(path, "/", filename)
-  test <- googledrive::drive_find(filename)
+  test <- googledrive::drive_find(filename,  verbose = F)
   
   if(!(nrow(test) >= 1)) stop(paste0(filename, " is not yet transferred to your Google Drive, be patient"))
   if(!(nrow(test) >= 1)) stop(paste0("Mutiple files have the same name: ", filename))
@@ -560,7 +572,7 @@ ee_grab <- function(
   #Sys.sleep(1)
   
   target_name =   get_name_from_path(target)
-  test <- try(nrow(googledrive::drive_find(target_name)) == 1, silent = T)
+  test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
   
   if (!test) {
     if (verbose == T) cat("upload:", target_name, "\n")
@@ -685,13 +697,13 @@ download_data_waiting <- function(filename, path = getwd(), clear = T, verbose =
   
   filename <- as.character(filename)
   path_full <- paste0(path, "/", filename)
-  test <- googledrive::drive_find(filename)
+  test <- googledrive::drive_find(filename, verbose = F)
   
   # cat("data products are in progress on the Earth Engine servers")
   while (nrow(test) < 1) {
     Sys.sleep(2)
     if (verbose == T) cat(".")
-    test <- googledrive::drive_find(filename)
+    test <- googledrive::drive_find(filename, verbose = F)
   }
   if (verbose == T) cat("\n")
   googledrive::drive_download(file = filename, path = path_full, overwrite = T, verbose = F)

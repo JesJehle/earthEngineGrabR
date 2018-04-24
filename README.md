@@ -22,4 +22,12 @@ library(earthEngineGrabR)
 ```
 
 
+## Test 
 
+```r
+data <- ee_grab(
+  target = system.file("data/territories.shp", package="earthEngineGrabR"),
+  products = list(eeProduct_modis_treeCover(yearIntervall = c(2008, 2012))),
+  resolution = 1000
+)
+```
