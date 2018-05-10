@@ -1,11 +1,10 @@
-
 .Rproj.user
 .Rhistory
 .RData
-
 .earthEngineGrabR.Rproj
 *.pyc
 dist/
 GEE2R.egg-info/
 .setup.py
-
+.httr-oauth
+~/.config/earthengine/.httr-oauth
