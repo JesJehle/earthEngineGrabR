@@ -29,7 +29,7 @@
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
 
-
+import json
 import sys
 import time
 import webbrowser
@@ -141,16 +141,21 @@ else:
     # folder = "earthengine"
     # "~/.config/earthengine/credentials"
 
-    file = "refresh_token.txt"
+    file = "refresh_token.json"
 
     path_credentials = read("path.csv", delimiter=',').columns.values[0]
 
     full_path = os.path.join(path_credentials, file)
+    data = {'refresh_token' : refresh_token}
 
-    print(full_path)
+    #print(data)
+    #print(full_path)
 
-    with open(full_path, "w") as text_file:
-        text_file.write(str(refresh_token))
+    #with open(full_path, "w") as text_file:
+    #    text_file.write(str(refresh_token))
+
+    with open(full_path, 'w') as outfile:
+        json.dump(data, outfile)
 
 #    print(os.environ["GFT_REFRESH_TOKEN"] + "as environmental variable")
 

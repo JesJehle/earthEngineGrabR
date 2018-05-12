@@ -292,6 +292,7 @@ ee_grab_init_old <- function(credentials_path = system.file("data", package="ear
 
 
 #' Add quotes to paths with spaces
+#' @export
 clean_spaces <- function(path) {
   if (length(grep(" ", path) > 0)) {
     path <-  shQuote(path)
@@ -301,6 +302,7 @@ clean_spaces <- function(path) {
 
 
 #' Execute command in new terminal window for all operating systems
+#' @export
 exec_auth_new_window <- function(command, gnome = T, credential_path, credential_name) {
   # write credentials path
   
@@ -330,7 +332,7 @@ exec_auth_new_window <- function(command, gnome = T, credential_path, credential
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 #' @export
-ee_grab_init_new <- function() {
+ee_grab_init <- function() {
 
   library(reticulate)
   # setwd("../Test_GEE2R/")
@@ -343,7 +345,6 @@ ee_grab_init_new <- function() {
   py_install("ee_grab_helpers")
   
   
-
   ##############################################################################
   ## get credentials path
   ##############################################################################
@@ -377,7 +378,7 @@ ee_grab_init_new <- function() {
     system(paste("chmod +x", path_ft_init))
   }
   
-  exec_auth_new_window(command = path_ft_init, credential_path = credential_path, credential_name = "refresh_token.txt")
+  exec_auth_new_window(command = path_ft_init, credential_path = credential_path, credential_name = "refresh_token.json")
   
   cat("Fusion Table API for upload is authenticated \n")
   
@@ -402,7 +403,6 @@ ee_grab_init_new <- function() {
   
   cat("Fusiontable API for ID is authenticated")
   
-  
 }
 
 
@@ -420,8 +420,8 @@ delete_credentials = function(credential_path) {
   # GDAL API refresh token
   #path <- system.file("Python/install_scripts/refresh_token.txt", package="GEE2R")
   
-  if(file.exists(paste0(credential_path, "/", "refresh_token.txt"))) {
-    file.remove(paste0(credential_path, "/", "refresh_token.txt"))
+  if(file.exists(paste0(credential_path, "/", "refresh_token.json"))) {
+    file.remove(paste0(credential_path, "/", "refresh_token.json"))
   }
 }
 

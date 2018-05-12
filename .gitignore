@@ -9,3 +9,4 @@ GEE2R.egg-info/
 .httr-oauth
 path.csv
 ~/.config/earthengine/.httr-oauth
+/home/jesjehle/.config/earthengine/.httr-oauth
