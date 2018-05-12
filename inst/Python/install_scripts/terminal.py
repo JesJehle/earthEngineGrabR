@@ -8,7 +8,7 @@ import subprocess
 # ----------------------------------------------------------------------
 class configure(object):
     def __init__(self):
-        self.dirhome = os.path.abspath(os.path.dirname(__file__))
+        self.dirhome = os.path.abspath(os.path.dirname('__file__'))
         self.diruser = os.path.abspath(os.path.expanduser('~'))
         self.unix = sys.platform[:3] != 'win' and True or False
         self.temp = os.environ.get('temp', os.environ.get('tmp', '/tmp'))
@@ -1110,7 +1110,7 @@ if __name__ == '__main__':
     # cfg.win32_shell_execute('open', cfg.win32_wsl_locate(), '--login -i -c "sleep 5"')
 
     # test4()
-    main()
+    # main()
 
 
 

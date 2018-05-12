@@ -4,7 +4,7 @@
 \alias{delete_credentials}
 \title{deletes credentials to re initialize}
 \usage{
-delete_credentials()
+delete_credentials(credential_path)
 }
 \description{
 deletes credentials to re initialize

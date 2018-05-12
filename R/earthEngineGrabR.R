@@ -4,9 +4,17 @@
 "/anaconda3/bin/pip"
 
 
+
+
+
+
+
+
+
+
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
-ee_grab_init_old <- function() {
+ee_grab_init_old2 <- function() {
   # to clear credentials
   delete_credentials()
   
@@ -61,10 +69,7 @@ ee_grab_init_old <- function() {
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
     }
-    #print("I am sorry, no implementation on windows yet")
-    #path = "~/Documents/Ms_Arbeit/test/authenticate_windows.sh"
-    #command = "bash"
-    #system2(command, args = path)
+
   }
   cat("Google earth python api is installed and authenticated")
   
@@ -99,32 +104,29 @@ ee_grab_init_old <- function() {
 
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
-#' @export
-ee_grab_init <- function() {
+ee_grab_init_old <- function(credentials_path = system.file("data", package="earthEngineGrabR")) {
   # to clear credentials
   delete_credentials()
+  write.table(t(credentials_path), file = "./path.csv", sep = ",", row.names = F, col.names = F)
   
-  # quick and dirty solution to test package
-  if (Sys.info()["sysname"] %in% c("Darwin")) {
-  #command = "python"
-  #terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
-  #call = paste(command, terminal_path, "--wait", "-m gnome-terminal", install_GEE2R)
-  #install_GEE2R = "pip3 install GEE2R"
-  #} else {
-  #  call = paste(command, terminal_path, "--wait", install_GEE2R)
-  #} 
-  # invoce installation
-  #system(call)
-  #  "/anaconda3/bin/ogr2ogr"
+  ########## Mac 
 
-    
+  # quick and dirty solution to test package
+  # not working!!!
+  if (Sys.info()["sysname"] %in% c("Darwin")) {
+
+
   system("/anaconda3/bin/pip install GEE2R")
   }
   
-  
-  
+  ###########################
+  ########## Linux ##########
+  ###########################
   
   if (Sys.info()["sysname"] %in% c("Linux")) {
+    
+    ##### install dependencies ######
+    
     # try without sudo permission
     res_nosudo <- system2("pip", "install GEE2R" 
                           #   stdout = NULL, 
@@ -147,7 +149,72 @@ ee_grab_init <- function() {
         waitPW = res_install + waitPW
       }
     }
+  
+    ##### earthengine API ######
+    
+  command = "python"
+  terminal_path = system.file("Python/install_scripts/terminal.py", package="earthEngineGrabR")
+  if (length(grep(" ", terminal_path) > 0)) {
+    terminal_path <-  shQuote(terminal_path)
   }
+  
+  ee_credentials = "earthengine authenticate"
+  
+  call = paste(command, terminal_path, "--wait", "-m gnome-terminal", ee_credentials)
+  # invoce installation
+  system(call)
+  
+  while (!(file.exists("~/.config/earthengine/credentials"))) {
+    Sys.sleep(1)
+  }
+  
+  cat("Google earth python api is installed and authenticated \n")
+  
+  ##### googledrive API ######
+  
+  httr_credential_path_linux = paste0(credentials_path, ".httr-oauth")
+  
+    googledrive::drive_auth(cache = httr_credential_path_linux, verbose = F)
+  while (!(file.exists(httr_credential_path_linux))) {
+    Sys.sleep(1)
+  }
+  cat("Googledrive package to communicate with your google drive account is authenticated \n")
+  
+  ##### fusion table API ######
+  
+  path_ft_init <- system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR")
+  if (length(grep(" ", path_ft_init) > 0)) {
+    path_ft_init <-  shQuote(path_ft_init)
+  }
+  if (Sys.info()["sysname"] %in% c("Linux")) {
+    system_call = paste(command, terminal_path, "--wait", "-m gnome-terminal", path_ft_init)
+  } else {
+    system_call = paste(command, terminal_path, "--wait", path_ft_init)
+  }
+  
+  # make gdal_init executable
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
+    system(paste("chmod +x", path_ft_init))
+  }
+  
+  # invoce installation
+  system(system_call)
+  
+  refresh_credential_path_linux = paste0(credentials_path, "refresh_token.txt")
+
+  while (!(file.exists(refresh_credential_path_linux))) {
+    Sys.sleep(1)
+  }
+  cat("Fusiontable API is authenticated \n")
+  
+  ##### fusion table GDAL API ######
+  id <- get_ft_id("test")
+  cat("Fusiontable API for upload is authenticated")
+}
+  
+  
+  ########## Window
+  
   
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -163,7 +230,6 @@ ee_grab_init <- function() {
     while (!(file.exists("~/.config/earthengine/credentials"))) {
       Sys.sleep(1)
     }
-  }
   
   # run earthengine authenticate
     command = "python"
@@ -175,11 +241,8 @@ ee_grab_init <- function() {
 
     ee_credentials = "earthengine authenticate"
     
-    if (Sys.info()["sysname"] %in% c("Linux")) {
-      call = paste(command, terminal_path, "--wait", "-m gnome-terminal", ee_credentials)
-    } else {
-      call = paste(command, terminal_path, "--wait", ee_credentials)
-    } 
+    call = paste(command, terminal_path, "--wait", ee_credentials)
+    
     # invoce installation
     system(call)
     
@@ -225,30 +288,142 @@ ee_grab_init <- function() {
   cat("Fusiontable API for upload is authenticated")
 }
 
+}
 
 
-
-#' deletes credentials to re initialize
-#' @export
-delete_credentials = function() {
-  # httr oauth2, googledrive and fusiontable api
-  if(file.exists("~/.config/earthengine/.httr-oauth")) {
-    file.remove("~/.config/earthengine/.httr-oauth")
+#' Add quotes to paths with spaces
+clean_spaces <- function(path) {
+  if (length(grep(" ", path) > 0)) {
+    path <-  shQuote(path)
   }
-  # earth engine credentials
-  if(file.exists("~/.config/earthengine/credentials")) {
-    file.remove("~/.config/earthengine/credentials")
-  }
-  # GDAL API refresh token
-  #path <- system.file("Python/install_scripts/refresh_token.txt", package="GEE2R")
+  return(path)
+}
+
+
+#' Execute command in new terminal window for all operating systems
+exec_auth_new_window <- function(command, gnome = T, credential_path, credential_name) {
+  # write credentials path
   
-  if(file.exists("~/.config/earthengine/refresh_token.txt")) {
-    file.remove("~/.config/earthengine/refresh_token.txt")
+  # path to open new terminal script
+  terminal_path = clean_spaces(system.file("Python/install_scripts/terminal.py", package = "earthEngineGrabR"))
+  # make functions available
+  source_python(file = terminal_path)
+  
+  # arguments <- c('terminal.py', '--wait', '-m', 'gnome-terminal', 'earthengine', 'authenticate')
+  # ee_credentials = "earthengine authenticate"
+  # use gnome in linux
+  if (gnome) {
+    arguments <- c(terminal_path, '--wait', '-m', 'gnome-terminal', command)
+  } else {
+    arguments <- c(terminal_path, '--wait', command)
+  }
+  # execute command in new terminal window
+  main(argv = arguments)
+  
+  # wait until credentails are created
+  while (!(file.exists(paste0(credential_path, "/", credential_name)))) {
+    Sys.sleep(1)
   }
 }
 
 
+#' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
+#' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
+#' @export
+ee_grab_init_new <- function() {
 
+  library(reticulate)
+  # setwd("../Test_GEE2R/")
+  
+  ##############################################################################
+  ## install ee_grab_helpers and python dependencies
+  ##############################################################################
+  
+  py_available(initialize = T)
+  py_install("ee_grab_helpers")
+  
+  
+
+  ##############################################################################
+  ## get credentials path
+  ##############################################################################
+  
+  os <- import("os")
+  
+  # credential_path <- os$path$expanduser('~/.config/earthengine/credentials')
+  credential_path <- os$path$expanduser('~/.config/earthengine')
+  
+  delete_credentials(credential_path)
+  ##############################################################################
+  ## authenticate ee api
+  ##############################################################################
+  
+  # credential_path <- clean_spaces(system.file("data", package="earthEngineGrabR"))
+  
+  write.table(t(credential_path), file = "./path.csv", sep = ",", row.names = F, col.names = F)
+  
+  exec_auth_new_window(command = c('earthengine', 'authenticate'), credential_path = credential_path, credential_name = "credentials")
+  
+  cat("Earth Engine Python API is authenticated \n")
+  
+  ##############################################################################
+  ## authentication fusion table api
+  ##############################################################################
+  
+  path_ft_init <- clean_spaces(system.file("Python/install_scripts/gdal_auth_gee2r.py", package="earthEngineGrabR"))
+  
+  # make gdal_auth_gee2r executable
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
+    system(paste("chmod +x", path_ft_init))
+  }
+  
+  exec_auth_new_window(command = path_ft_init, credential_path = credential_path, credential_name = "refresh_token.txt")
+  
+  cat("Fusion Table API for upload is authenticated \n")
+  
+  ##############################################################################
+  ## authentication google drive api
+  ##############################################################################
+  
+  httr_credential_path = paste0(credential_path, ".httr-oauth")
+  
+  googledrive::drive_auth(cache = httr_credential_path, verbose = F)
+  while (!(file.exists(httr_credential_path))) {
+    Sys.sleep(1)
+  }
+  
+  cat("Googledrive API is authenticated \n")
+  
+  ##############################################################################
+  ## authentication fusion table get id api
+  ##############################################################################
+  
+  id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
+  
+  cat("Fusiontable API for ID is authenticated")
+  
+  
+}
+
+
+#' deletes credentials to re initialize
+#' @export
+delete_credentials = function(credential_path) {
+  # httr oauth2, googledrive and fusiontable api
+  if(file.exists(paste0(credential_path, "/", ".httr-oauth"))) {
+    file.remove(paste0(credential_path, "/", ".httr-oauth"))
+  }
+  # earth engine credentials
+  if(file.exists(paste0(credential_path, "/", "credentials"))) {
+    file.remove(paste0(credential_path, "/", "credentials"))
+  }
+  # GDAL API refresh token
+  #path <- system.file("Python/install_scripts/refresh_token.txt", package="GEE2R")
+  
+  if(file.exists(paste0(credential_path, "/", "refresh_token.txt"))) {
+    file.remove(paste0(credential_path, "/", "refresh_token.txt"))
+  }
+}
 
 
 #' delete_if_exist
@@ -290,7 +465,6 @@ upload_data_ft <- function(path_file) {
 }
 
 
-
 #' validate_shapefile
 #' @param ft_id id of fusion table
 #' @return if shapefile is not valid, returns error
@@ -312,8 +486,6 @@ validate_shapefile <- function(ft_id) {
   # download data
   return(output)
 }
-
-
 
 
 
@@ -724,7 +896,7 @@ download_data_waiting <- function(filename, path = getwd(), clear = T, verbose =
 #' @param ft_name name of the fusiontable
 #' @return fusiontable ID or NA of no fusiontable with given name
 #' @export
-get_ft_id <- function(ft_name) {
+get_ft_id <- function(ft_name, credential_path, credential_name) {
   
   library(magrittr)
   # for initial Oauth2.0 authentification
@@ -747,8 +919,8 @@ get_ft_id <- function(ft_name) {
     endpoint = ft_api_endpoints, 
     app =  myapp,
     scope = scope,
-    cache = "~/.config/earthengine/.httr-oauth")
-  
+    cache = paste0(credential_path , '/', credential_name))
+  # "~/.config/earthengine/.httr-oauth"
   gtoken <- httr::config(token = ft_token)
 
   # request for FT ID

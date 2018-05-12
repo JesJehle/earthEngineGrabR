@@ -4,7 +4,7 @@
 \alias{get_ft_id}
 \title{get_ft_id}
 \usage{
-get_ft_id(ft_name)
+get_ft_id(ft_name, credential_path, credential_name)
 }
 \arguments{
 \item{ft_name}{name of the fusiontable}

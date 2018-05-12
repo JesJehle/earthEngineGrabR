@@ -34,7 +34,7 @@ import sys
 import time
 import webbrowser
 import os
-
+from pandas import read_csv as read
 from osgeo import gdal
 
 SCOPES = {
@@ -131,19 +131,24 @@ else:
 
     refresh_token = gdal.GOA2GetRefreshToken(auth_token, scope)
 
-    #path = os.path.realpath(__file__)
-    #folder = os.path.dirname(path)
-    folder = "earthengine"
-    #"~/.config/earthengine/credentials"
+    # save token
+    # load system params from R
+
+    path_credentials = read("path.csv", delimiter=',')
+
+    # path = os.path.realpath(__file__)
+    # folder = os.path.dirname(path)
+    # folder = "earthengine"
+    # "~/.config/earthengine/credentials"
 
     file = "refresh_token.txt"
 
-    home_path = os.path.expanduser('~/.config/')
+    path_credentials = read("path.csv", delimiter=',').columns.values[0]
 
-    full_path = home_path + folder + "/" + file
+    full_path = os.path.join(path_credentials, file)
 
-    # print(str(refresh_token))
-    #path = os.path.realpath(__file__)
+    print(full_path)
+
     with open(full_path, "w") as text_file:
         text_file.write(str(refresh_token))
 

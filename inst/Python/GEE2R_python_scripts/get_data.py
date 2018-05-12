@@ -13,8 +13,7 @@ import json
 params = read("params.csv", delimiter=',')
 # print(params)
 
-#sysargv = sys.argv[:]
-# print sysargv
+
 ee.Initialize()
 
 # import polygons
