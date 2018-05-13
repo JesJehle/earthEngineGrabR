@@ -2,7 +2,7 @@
 % Please edit documentation in R/earthEngineGrabR.R
 \name{upload_data_ft}
 \alias{upload_data_ft}
-\title{upload as fusion tables}
+\title{upload as fusion tables !!!!!!!!old version!!!!!!!!!!!!!!}
 \usage{
 upload_data_ft(path_file)
 }
@@ -13,5 +13,5 @@ upload_data_ft(path_file)
 if 0
 }
 \description{
-upload as fusion tables
+upload as fusion tables !!!!!!!!old version!!!!!!!!!!!!!!
 }

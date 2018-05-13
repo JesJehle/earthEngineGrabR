@@ -309,7 +309,7 @@ exec_auth_new_window <- function(command, gnome = T, credential_path, credential
   # path to open new terminal script
   terminal_path = clean_spaces(system.file("Python/install_scripts/terminal.py", package = "earthEngineGrabR"))
   # make functions available
-  source_python(file = terminal_path)
+  reticulate::source_python(file = terminal_path)
   
   # arguments <- c('terminal.py', '--wait', '-m', 'gnome-terminal', 'earthengine', 'authenticate')
   # ee_credentials = "earthengine authenticate"
@@ -341,15 +341,15 @@ ee_grab_init <- function() {
   ## install ee_grab_helpers and python dependencies
   ##############################################################################
   
-  py_available(initialize = T)
-  py_install("ee_grab_helpers")
+  reticulate::py_available(initialize = T)
+  reticulate::py_install("ee_grab_helpers")
   
   
   ##############################################################################
   ## get credentials path
   ##############################################################################
   
-  os <- import("os")
+  os <- reticulate::import("os")
   
   # credential_path <- os$path$expanduser('~/.config/earthengine/credentials')
   credential_path <- os$path$expanduser('~/.config/earthengine')
@@ -405,6 +405,51 @@ ee_grab_init <- function() {
   
 }
 
+#' deletes credentials to re initialize
+#' @param verbose specifies weather information is about the process is printed to the console
+#' @param target path to vector data to be uploaded
+#' @export
+upload_data <- function(verbose = T, target) {
+  target_name <- get_name_from_path(target)
+  # test if file is already uploaded
+  test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
+  
+  if (!test) {
+    if (verbose == T)
+      cat("upload:", target_name, "\n")
+    
+    upload2ft(target, target_name)
+    
+  } else {
+    if (verbose == T)
+      cat("upload:", target_name, "is already uploaded", "\n")
+  }
+  
+  credential_path <- get_credential_path()
+  
+  table_id <- get_ft_id(
+      ft_name = target_name,
+      credential_path = credential_path,
+      credential_name = ".httr-oauth"
+    )
+  # if is na delete credentials and re-authenticate before rerunning get_ft_id
+  if (is.na(table_id)) {
+    file.remove(paste0(credential_path, "/", ".httr-oauth"))
+    table_id <- get_ft_id(target_name)
+  }
+  
+  if (is.na(table_id))
+    stop("problem with uploading your files")
+  table_id$ft_id <- paste0("ft:", table_id$items.tableId)
+  
+  return(table_id)
+  
+}
+
+
+
+
+
 
 #' deletes credentials to re initialize
 #' @export
@@ -438,7 +483,7 @@ delete_if_exist <- function(path) {
 }
 
 
-#' upload as fusion tables
+#' upload as fusion tables !!!!!!!!old version!!!!!!!!!!!!!!
 #' @param path_file path of file to upload
 #' @return if 0
 #' @export
@@ -669,6 +714,34 @@ get_name_from_path <- function(path){
 }
 
 
+#' upload vector data as fusion table and parse file to allow large uploads
+#' @param path2file Path to vector data
+#' @param fileName Name of fusion table in google drive
+#' @export
+upload2ft <- function(path2file, fileName) {
+  
+  ogr2ft_path = clean_spaces(system.file("Python/GEE2R_python_scripts/upload.py", package = "earthEngineGrabR"))
+  
+  # make functions available
+  reticulate::source_python(file = ogr2ft_path)
+  
+  convert(path2file, fileName)
+  
+}
+
+#' Find path to specified credentials folder
+#' @return  path to credentials folder
+#' @export
+get_credential_path <- function() {
+  # define values
+  path2credentials <- '~/.config/earthengine'
+  os <- reticulate::import("os")
+  credential_path <- os$path$expanduser(path2credentials)
+  return(credential_path)
+}
+
+
+
 
 ## parameter testing
 
@@ -737,41 +810,14 @@ ee_grab <- function(
 
 # validate fusion table and get info about feature collection in earth engine
 
-  # decide if target is fusion table name or local file
+  ##############################################################################
+  ## upload vector data is fusion table
+  ##############################################################################
   
-  #upload data
-  #delete_if_exist(target)
-  #Sys.sleep(1)
-  
-  target_name =   get_name_from_path(target)
-  test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
-  
-  if (!test) {
-    if (verbose == T) cat("upload:", target_name, "\n")
-    response_ft_upload <- upload_data_ft(target)
-    # cat("upload:", target_name, "is uploaded", "\n")
-  } else {
-    if (verbose == T) cat("upload:", target_name, "is already uploaded", "\n")
-  }
+  table_id<-  upload_data(target = target)
   
 
   
-  table_id <- get_ft_id(target_name)
-  if(is.na(table_id)) {
-    file.remove("~/.config/earthengine/.httr-oauth")
-    table_id <- get_ft_id(target_name)
-  }
-  
-  if(is.na(table_id)) stop("problem with uploading your files")
-  table_id$ft_id <- paste0("ft:",table_id$items.tableId)
-
-  
-  #message <- validate_shapefile(table_id$ft_id)
-  #test <- try(suppressWarnings(as.numeric(message)), silent = T) 
-  #if(!(class(test) == "numeric")) stop(paste0(message, " Parameter target must be string pointing to a local file to upload or a name of a file, that is already uploaded"))
-  
-  
-
   list = list()
   
 
