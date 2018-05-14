@@ -1,15 +1,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 #' ee_grab
 #' @param products List of dataproduct functions starting with eeProduct
 #' @param target A path to a local geofile, if file is already uploaded, the upload is skipped. 
@@ -30,16 +21,12 @@ ee_grab <- function(
 
 {
 
-# validate fusion table and get info about feature collection in earth engine
-
-
 # upload vector data is fusion table --------------------
 
   table_id <-  upload_data(target = target)
   
   list = list()
   
-
 # loop over data products
 
   for(i in seq_along(products)) {

@@ -65,7 +65,7 @@ upload_data <- function(verbose = T, target) {
   # if is na delete credentials and re-authenticate before rerunning get_ft_id
   if (is.na(table_id)) {
     file.remove(paste0(credential_path, "/", ".httr-oauth"))
-    table_id <- get_ft_id(target_name)
+    table_id <- get_ft_id(ft_name = target_name, credential_path = credential_path, credential_name = ".httr-oauth")
   }
   
   if (is.na(table_id))
