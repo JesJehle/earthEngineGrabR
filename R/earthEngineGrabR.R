@@ -5,13 +5,6 @@
 
 
 
-
-
-
-
-
-
-
 #' The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 ee_grab_init_old2 <- function() {
@@ -290,7 +283,6 @@ ee_grab_init_old <- function(credentials_path = system.file("data", package="ear
 
 }
 
-
 #' Add quotes to paths with spaces
 #' @export
 clean_spaces <- function(path) {
@@ -405,28 +397,24 @@ ee_grab_init <- function() {
   
 }
 
-#' deletes credentials to re initialize
+#' upload vector data and return fusion table ID
 #' @param verbose specifies weather information is about the process is printed to the console
 #' @param target path to vector data to be uploaded
+#' @return Fusion table ID
 #' @export
 upload_data <- function(verbose = T, target) {
   target_name <- get_name_from_path(target)
   # test if file is already uploaded
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
-  
   if (!test) {
     if (verbose == T)
       cat("upload:", target_name, "\n")
-    
     upload2ft(target, target_name)
-    
   } else {
     if (verbose == T)
       cat("upload:", target_name, "is already uploaded", "\n")
   }
-  
   credential_path <- get_credential_path()
-  
   table_id <- get_ft_id(
       ft_name = target_name,
       credential_path = credential_path,
@@ -652,6 +640,7 @@ eeProduct_modis_nonVegetated <- function(spatialReducer = "mean", temporalReduce
   )
   return(productInfo)
 }
+
 #' srtm_elevation
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @return depend on output
@@ -814,14 +803,12 @@ ee_grab <- function(
   ## upload vector data is fusion table
   ##############################################################################
   
-  table_id<-  upload_data(target = target)
+  table_id <-  upload_data(target = target)
   
 
-  
   list = list()
   
 
-  
 # loop over data products
 
   for(i in seq_along(products)) {
