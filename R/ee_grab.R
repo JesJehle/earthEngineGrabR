@@ -22,6 +22,7 @@ ee_grab <- function(
 {
 
 # upload vector data is fusion table --------------------
+    reticulate::source_python(file = gee2r_path)
 
   table_id <-  upload_data(target = target)
   
@@ -31,40 +32,35 @@ ee_grab <- function(
 
   for(i in seq_along(products)) {
     params <- rbind(cbind(products[[i]]), ft_id = table_id$ft_id, outputFormat, resolution)
-     
-    #write params to file
-    write.table(t(params), file = "./params.csv", sep = ",", row.names = F, col.names = T)
-  
-  
-    command = "python"
-  # path to python scripts
-    path2script <- system.file("Python/GEE2R_python_scripts/get_data.py", package="earthEngineGrabR")
-  # test for spaces in path
-    if (length(grep(" ", path2script) > 0)) {
-     path2script <-  shQuote(path2script)
-   }
-  # for information
-  # message(paste0("send request to earth engine, answer depends on the number of polygons in your shapefile. \n Your Shapefile in ", assetPath, " consists of ", message, " features."))
-  
+    
+    df <- data.frame(t(params))
+    
   # if a file with the same name is present on google drive it is deleted
     filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
     googledrive::drive_rm(filename, verbose = F)
     
+    gee2r_path = clean_spaces(system.file("Python/GEE2R_python_scripts/final.py", package = "earthEngineGrabR"))
+    
+    # make functions available
+    
+    status <- get_data(
+      df$productName[[1]],
+      df$spatialReducer[[1]],
+      df$ft_id[[1]],
+      df$outputFormat[[1]],
+      df$resolution[[1]],
+      df$temporalReducer[[1]],
+      df$yearStart[[1]],
+      df$yearEnd[[1]]
+    )
+    
+    
+    filename <- paste0(status$description,".", casefold(outputFormat))
+    
     list[i] <- filename
 
-
-  # invoce system call on the commandline 
-    drop = system2(command,
-                       args =  path2script,
-                       stdout = T,
-                       wait = T)
-  
-  json_data <- rjson::fromJSON(file ="./exportInfo.json")
-  exportInfo <- rjson::fromJSON(json_data)
-  file.remove("./exportInfo.json")
-  file.remove("./params.csv")
   #print(paste0("the projection of result is", drop))
-  if (exportInfo$state == "READY") {
+  if (status$state == "READY") {
     if (verbose == T) cat("processing:", products[[i]]$productName,'\n') 
   }
   }
@@ -75,36 +71,11 @@ ee_grab <- function(
      }
      download_data_waiting(filename = list[i], verbose = verbose)
    }
-  
-
-  product_list <- unlist(list) 
-  downloads <- list.files(getwd())
-  downloads_clean <- grep('geojson', downloads, value = T)
-
-  while (sum(product_list %in% downloads_clean) != length(product_list)) {
-    if (verbose == T) cat("waiting for Earth Engine", "\n")
-    if (verbose == T) cat(".")
-    Sys.sleep(2)
-    downloads <- list.files(getwd())
-    downloads_clean <- grep('geojson', downloads, value = T)
-  }
-  
-    ## import data
-  if (verbose == T) cat("import: finished", "\n")
-    join <- sf::st_read(downloads_clean[1], quiet = TRUE)
-    file.remove(downloads_clean[1])
-    if(length(downloads_clean) > 1) {
-      for(i in 2:length(downloads_clean)) {
-        data <- sf::st_read(downloads_clean[i], quiet = TRUE)
-        file.remove(downloads_clean[i])
-        data_no_geom <- sf::st_set_geometry(data, NULL)
-        join <- suppressMessages(dplyr::left_join(join, data_no_geom))
-      }
-    }
+    final_data <- import_data(list)
     #delete_if_exist(target)
     googledrive::drive_rm("GEE2R_temp", verbose = F)
   
-   return(join)
+   return(final_data)
 }
 
 

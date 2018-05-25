@@ -7,8 +7,6 @@ import json
 
 
 
-
-
 # load system params from R
 params = read("params.csv", delimiter=',')
 # print(params)

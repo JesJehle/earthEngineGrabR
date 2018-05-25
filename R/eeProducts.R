@@ -98,7 +98,10 @@ eeProduct_modis_nonVegetated <- function(spatialReducer = "mean", temporalReduce
 eeProduct_srtm_elevation <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "srtm_elevation_m",
-    spatialReducer = spatialReducer
+    spatialReducer = spatialReducer,
+    temporalReducer = NULL,
+    yearStart = NULL,
+    yearEnd = NULL
   )
   return(productInfo)
 }
@@ -110,7 +113,10 @@ eeProduct_srtm_elevation <- function(spatialReducer = "mean") {
 eeProduct_srtm_slope <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "srtm_slope_degrees",
-    spatialReducer = spatialReducer
+    spatialReducer = spatialReducer,
+    temporalReducer = NULL,
+    yearStart = NULL,
+    yearEnd = NULL
   )
   return(productInfo)
 }
@@ -122,7 +128,10 @@ eeProduct_srtm_slope <- function(spatialReducer = "mean") {
 eeProduct_oxford_accessibility <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "oxford_accessibility_min",
-    spatialReducer = spatialReducer
+    spatialReducer = spatialReducer,
+    temporalReducer = NULL,
+    yearStart = NULL,
+    yearEnd = NULL
   )
   return(productInfo)
 }
@@ -135,7 +144,10 @@ eeProduct_oxford_accessibility <- function(spatialReducer = "mean") {
 eeProduct_oxford_friction <- function(spatialReducer = "mean") {
   productInfo <- list(
     productName = "oxford_friction_min_m",
-    spatialReducer = spatialReducer
+    spatialReducer = spatialReducer,
+    temporalReducer = NULL,
+    yearStart = NULL,
+    yearEnd = NULL
   )
   return(productInfo)
 }

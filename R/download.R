@@ -55,3 +55,36 @@ download_data_waiting <- function(filename, path = getwd(), clear = T, verbose =
   }
 }
 
+#' import data
+#' @param productList List of products files produced in the ee_grab function
+#' @param verbose If true, messages reporting the processing state are printed.
+#' @return nothing
+#' @export
+import_data <- function(productList, verbose = T){
+  
+  product_list <- unlist(productList) 
+  downloads <- list.files(getwd())
+  downloads_clean <- grep('geojson', downloads, value = T)
+  
+  while (sum(product_list %in% downloads_clean) != length(product_list)) {
+    if (verbose) cat("waiting for Earth Engine", "\n")
+    if (verbose) cat(".")
+    Sys.sleep(2)
+    downloads <- list.files(getwd())
+    downloads_clean <- grep('geojson', downloads, value = T)
+  }
+  
+  ## import data
+  if (verbose) cat("import: finished", "\n")
+  join <- sf::st_read(downloads_clean[1], quiet = TRUE)
+  file.remove(downloads_clean[1])
+  if(length(downloads_clean) > 1) {
+    for(i in 2:length(downloads_clean)) {
+      data <- sf::st_read(downloads_clean[i], quiet = TRUE)
+      file.remove(downloads_clean[i])
+      data_no_geom <- sf::st_set_geometry(data, NULL)
+      join <- suppressMessages(dplyr::left_join(join, data_no_geom))
+    }
+  }
+  return(join)
+}
