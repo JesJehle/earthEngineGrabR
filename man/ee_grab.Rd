@@ -4,7 +4,8 @@
 \alias{ee_grab}
 \title{ee_grab}
 \usage{
-ee_grab(target = NULL, outputFormat = "GeoJSON", resolution = 100,
+ee_grab(target = system.file("data/territories.shp", package =
+  "earthEngineGrabR"), outputFormat = "GeoJSON", resolution = 100,
   products = list(eeProduct_modis_treeCover()), verbose = T)
 }
 \arguments{

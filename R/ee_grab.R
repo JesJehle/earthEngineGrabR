@@ -10,7 +10,7 @@
 #' @return Object of class sf.
 #' @export
 ee_grab <- function(
-  target = NULL, 
+  target = system.file("data/territories.shp", package="earthEngineGrabR"), 
   outputFormat = "GeoJSON",
   resolution = 100,
   products = list(
@@ -22,7 +22,6 @@ ee_grab <- function(
 {
 
 # upload vector data is fusion table --------------------
-    reticulate::source_python(file = gee2r_path)
 
   table_id <-  upload_data(target = target)
   
@@ -39,7 +38,8 @@ ee_grab <- function(
     filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
     googledrive::drive_rm(filename, verbose = F)
     
-    gee2r_path = clean_spaces(system.file("Python/GEE2R_python_scripts/final.py", package = "earthEngineGrabR"))
+    ee_helpers = clean_spaces(system.file("Python/final.py", package = "earthEngineGrabR"))
+    reticulate::source_python(file = ee_helpers)
     
     # make functions available
     
@@ -53,7 +53,6 @@ ee_grab <- function(
       df$yearStart[[1]],
       df$yearEnd[[1]]
     )
-    
     
     filename <- paste0(status$description,".", casefold(outputFormat))
     

@@ -174,6 +174,52 @@ def exportToAsset(image, name, scale, polygon):
 
 
 
+def creat_dataProduct(productName, yearStart=None, yearEnd=None, temporalReducer=None):
+
+    if 'srtm_slope' in productName:
+        image = filter_slope()
+        # image = image.addBands(slope)
+    if 'srtm_elevation' in productName:
+        image = filter_elevation()
+        # image = image.addBands(elevation)
+    if 'chirps_precipitation' in productName:
+        image = filter_chirps_precipitation(int(yearStart), int(yearEnd),
+                                            temporalReducer)
+        # image = image.addBands(chirps_precipitation)
+    if 'jrc_distanceToWater' in productName:
+        jrc_Water = filter_jrc_distanceToWater(int(yearStart), int(yearEnd),
+                                               temporalReducer)
+        image = jrc_Water.fastDistanceTransform(1000).multiply(ee.Image.pixelArea()).sqrt().divide(1000)
+        # image = image.addBands(jrc_distanceToWater)
+    if 'modis_treeCover' in productName:
+        image = filter_modis_treeCover(int(yearStart), int(yearEnd),
+                                       temporalReducer)
+        # image = image.addBands(modis_treeCover)
+    if 'modis_nonTreeVegetation' in productName:
+        image = filter_modis_nonTreeCoverVegetation(int(yearStart),
+                                                    int(yearEnd),
+                                                    temporalReducer)
+        # image = image.addBands(modis_nonTreeCoverVegetation)
+    if 'modis_nonVegetated' in productName:
+        image = filter_modis_nonVegetation(int(yearStart), int(yearEnd),
+                                           temporalReducer)
+        # image = image.addBands(modis_nonVegetated)
+    if 'modis_quality' in productName:
+        image = filter_modis_quality(int(yearStart), int(yearEnd),
+                                     temporalReducer)
+        # image = image.addBands(modis_quality)
+    if 'oxford_friction' in productName:
+        image = filter_friction()
+        # image = image.addBands(friction)
+    if 'oxford_accessibility' in productName:
+        image = filter_accessibility()
+        # image = image.addBands(accessibility)
+
+    return image.rename(str(productName))
+
+
+
+
 def creatMultiBandImage(params):
 
     if 'srtm_slope' in params["productName"][0]:
@@ -230,6 +276,7 @@ def sizeTest(numPolygons):
     return polygon
 
 
+
 def exportTableToDrive(featureCollection, format, name, export):
     # format = CSV, GeoJSON, KML, KMZ
     task = ee.batch.Export.table.toDrive(
@@ -256,3 +303,44 @@ def exportImageToDrive(image, scale, name):
 
     task.start()
     return task.status()
+
+
+def get_data(
+        productName,
+        spatialReducer,
+        ft_id,
+        outputFormat,
+        resolution,
+        temporalReducer=None,
+        yearStart=None,
+        yearEnd=None):
+
+
+    ee.Initialize()
+
+    # import polygons
+    # polygon = final.getExtractionPolygon(pathToAsset= params["assetPath"][0])
+    polygon = ee.FeatureCollection(ee.String(ft_id))
+    # combine all selected images into a multiband image
+    # environmental_variable = final.creatMultiBandImage(params=params)
+
+    product_image = creat_dataProduct(productName=productName,
+                                      yearStart=yearStart,
+                                      yearEnd=yearEnd,
+                                      temporalReducer=temporalReducer)
+
+    # reduce multiband image with given reducer over polygon
+    # featureClass = final.reduceOverRegions(multiBandImage=environmental_variable, extractionPolygon=polygon, scale=int(params["resolution"][0]), reducer=params["spatialReducer"][0])
+    product_reduced = reduceOverRegions(image=product_image,
+                                        extractionPolygon=polygon,
+                                        scale=int(resolution), reducer=spatialReducer,
+                                        productName=productName)
+
+    # projection = featureClass.getInfo()
+    # print(projection)
+    # define filter
+
+    # export feature collection to drive
+    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+
+    return status
