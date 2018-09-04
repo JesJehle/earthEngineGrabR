@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/home/.virtualenvs/r-reticulate/bin//python
+
+# #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #******************************************************************************
 #  $Id$
@@ -29,12 +31,12 @@
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
 
-
+import json
 import sys
 import time
 import webbrowser
 import os
-
+from pandas import read_csv as read
 from osgeo import gdal
 
 SCOPES = {
@@ -131,21 +133,31 @@ else:
 
     refresh_token = gdal.GOA2GetRefreshToken(auth_token, scope)
 
-    #path = os.path.realpath(__file__)
-    #folder = os.path.dirname(path)
-    folder = "earthengine"
-    #"~/.config/earthengine/credentials"
+    # save token
+    # load system params from R
 
-    file = "refresh_token.txt"
+    path_credentials = read("path.csv", delimiter=',')
 
-    home_path = os.path.expanduser('~/.config/')
+    # path = os.path.realpath(__file__)
+    # folder = os.path.dirname(path)
+    # folder = "earthengine"
+    # "~/.config/earthengine/credentials"
 
-    full_path = home_path + folder + "/" + file
+    file = "refresh_token.json"
 
-    # print(str(refresh_token))
-    #path = os.path.realpath(__file__)
-    with open(full_path, "w") as text_file:
-        text_file.write(str(refresh_token))
+    path_credentials = read("path.csv", delimiter=',').columns.values[0]
+
+    full_path = os.path.join(path_credentials, file)
+    data = {'refresh_token' : refresh_token}
+
+    #print(data)
+    #print(full_path)
+
+    #with open(full_path, "w") as text_file:
+    #    text_file.write(str(refresh_token))
+
+    with open(full_path, 'w') as outfile:
+        json.dump(data, outfile)
 
 #    print(os.environ["GFT_REFRESH_TOKEN"] + "as environmental variable")
 

@@ -7,17 +7,13 @@ import json
 
 
 
-#path = sys.argv[1]
-#print sys.argv[1]
-
 
 
 # load system params from R
 params = read("params.csv", delimiter=',')
 # print(params)
 
-#sysargv = sys.argv[:]
-# print sysargv
+
 ee.Initialize()
 
 # import polygons
@@ -26,37 +22,24 @@ polygon = ee.FeatureCollection(ee.String(params["ft_id"][0]))
 # combine all selected images into a multiband image
 environmental_variable = final.creatMultiBandImage(params=params)
 
-# environmental_variable = ee.Image("CGIAR/SRTM90_V4")
-
-# image = ee.Image(1)
-
-# bandList = ee.List.sequence(1, ee.Number(image.bandNames().length()).subtract(1))
-
-# print(bandList.getInfo())
-# image = image.select(1)
-#print(image.getInfo())
-
-
-
 
 
 # reduce multiband image with given reducer over polygon
 # featureClass = final.reduceOverRegions(multiBandImage=environmental_variable, extractionPolygon=polygon, scale=int(params["resolution"][0]), reducer=params["spatialReducer"][0])
-featureClass = final.reduceOverRegion(image=environmental_variable, extractionPolygon=polygon, scale=int(1000), reducer=params["spatialReducer"][0])
+featureClass = final.reduceOverRegions(image=environmental_variable, extractionPolygon=polygon, scale=int(params["resolution"][0]), reducer=params["spatialReducer"][0], productName=params["productName"][0])
 
-# featureClass = image.reduceRegions(polygon, ee.Reducer.mean(), 1000)
 # projection = featureClass.getInfo()
 # print(projection)
 # define filter
-print(featureClass.first().getInfo())
+
 
 # export feature collection to drive
-#status = final.exportTableToDrive(featureClass, params["outputFormat"][0], params["productName"][0], "TRUE")
+status = final.exportTableToDrive(featureClass, params["outputFormat"][0], params["productName"][0], "TRUE")
 
-#jsonData = json.dumps(status)
+jsonData = json.dumps(status)
 
-#with open('exportInfo.json', 'w') as f:
-#    json.dump(jsonData, f)
+with open('exportInfo.json', 'w') as f:
+    json.dump(jsonData, f)
 
 
 

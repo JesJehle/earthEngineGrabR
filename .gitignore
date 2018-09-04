@@ -3,9 +3,6 @@
 .RData
 .earthEngineGrabR.Rproj
 *.pyc
-dist/
-GEE2R.egg-info/
-.setup.py
 .httr-oauth
 path.csv
 ~/.config/earthengine/.httr-oauth

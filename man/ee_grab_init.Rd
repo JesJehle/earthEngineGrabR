@@ -2,7 +2,7 @@
 % Please edit documentation in R/oAuth.R
 \name{ee_grab_init}
 \alias{ee_grab_init}
-\title{The function installes additionally required dependencies and guides the user through the authentication processes to activate the different API's}
+\title{The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's}
 \usage{
 ee_grab_init()
 }
