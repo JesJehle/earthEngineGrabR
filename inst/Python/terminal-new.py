@@ -20,13 +20,15 @@ class configure(object):
             folder = os.path.join(temp, 'runner/folder')
             if not os.path.exists(folder):
                 try:
-                    os.makedirs(folder, 0777)
+                    os.makedirs(folder, 0o777)
+#                     os.makedirs(folder)
+
                 except:
                     folder = ''
             if folder:
                 self.temp = folder
                 try:
-                    os.chmod(self.temp, 0777)
+                    os.chmod(self.temp, 0o777)
                 except:
                     pass
         self.temp = os.path.join(self.temp, 'winex_%02d.cmd' % self.tick)
@@ -99,7 +101,7 @@ class configure(object):
         for line in script:
             fp.write(line + '\n')
         fp.close()
-        os.chmod(self.temp, 0777)
+        os.chmod(self.temp, 0o777)
         cmd = self.where('open')
         self.call([cmd, '-a', 'Terminal', self.temp])
         return 0, ''
@@ -228,7 +230,9 @@ class configure(object):
         shortpath = self.textdata.value
         if retval <= 0:
             import ctypes
-            print 'ERROR(%d): %s' % (ctypes.GetLastError(), path)
+#            print 'ERROR(%d): %s' % (ctypes.GetLastError(), path)
+            print ('ERROR')
+
             return ''
         return shortpath
 
