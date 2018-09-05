@@ -29,20 +29,105 @@ exec_auth_new_window <- function(command, gnome = T, credential_path, credential
 
 
 #' The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's
+#' @importFrom magrittr %>%
+#' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
+#' @export
+ee_grab_init_conda <- function() {
+  
+  # install python dependencies -----------------------------
+  reticulate::py_available(initialize = T)
+  reticulate::py_install(c("google-api-python-client", "pyCrypto", "earthengine-api", "pandas", "google-auth-oauthlib"), method = "conda")
+  #reticulate::py_install("pyCrypto")
+  #reticulate::py_install("earthengine-api")
+  #reticulate::py_install("pandas")
+  #reticulate::py_install("google-auth-oauthlib")
+  
+  # get virtual env path  
+  #if (Sys.info()["sysname"] %in% c("Windows")) {
+  
+    conda_reticulate_path <- reticulate::conda_list() %>% 
+      dplyr::filter(name == "r-reticulate")  
+    
+    path_to_interpreter <- conda_path$python
+    path_to_scripts <- gsub('python.exe', 'Scripts/', path_to_interpreter)
+    # path_to_scripts <- "C:/Anaconda/envs/r-reticulate/Scripts/"
+}
+
+  # get credentials path -------------------------------------
+  credential_path <- path.expand("~/.config/earthengine")
+  
+  # credential_path <- os$path$expanduser('~/.config/earthengine/credentials')
+  
+  delete_credentials(credential_path)
+  
+  # authenticate ee api ---------------------------------------
+  # credential_path <- clean_spaces(system.file("data", package="earthEngineGrabR"))
+  
+  write.table(t(credential_path), file = "./path.csv", sep = ",", row.names = F, col.names = F)
+  
+  exec_auth_new_window(command = c(paste0(path_to_scripts,'earthengine'), 'authenticate'), credential_path = credential_path, credential_name = "credentials")
+  
+  cat("Earth Engine Python API is authenticated \n")
+  
+  
+  # authentication fusion table api ------------------------------
+  
+  path_to_interpreter <- paste0(path_to_env, "python")
+  path_ft_init <- clean_spaces(system.file("Python/gdal_auth_gee2r.py", package="earthEngineGrabR"))
+  
+  # make gdal_auth_gee2r executable
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
+    system(paste("chmod +x", path_ft_init))
+  }
+  
+  exec_auth_new_window(command = c(path_to_interpreter, path_ft_init), credential_path = credential_path, credential_name = "refresh_token.json")
+  
+  cat("Fusion Table API for upload is authenticated \n")
+  
+  
+  # authentication google drive api ---------------------------------
+  
+  
+  httr_credential_path = paste0(credential_path, ".httr-oauth")
+  
+  googledrive::drive_auth(cache = httr_credential_path, verbose = F)
+  while (!(file.exists(httr_credential_path))) {
+    Sys.sleep(1)
+  }
+  
+  cat("Googledrive API is authenticated \n")
+  
+  
+  # authentication fusion table get id api ----------------------------------
+  
+  
+  id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
+  
+  cat("Fusiontable API for ID is authenticated")
+  
+}
+
+
+
+
+
+#' The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's
+#' @importFrom magrittr %>%
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 #' @export
 ee_grab_init <- function() {
 
 # install python dependencies -----------------------------
   reticulate::py_available(initialize = T)
-  reticulate::py_install("google-api-python-client")
-  reticulate::py_install("pyCrypto")
-  reticulate::py_install("earthengine-api")
-  reticulate::py_install("pandas")
-  reticulate::py_install("google-auth-oauthlib")
+  reticulate::py_install(c("google-api-python-client", "pyCrypto", "earthengine-api", "pandas", "google-auth-oauthlib"))
+  #reticulate::py_install("pyCrypto")
+  #reticulate::py_install("earthengine-api")
+  #reticulate::py_install("pandas")
+  #reticulate::py_install("google-auth-oauthlib")
 
 # get virtual env path  
   path_to_env <- paste0(reticulate::virtualenv_root(), "/r-reticulate/bin/")
+  
 # get credentials path -------------------------------------
 
   os <- reticulate::import("os")

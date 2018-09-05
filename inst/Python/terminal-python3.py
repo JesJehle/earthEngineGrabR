@@ -12,7 +12,7 @@ class configure(object):
         self.diruser = os.path.abspath(os.path.expanduser('~'))
         self.unix = sys.platform[:3] != 'win' and True or False
         self.temp = os.environ.get('temp', os.environ.get('tmp', '/tmp'))
-        self.tick = long(time.time()) % 100
+        self.tick = int(time.time()) % 100
         if self.unix:
             temp = os.environ.get('tmp', '/tmp')
             if not temp:
@@ -21,8 +21,6 @@ class configure(object):
             if not os.path.exists(folder):
                 try:
                     os.makedirs(folder, 0o777)
-#                     os.makedirs(folder)
-
                 except:
                     folder = ''
             if folder:
@@ -230,9 +228,7 @@ class configure(object):
         shortpath = self.textdata.value
         if retval <= 0:
             import ctypes
-#            print 'ERROR(%d): %s' % (ctypes.GetLastError(), path)
-            print ('ERROR')
-
+            print('ERROR(%d): %s' % (ctypes.GetLastError(), path))
             return ''
         return shortpath
 
@@ -351,16 +347,16 @@ class configure(object):
 
     def win32_reg_read(self, keyname, path):
         try:
-            import _winreg
-            mode = _winreg.KEY_READ | _winreg.KEY_WOW64_64KEY
-            key = _winreg.OpenKey(keyname, path, 0, mode)
-            count = _winreg.QueryInfoKey(key)[0]
+            import winreg
+            mode = winreg.KEY_READ | winreg.KEY_WOW64_64KEY
+            key = winreg.OpenKey(keyname, path, 0, mode)
+            count = winreg.QueryInfoKey(key)[0]
         except:
             return None
         data = {}
         for i in range(count):
             try:
-                name, value, tt = _winreg.EnumValue(key, i)
+                name, value, tt = winreg.EnumValue(key, i)
             except OSError as e:
                 break
             data[name] = (tt, value)
@@ -368,9 +364,9 @@ class configure(object):
 
     def win32_detect_win10(self):
         try:
-            import _winreg
+            import winreg
             path = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-            data = self.win32_reg_read(_winreg.HKEY_LOCAL_MACHINE, path)
+            data = self.win32_reg_read(winreg.HKEY_LOCAL_MACHINE, path)
         except:
             return False
         version = data.get('CurrentMajorVersionNumber', (0, 0))
