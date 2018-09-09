@@ -29,7 +29,7 @@ get_name_from_path <- function(path){
 #' @export
 upload2ft <- function(path2file, fileName) {
   
-  ogr2ft_path = clean_spaces(system.file("Python/GEE2R_python_scripts/upload.py", package = "earthEngineGrabR"))
+  ogr2ft_path = clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
   
   # make functions available
   reticulate::source_python(file = ogr2ft_path)

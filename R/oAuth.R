@@ -51,7 +51,7 @@ ee_grab_init_conda <- function() {
     path_to_interpreter <- conda_path$python
     path_to_scripts <- gsub('python.exe', 'Scripts/', path_to_interpreter)
     # path_to_scripts <- "C:/Anaconda/envs/r-reticulate/Scripts/"
-}
+
 
   # get credentials path -------------------------------------
   credential_path <- path.expand("~/.config/earthengine")
