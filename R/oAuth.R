@@ -28,12 +28,26 @@ exec_auth_new_window <- function(command, gnome = T, credential_path, credential
 
 
 #' Use a specific virtual or conda environment dependent on the operating system
+#' @importFrom magrittr %>%
 #' @export
 use_env <- function(env_name = "r-reticulate"){
+  
+  # activate environment for windows
   if (Sys.info()["sysname"] == "Windows"){
-    reticulate::use_condaenv() 
+    
+    reticulate::use_condaenv("r-reticulate", required = T) 
+    
+    conda_reticulate_path <- reticulate::conda_list() %>% 
+      dplyr::filter(name == "r-reticulate")  
+    
+    # because reticulate still cant find modules I found a workaround by explicitly importing a module. All further source_pythen() functions work ???
+    modul_path <- file.path(dirname(path.expand(conda_reticulate_path$python)), "Lib", "site-packages")
+    import_from_path("ee", path = modul_path)
+    #import_from_path("gdal", path = modul_path)
+    
     
   } else {
+    # acrivate the environemt for linux and mac
     root <- path.expand(reticulate::virtualenv_root())
     vir_path <- file.path(root, env_name)
     reticulate::use_virtualenv(vir_path, required = T)
@@ -98,7 +112,7 @@ run_ft_oauth <- function() {
 ee_grab_init_new <- function(clean = T) {
   # install python dependencies -----------------------------
   reticulate::py_available(initialize = T)
-  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib")
+  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib", "gdal")
   reticulate::py_install(packages)
 
   use_env()

@@ -1,7 +1,7 @@
 import ee
 from ee.cli import commands
 import webbrowser
-import gdal
+from osgeo import gdal
 import urllib
 from ee.oauth import get_credentials_path
 import json
