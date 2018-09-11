@@ -1,12 +1,13 @@
-# import ee
 import ee
 from ee.cli import commands
 import webbrowser
 import gdal
+import urllib
 from ee.oauth import get_credentials_path
 import json
 
 ft_scope = 'https://www.googleapis.com/auth/fusiontables'
+
 
 
 def request_ee_code():
@@ -24,6 +25,7 @@ def request_ee_token(auth_code):
 def request_ft_code():
     ft_auth_url = gdal.GOA2GetAuthorizationURL(ft_scope)
     webbrowser.open(ft_auth_url)
+
 
 def request_ft_token(auth_code):
     refresh_token = gdal.GOA2GetRefreshToken(auth_code, ft_scope)

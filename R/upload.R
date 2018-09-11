@@ -1,4 +1,5 @@
 
+
 #' delete_if_exist
 #' @param path_file path of file to check
 #' @export
@@ -56,7 +57,7 @@ upload_data <- function(verbose = T, target) {
     if (verbose == T)
       cat("upload:", target_name, "is already uploaded", "\n")
   }
-  credential_path <- get_credential_path()
+  credential_path <- get_credential_root()
   table_id <- get_ft_id(
     ft_name = target_name,
     credential_path = credential_path,
@@ -64,7 +65,7 @@ upload_data <- function(verbose = T, target) {
   )
   # if is na delete credentials and re-authenticate before rerunning get_ft_id
   if (is.na(table_id)) {
-    file.remove(paste0(credential_path, "/", ".httr-oauth"))
+    file.remove(file.path(credential_path, ".httr-oauth"))
     table_id <- get_ft_id(ft_name = target_name, credential_path = credential_path, credential_name = ".httr-oauth")
   }
   

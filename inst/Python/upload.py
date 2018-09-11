@@ -163,3 +163,5 @@ def convert(input_file, output_fusion_table, add_missing=False):
 #    args = parser.parse_args()
 #
 #    convert(args.input_file, args.output_fusion_table, args.add_missing)
+
+
