@@ -39,12 +39,13 @@ use_env <- function(env_name = "r-reticulate"){
     
     conda_reticulate_path <- reticulate::conda_list() %>% 
       dplyr::filter(name == "r-reticulate")  
-    
+    reticulate::use_python(conda_reticulate_path$python)
     # because reticulate still cant find modules I found a workaround by explicitly importing a module. All further source_pythen() functions work ???
     
-    modul_path <- find_folder(conda_reticulate_path$python, "site-packages")
-    import_from_path("ee", path = modul_path)
-    #import_from_path("gdal", path = modul_path)
+    modul_path <- find_folder(foldername = "site-packages", root_dir = dirname(conda_reticulate_path$python))
+    
+    reticulate::import_from_path("ee", path = unlist(modul_path))
+    reticulate::import_from_path("gdal", path = unlist(modul_path))
     
     
   } else {
@@ -60,7 +61,7 @@ use_env <- function(env_name = "r-reticulate"){
     version <- reticulate::py_discover_config()
     modul_path_clean <- unlist(modul_path[grep(version$version, modul_path)])
     
-    import_from_path("ee", path = modul_path_clean)
+    reticulate::import_from_path("ee", path = modul_path_clean)
                      
     # "~/.virtualenvs/r-reticulate/lib/python2.7/site-packages/"
 
@@ -116,7 +117,7 @@ run_ft_oauth <- function() {
 ee_grab_init_new <- function(clean = T) {
   # install python dependencies -----------------------------
   reticulate::py_available(initialize = T)
-  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib")
+  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib", "gdal")
   reticulate::py_install(packages)
 
   use_env()
