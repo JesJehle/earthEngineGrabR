@@ -41,7 +41,8 @@ use_env <- function(env_name = "r-reticulate"){
       dplyr::filter(name == "r-reticulate")  
     
     # because reticulate still cant find modules I found a workaround by explicitly importing a module. All further source_pythen() functions work ???
-    modul_path <- file.path(dirname(path.expand(conda_reticulate_path$python)), "Lib", "site-packages")
+    
+    modul_path <- find_folder(conda_reticulate_path$python, "site-packages")
     import_from_path("ee", path = modul_path)
     #import_from_path("gdal", path = modul_path)
     
@@ -55,8 +56,11 @@ use_env <- function(env_name = "r-reticulate"){
     # because reticulate still cant find modules I found a workaround by explicitly importing a module. All further source_pythen() functions work ???
     # find path of ee modul in the active virtual environment
  
-    version <- py_discover_config()
-    import_from_path("ee", path = file.path(vir_path, 'lib', paste0("python", version$version), "site-packages"))
+    modul_path <- find_folder('site-packages', vir_path)
+    version <- reticulate::py_discover_config()
+    modul_path_clean <- unlist(modul_path[grep(version$version, modul_path)])
+    
+    import_from_path("ee", path = modul_path_clean)
                      
     # "~/.virtualenvs/r-reticulate/lib/python2.7/site-packages/"
 
@@ -112,7 +116,7 @@ run_ft_oauth <- function() {
 ee_grab_init_new <- function(clean = T) {
   # install python dependencies -----------------------------
   reticulate::py_available(initialize = T)
-  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib", "gdal")
+  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib")
   reticulate::py_install(packages)
 
   use_env()
@@ -200,15 +204,16 @@ get_credential_root <- function() {
 
 
 #' get_ft_id
+#' @importFrom magrittr %>% 
 #' @param ft_name name of the fusiontable
 #' @return fusiontable ID or NA of no fusiontable with given name
 #' @export
 get_ft_id <- function(ft_name, credential_path, credential_name) {
   
-  library(magrittr)
+
   # for initial Oauth2.0 authentification
-  client_id <- "313069417367-efu6s6pldp8pbf86il3grjdv8kpgp5d4.apps.googleusercontent.com"
-  client_secret <-  "9sKMt27c8uQprUja2y5Mk4o_" 
+  client_id <- "313069417367-fh552cjdtbavtkudj034qbl67msbvkeg.apps.googleusercontent.com"
+  client_secret <-  "_Gxo64oU3f34V2BcOFmaAZAO"
   scope <- "https://www.googleapis.com/auth/fusiontables"
   authorize <- "https://accounts.google.com/o/oauth2/auth"
   access <- "https://accounts.google.com/o/oauth2/token"
