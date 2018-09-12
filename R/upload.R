@@ -12,16 +12,6 @@ delete_if_exist <- function(path) {
 }
 
 
-#' get_name_from_path
-#' @param path A file path
-#' @return basename without extension
-#' @export
-get_name_from_path <- function(path){
-  name =   sub('\\..*$', '', basename(path))
-  return(name)
-  
-}
-
 
 
 #' upload vector data as fusion table and parse file to allow large uploads
@@ -33,7 +23,7 @@ upload2ft <- function(path2file, fileName) {
   ogr2ft_path = clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
   
   # make functions available
-  reticulate::source_python(file = ogr2ft_path)
+  source_python(file = ogr2ft_path)
   
   convert(path2file, fileName)
   

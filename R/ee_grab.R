@@ -21,6 +21,10 @@ ee_grab <- function(
 
 {
 
+  library(reticulate)
+  try(use_condaenv("earthEngineGrabR", required = T), silent = T)
+  verify_ee_conda_env("earthEngineGrabR")
+  
 # upload vector data is fusion table --------------------
 
   table_id <-  upload_data(target = target)
@@ -39,7 +43,7 @@ ee_grab <- function(
     googledrive::drive_rm(filename, verbose = F)
     
     ee_helpers = clean_spaces(system.file("Python/final.py", package = "earthEngineGrabR"))
-    reticulate::source_python(file = ee_helpers)
+    source_python(file = ee_helpers)
     
     # make functions available
     

@@ -33,6 +33,17 @@ find_file <- function(filename, root_dir) {
 }
 
 
+#' get_name_from_path
+#' @param path A file path
+#' @return basename without extension
+#' @export
+get_name_from_path <- function(path){
+  name =   sub('\\..*$', '', basename(path))
+  return(name)
+  
+}
+
+
 
 
 

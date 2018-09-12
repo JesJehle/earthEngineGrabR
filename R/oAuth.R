@@ -38,7 +38,7 @@ use_env <- function(env_name = "r-reticulate"){
     reticulate::use_condaenv("r-reticulate", required = T) 
     
     conda_reticulate_path <- reticulate::conda_list() %>% 
-      dplyr::filter(name == "r-reticulate")  
+      dplyr::filter(name == "earthEngineGrabR")  
     reticulate::use_python(conda_reticulate_path$python)
     # because reticulate still cant find modules I found a workaround by explicitly importing a module. All further source_pythen() functions work ???
     
@@ -74,9 +74,11 @@ use_env <- function(env_name = "r-reticulate"){
 #' Run ee authentication
 #' @export
 run_ee_oauth <- function(){
+
   # source python functions
+  
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  reticulate::source_python(oauth_func_path)
+  source_python(oauth_func_path)
   
   request_ee_code()
   
@@ -95,9 +97,10 @@ run_ee_oauth <- function(){
 #' Run ft authentication
 #' @export
 run_ft_oauth <- function() {
+
   # source python functions
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  reticulate::source_python(oauth_func_path)
+  source_python(oauth_func_path)
   request_ft_code()
   code <- readline("Enter authorisation code here: ")
   test <- try(request_ft_token(code), silent = T)
@@ -110,23 +113,69 @@ run_ft_oauth <- function() {
   }
 }
 
+#' The function installs python dependencies
+#' @export
+install_ee_dependencies <- function(conda_env_name) {
+  reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
+  pip_packages <- c("google-api-python-client", "pyCrypto", "earthengine-api")
+  py_install(pip_packages, envname = conda_env_name)
+}
+
+
+#' test python and anaconda installation
+#' @export
+test_python_conda <- function() {
+  # test python installation
+  if (!(reticulate::py_available(initialize = T))) {
+    print('no python found')
+    stop()
+  }
+  test <- try(reticulate::conda_list(), silent = T)
+  if (class(test) == "try-error") {
+    print('no Anaconda found')
+    stop()
+  }
+} 
+
+# reticulate::py_install("google-api-python-client")
+# reticulate::py_install("pyCrypto")
+# reticulate::py_install( "earthengine-api")
+# reticulate::py_install("google-auth-oauthlib")
+
+#' verify earthEngineGrabR conda environment
+#' @export
+verify_ee_conda_env <- function(conda_env) {
+  
+  if (conda_env %in% conda_list()$name) {
+    use_condaenv(conda_env)
+  } else {
+    print('no earthEngineGrabR conda environment found, run ee_grab_init()')
+  }
+}
+
+  # test python installation
+
+
+
+
 
 #' The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's
 #' @description To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_init function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 #' @export
 ee_grab_init_new <- function(clean = T) {
-  # install python dependencies -----------------------------
-  reticulate::py_available(initialize = T)
-  packages <- c("google-api-python-client", "pyCrypto", "earthengine-api", "google-auth-oauthlib", "gdal")
-  reticulate::py_install(packages)
-
-  use_env()
+  library(reticulate)
+  try(use_condaenv("earthEngineGrabR", required = T), silent = T)
+  test_python_conda()
   
-  # reticulate::py_install("google-api-python-client")
-  # reticulate::py_install("pyCrypto")
-  # reticulate::py_install( "earthengine-api")
-  # reticulate::py_install("google-auth-oauthlib")
+  # install python dependencies -----------------------------
 
+    if (!("earthEngineGrabR" %in% reticulate::conda_list()$name)) {
+    install_ee_dependencies("earthEngineGrabR")
+    }
+  
+  library(reticulate)
+  use_condaenv("earthEngineGrabR", required = T)
+  
   # set path to credentials
   
   credential_path <- get_credential_root()
@@ -138,12 +187,6 @@ ee_grab_init_new <- function(clean = T) {
 
   # run authentication ---------------------------------------------------------------
 
-  # ee <- import_from_path("ee", "~/.virtualenvs/r-reticulate/lib/python2.7/site-packages")
-  
-  # source python functions
-  #oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  #reticulate::source_python(oauth_func_path)
-  
   # ee authorisation
   run_ee_oauth()
   cat("Earth Engine Python API is authenticated \n")
