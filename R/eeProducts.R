@@ -1,4 +1,48 @@
 
+#' creat product
+#' @param productID Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer
+#' @param productName A name for the data product specified by the user.
+#' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
+#' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
+#' @param yearIntervall A path to a local file or a name of a already uploaded to earth engine
+#' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
+#' @return depend on output
+#' @export
+creat_product <- function(productID,
+                          productName,
+                          spatialReducer = "mean",
+                          temporalReducer = "mean",
+                          collection = F,
+                          timeStart = c(1, 5, 2000),
+                          timeEnd = c(2, 3, 2005)) {
+  productInfo <- list(
+    productID,
+    productName = paste0(
+      productName,
+      "_",
+      spatialReducer,
+      "_",
+      yearIntervall[1],
+      "_",
+      yearIntervall[2],
+      "_",
+      temporalReducer
+    ),
+    spatialReducer,
+    temporalReducer,
+    timeStart,
+    timeEnd
+  )
+  return(productInfo)
+  
+}
+
+
+
+
+
+
+
 #' chirps_precipitation
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
@@ -16,7 +60,9 @@ eeProduct_chirps_precipitation <- function(spatialReducer = "mean", temporalRedu
     byYear = byYear
   )
   return(productInfo)
+  
 }
+
 #' jrc_distanceToWater
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).

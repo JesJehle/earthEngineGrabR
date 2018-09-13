@@ -305,6 +305,14 @@ def exportImageToDrive(image, scale, name):
     return task.status()
 
 
+def get_info(ProductID):
+
+    ee.Initialize()
+    return ee.ImageCollection(ProductID).getInfo()
+
+
+
+
 def get_data(
         productName,
         spatialReducer,
