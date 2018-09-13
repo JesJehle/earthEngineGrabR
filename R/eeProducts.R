@@ -12,26 +12,25 @@ creat_product <- function(productID,
                           productName,
                           spatialReducer = "mean",
                           temporalReducer = "mean",
-                          collection = F,
-                          timeStart = c(1, 5, 2000),
-                          timeEnd = c(2, 3, 2005)) {
+                          timeStart = "2000-3-20",
+                          timeEnd = "2005-2-20") {
   productInfo <- list(
-    productID,
+    productID = productID,
     productName = paste0(
       productName,
       "_",
       spatialReducer,
       "_",
-      yearIntervall[1],
+      timeStart,
       "_",
-      yearIntervall[2],
+      timeEnd,
       "_",
       temporalReducer
     ),
-    spatialReducer,
-    temporalReducer,
-    timeStart,
-    timeEnd
+    spatialReducer = spatialReducer,
+    temporalReducer = temporalReducer,
+    timeStart = timeStart,
+    timeEnd = timeEnd
   )
   return(productInfo)
   

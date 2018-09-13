@@ -358,7 +358,7 @@ def get_info(productID):
         info = product.getInfo()
 
         info_output['data_type'] = info['type']
-        info_output['bands'] = product.bandNames().getInfo()
+        info_output['bands'] = ee.Image(product.first()).bandNames().getInfo()
         info_output['epsg'] = info['bands'][0]['crs']
 
     except Exception:
