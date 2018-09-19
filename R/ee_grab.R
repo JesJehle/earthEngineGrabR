@@ -29,7 +29,7 @@ ee_grab <- function(
 
   table_id <-  upload_data(target = target)
   
-  list = list()
+  product_list = list()
   
 # loop over data products
 
@@ -42,10 +42,10 @@ ee_grab <- function(
     filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
     googledrive::drive_rm(filename, verbose = F)
     
+    # make functions available
     ee_helpers = clean_spaces(system.file("Python/final.py", package = "earthEngineGrabR"))
     source_python(file = ee_helpers)
-    
-    # make functions available
+    # get data
     
     status <- get_data(
       df$productName[[1]],
@@ -60,7 +60,7 @@ ee_grab <- function(
     
     filename <- paste0(status$description,".", casefold(outputFormat))
     
-    list[i] <- filename
+    product_list[i] <- filename
 
   #print(paste0("the projection of result is", drop))
   if (status$state == "READY") {

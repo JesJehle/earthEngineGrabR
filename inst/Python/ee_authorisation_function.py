@@ -9,7 +9,6 @@ import json
 ft_scope = 'https://www.googleapis.com/auth/fusiontables'
 
 
-
 def request_ee_code():
     # get authorisation url
     auth_url = ee.oauth.get_authorization_url()
@@ -34,10 +33,12 @@ def request_ft_token(auth_code):
     ft_credentials_path = path_credentials.replace('credentials', ft_credentials_name)
     ft_credentials = {'refresh_token': refresh_token}
     with open(ft_credentials_path, 'w') as outfile:
-        json.dump(ft_credentials, outfile)
+        json.dump(ft_credentials, outfile)#
 
     print('\nSuccessfully saved ft authorization token.')
 
 
+request_ft_code()
 
 # auth_token = raw_input('enter ft code here: ')
+

@@ -8,8 +8,8 @@
 #' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 #' @return depend on output
 #' @export
-creat_product <- function(productID,
-                          productName,
+creat_product <- function(productID = "MODIS/006/MOD08_M3",
+                          productName = "random",
                           spatialReducer = "mean",
                           temporalReducer = "mean",
                           timeStart = "2000-3-20",

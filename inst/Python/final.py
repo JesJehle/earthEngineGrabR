@@ -4,7 +4,7 @@ import ee
 def getExtractionPolygon(pathToAsset):
     return ee.FeatureCollection(str(pathToAsset))
 
-
+# active
 # select and return reducer
 def select_reducer(reducer):
     if reducer == 'mean':
@@ -126,7 +126,7 @@ def filter_accessibility():
         .rename('oxford_accessibility_min')
     return accessibility
 
-
+# active
 def reduceOverRegions(image, extractionPolygon, scale, reducer, productName):
     reduce = select_reducer_with_outputName(reducer, productName)
     bandsPerFeature = image\
@@ -276,7 +276,7 @@ def sizeTest(numPolygons):
     return polygon
 
 
-
+# active
 def exportTableToDrive(featureCollection, format, name, export):
     # format = CSV, GeoJSON, KML, KMZ
     task = ee.batch.Export.table.toDrive(
@@ -347,7 +347,7 @@ def get_data(
     return status
 
 
-
+# active
 def get_info(productID):
     ee.Initialize()
 

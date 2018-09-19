@@ -4,9 +4,9 @@
 \alias{creat_product}
 \title{creat product}
 \usage{
-creat_product(productID, productName, spatialReducer = "mean",
-  temporalReducer = "mean", collection = F, timeStart = c(1, 5, 2000),
-  timeEnd = c(2, 3, 2005))
+creat_product(productID = "MODIS/006/MOD08_M3", productName = "random",
+  spatialReducer = "mean", temporalReducer = "mean",
+  timeStart = "2000-3-20", timeEnd = "2005-2-20")
 }
 \arguments{
 \item{productID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}
