@@ -1,6 +1,7 @@
 target <- system.file("data/territories.shp", package="earthEngineGrabR")
 table_id <-  upload_data(target = target)
 
+try_data <- ee_grab_dev()
 
 response <- get_data_image(
   productID = "CGIAR/SRTM90_V4",

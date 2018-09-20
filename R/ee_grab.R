@@ -126,8 +126,8 @@ ee_grab_dev <- function(target = system.file("data/territories.shp", package =
     source_python(file = ee_helpers)
     
     product_info <- get_info(p$productID)
-    for(i in seq_along(product_info)){
-      cat(paste0("\n", names(product_info)[i], ": ", product_info[[i]]))
+    for(pr in seq_along(product_info)){
+      cat(paste0(names(product_info)[pr], ": ", product_info[pr],"\n"))
     }
     # get data
     
