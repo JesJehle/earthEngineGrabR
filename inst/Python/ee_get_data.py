@@ -1,5 +1,24 @@
 import ee
 
+def select_reducer_with_outputName(reducer, productName):
+    if reducer == 'mean':
+        reducer = ee.Reducer.mean().setOutputs([productName])
+    elif reducer == 'median':
+        reducer = ee.Reducer.median().setOutputs([productName])
+    elif reducer == 'mode':
+        reducer = ee.Reducer.mode().setOutputs([productName])
+    elif reducer == 'sum':
+        reducer = ee.Reducer.sum().setOutputs([productName])
+    elif reducer == 'min':
+        reducer = ee.Reducer.min().setOutputs([productName])
+    elif reducer == 'max':
+        reducer = ee.Reducer.max().setOutputs([productName])
+    else:
+        print 'Parameter should be mean, median, mode or sum'
+        sys.exit()
+    return reducer
+
+
 
 def select_reducer(reducer):
     if reducer == 'mean':
@@ -44,6 +63,7 @@ def exportTableToDrive(featureCollection, format, name, export):
     return status
 
 
+
 def get_info(productID):
 
     ee.Initialize()
@@ -55,7 +75,7 @@ def get_info(productID):
         info = product.getInfo()
 
         info_output['data_type'] = info['type']
-        info_output['bands'] = ee.Image(product.first()).bandNames().getInfo()
+        info_output['bands'] = product.bandNames().getInfo()
         info_output['epsg'] = info['bands'][0]['crs']
         info_output['tile'] = product.get('title').getInfo()
 
@@ -81,12 +101,63 @@ def get_info(productID):
         info_output['epsg'] = info['bands'][0]['crs']
         info_output['tile'] = product_all.get('title').getInfo()
 
-
-
     except Exception:
-        raise IOError('With the given ID no data set was found')
+        pass
+
+        if len(info_output) == 0:
+            raise IOError('With the given ID no data set was found')
 
     return info_output
 
+
+
+def get_data_image(
+        productID,
+        productName,
+        spatialReducer,
+        ft_id,
+        outputFormat,
+        resolution):
+
+    ee.Initialize()
+    polygon = ee.FeatureCollection(ft_id)
+    product_image = ee.Image(productID)
+    product_reduced = reduceOverRegions(image=product_image,
+                                        extractionPolygon=polygon,
+                                        scale=resolution,
+                                        reducer=spatialReducer,
+                                        productName=productName)
+    # export feature collection to google drive
+    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+    return status
+
+
+
+
+def get_data_collection(
+        productID,
+        productName,
+        spatialReducer,
+        ft_id,
+        outputFormat,
+        resolution,
+        temporalReducer = 'mean',
+        timeStart = '2000-3-20',
+        timeEnd = '2005-2-20'):
+
+    ee.Initialize()
+    polygon = ee.FeatureCollection(ft_id)
+    product = ee.ImageCollection(productID)
+    reduce = select_reducer(temporalReducer)
+    product_filtered = product.filterDate(timeStart, timeEnd)
+    product_reduced = product_filtered.reduce(reduce)
+    product_reduced = reduceOverRegions(image=product_reduced,
+                                        extractionPolygon=polygon,
+                                        scale=resolution,
+                                        reducer=spatialReducer,
+                                        productName=productName)
+    # export feature collection to drive
+    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+    return status
 
 

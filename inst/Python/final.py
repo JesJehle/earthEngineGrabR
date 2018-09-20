@@ -383,6 +383,7 @@ def get_info(productID):
 
 
     except Exception:
+        pass
         raise IOError('With the given ID no data set was found')
 
     return info_output

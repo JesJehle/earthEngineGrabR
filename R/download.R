@@ -34,7 +34,7 @@ download_data <- function(info, path = getwd(), clear = T){
 download_data_waiting <- function(filename, path = getwd(), clear = T, verbose = T){
   
   filename <- as.character(filename)
-  path_full <- paste0(path, "/", filename)
+  path_full <- file.path(path, filename)
   test <- googledrive::drive_find(filename, verbose = F)
   
   # cat("data products are in progress on the Earth Engine servers")
