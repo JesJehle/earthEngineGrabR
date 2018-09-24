@@ -258,8 +258,8 @@ ee_grab_init <- function(clean_credentials = T, conda = T, clean_environment = F
   # authentication google drive api 
   run_gd_auth(credential_path = credential_path, credential_name = ".httr-oauth")
   # authentication fusion table get id api via a test run of the get_ft_id function
-  id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
-  cat("Fusiontable API for ID is authenticated")
+  #id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
+  #cat("Fusiontable API for ID is authenticated")
 }
 
 #' Runs google drive authorisation via googledrive::drive_auth()

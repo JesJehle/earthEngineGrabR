@@ -4,10 +4,9 @@
 \alias{creat_product}
 \title{creat product}
 \usage{
-creat_product(productID = "CIESIN/GPWv4/ancillary-data-grids",
-  productName = "random", spatialReducer = "mean",
-  temporalReducer = "mean", timeStart = "2000-3-20",
-  timeEnd = "2005-2-20")
+creat_product(productID = "UCSB-CHG/CHIRPS/DAILY", productName = "chirps",
+  spatialReducer = "mean", temporalReducer = "sum",
+  timeStart = "2017-1-1", timeEnd = "2017-12-31")
 }
 \arguments{
 \item{productID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}
