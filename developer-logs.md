@@ -6,7 +6,7 @@
 # to Do
 
 * try to use permanent tokens for the httr package
-* implement parameters checks for ee_grab and creat_product
+* implement parameters checks for ee_grab and create_product
 * dokumentation
 * website
 * vigniettes
@@ -14,4 +14,4 @@
 * implement info option in ee_grab to extreact formated info about the dataproduct of needed.
 * implement export projection control
 * add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts
-* 
+

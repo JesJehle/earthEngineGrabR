@@ -50,14 +50,20 @@ run_ft_oauth <- function() {
 #' The function installs python dependencies
 #' @export
 install_ee_dependencies <- function(conda_env_name) {
-  if (!(conda_env_name %in% reticulate::conda_list()$name)) {
-    
-  reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
-  reticulate::conda_install(packages = c("earthengine-api"), envname = conda_env_name)
-  # Reticulate-bug, to activate the environment the r manual restart of R is necessary
-  stop("To activate the newly installed conda environment a manual restart of R is necessary. \nPlease restart R now and run ee_grab_init() again to proceed")  
-  }
+  # virtual_exists <-
+  #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
+  # if (class(virtual_exists) == "try-error") {
+    if (!(conda_env_name %in% reticulate::conda_list()$name)) {
+      reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
+      reticulate::conda_install(packages = c("earthengine-api"),
+                                envname = conda_env_name)
+      # Reticulate-bug, to activate the environment the r manual restart of R is necessary
+      stop(
+        "To activate the newly installed conda environment a manual restart of R is necessary. \nPlease restart R now and run ee_grab_init() again to proceed"
+      )
+    }
 }
+#}
 
 
 #' test python and anaconda installation 
@@ -89,7 +95,7 @@ test_gdal_installation <- function(){
   if(!is.null(info$required_module_path)) {
     cat(paste("For the default python interpreter in", info$python), "following gdal installations are found: ", info$required_module_path)
   } else {
-    
+  
     cat(paste("No installation of GDAL is found. \n"))
     cat(paste("To install GDAL and it's python-GDAL copy paste following commands in a terminal of your choice: \n"))
     cat("########################\n")
@@ -159,11 +165,13 @@ install_ee_dependencies_workaround <- function(conda_env_name) {
 
 #' test import of gdal and ee for virtual env
 #' @export
-test_import_ee_gdal_virtual<- function() {
+test_import_ee_gdal_virtual <- function() {
+  try({  
+    reticulate::use_virtualenv("earthEngineGrabR", required = T)
+    ee_path <- reticulate::py_discover_config("ee")
+    gdal_path <- reticulate::py_discover_config("gdal")
+    }, silent = T)
   
-  reticulate::use_virtualenv("earthEngineGrabR", required = T)
-  ee_path <- reticulate::py_discover_config("ee")
-  gdal_path <- reticulate::py_discover_config("gdal")
   ee_test <- try(reticulate::import_from_path("ee", path = ee_path$required_module_path), silent = T)
   gdal_test <- try(reticulate::import_from_path("gdal", path = gdal_path$required_module_path), silent = T)
 
@@ -175,14 +183,14 @@ test_import_ee_gdal_virtual<- function() {
 #' test import of gdal and ee for conda
 #' @export
 test_import_ee_gdal_conda <- function() {
-
+  try({
     reticulate::use_condaenv("earthEngineGrabR", required = T)
     ee_path <- reticulate::py_discover_config("ee")
     gdal_path <- reticulate::py_discover_config("gdal")
+    }, silent = T)    
     
     ee_test <- try(reticulate::import_from_path("ee", path = ee_path$required_module_path), silent = T)
     gdal_test <- try(reticulate::import_from_path("gdal", path = gdal_path$required_module_path), silent = T)
-    
 
   if(class(ee_test)[1] == "try-error") return(list(F, ee_test[1]))
   if(class(gdal_test)[1] == "try-error") return(list(F, gdal_test[1])) else return(T)
@@ -256,7 +264,7 @@ ee_grab_init <- function(clean_credentials = T, conda = T, clean_environment = F
   # fusion table authorisation
   run_ft_oauth()
   # authentication google drive api 
-  run_gd_auth(credential_path = credential_path, credential_name = ".httr-oauth")
+  run_gd_auth(credential_path = credential_path)
   # authentication fusion table get id api via a test run of the get_ft_id function
   #id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
   #cat("Fusiontable API for ID is authenticated")
@@ -277,7 +285,7 @@ run_gd_auth <- function(credential_path, credential_name = "gd-credentials.rds")
   gd_credential_path = file.path(credential_path, credential_name)
   if(file.exists(gd_credential_path)) file.remove(gd_credential_path)
   
-  saveRDS(googledrive::drive_auth(reset = T, verbose = F), gd_credential_path)
+  saveRDS(googledrive::drive_auth(reset = T, cache = F, verbose = F), gd_credential_path)
   
   while (!(file.exists(gd_credential_path))) {
     Sys.sleep(1)
@@ -285,13 +293,46 @@ run_gd_auth <- function(credential_path, credential_name = "gd-credentials.rds")
   cat("Googledrive API is authenticated \n")
 }
 
+#' Test if credentials can be found in the default location and raises an error message of not.
+#' @param with_error A logical weather to raise an informative error in case of missing credentials.
+#' @export
+test_credentials <- function(with_error = F) {
+  credential_path <- get_credential_root()
+  credentials <-
+    c("gd-credentials.rds", "credentials", "ft_credentials.json")
+  tests <- c(rep(F, 3))
+  
+  for (i in seq_along(credentials))
+    if (file.exists(file.path(credential_path, credentials[i]))) {
+      tests[i] <- T
+    } else {
+      tests[i] <- F
+    }
+  
+  if (sum(tests) < 3) {
+    if (with_error) {
+      error <-
+        paste(
+          "Following credentials could not be found : ",
+          "\n",
+          paste(credentials, tests, collapse = " ")
+        )
+      stop(error)
+    } else {
+      return(F)
+    }
+  } else {
+    return(T)
+  }
+}
+
 
 #' deletes credentials to re initialize
 #' @export
 delete_credentials = function(credential_path) {
   # httr oauth2, googledrive and fusiontable api
-  if(file.exists(file.path(credential_path, ".httr-oauth"))) {
-    file.remove(file.path(credential_path, ".httr-oauth"))
+  if(file.exists(file.path(credential_path, "gd-credentials.rds"))) {
+    file.remove(file.path(credential_path, "gd-credentials.rds"))
   }
   # earth engine credentials
   if(file.exists(file.path(credential_path, "credentials"))) {
