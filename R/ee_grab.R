@@ -20,9 +20,10 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
 {
   library(reticulate)
   activate_environments("earthEngineGrabR")
+  # authorise google drive
+  gd_auth()
   
   # upload vector data is fusion table --------------------
-  
   table_id <-  upload_data(target = target, verbose = verbose)
   
   googledrive::drive_rm("GEE2R_temp", verbose = F)

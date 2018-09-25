@@ -1,12 +1,12 @@
 
 #   This test tests the entire function evaluation with all dependencies. It can be used as a final test for full functionality.
 
-context("ee_grab main test for images and image collections")
+context("test full ee_grab() function evaluation")
 library(earthEngineGrabR)
 
 target <- system.file("data/test-data.shp", package="earthEngineGrabR")
 
-product_image <- creat_product(
+product_image <- create_product(
   productID = "CGIAR/SRTM90_V4",
   productName = "test_SRTM"
   )
@@ -17,12 +17,13 @@ image_test <- ee_grab(
   products = product_image,
   verbose = F
   )
-test_that("ee_grab works with images by returning the final sf object", {
+test_that("test that ee_grab() works with images by returning the final sf object", {
+  
   expect_is(image_test, "sf")
 })
 
 
-product_image_collection <- creat_product(
+product_image_collection <- create_product(
   productID = "GLCF/GLS_TCC",
   productName = "test_TreeCover",
   timeStart = "2000-3-20",
@@ -35,7 +36,7 @@ image_collection_test <- ee_grab(
   products = product_image_collection,
   verbose = F
 )
+test_that("test that ee_grab() works with image collections by returning the final sf object", {
 
-test_that("ee_grab works with images collections by returning the final sf object", {
   expect_is(image_collection_test, "sf")
 })

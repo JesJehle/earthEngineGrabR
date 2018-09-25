@@ -1,8 +1,5 @@
-context("test upload functionalities")
+context("Upload functionalities")
 library(earthEngineGrabR)
-
-
-
 
 ft_name <- "test-data"
 test_that("get_ft_id extracts the id of test-data on google drive", {

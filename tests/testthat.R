@@ -16,4 +16,4 @@ library(earthEngineGrabR)
 
 test_check("earthEngineGrabR")
 
-googledrive::drive_ls()
+#googledrive::drive_ls()

@@ -1,5 +1,5 @@
 
-#' creat product
+#' create product
 #' @param productID Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer
 #' @param productName A name for the data product specified by the user.
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
@@ -8,7 +8,7 @@
 #' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 #' @return depend on output
 #' @export
-creat_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
+create_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                           productName = "chirps",
                           spatialReducer = "mean",
                           temporalReducer = "sum",

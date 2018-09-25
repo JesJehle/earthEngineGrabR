@@ -262,17 +262,27 @@ ee_grab_init <- function(clean_credentials = T, conda = T, clean_environment = F
   #cat("Fusiontable API for ID is authenticated")
 }
 
-#' Runs google drive authorisation via googledrive::drive_auth()
+
+#' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @export
-run_gd_auth <- function(credential_path, credential_name = ".httr-oauth"){
+gd_auth <- function(credential_name = "gd-credentials.rds") {
+  credential_path <- file.path(get_credential_root(), credential_name)
+  googledrive::drive_auth(credential_path)
+}
+
+#' Runs google drive authorisation via googledrive::drive_auth() and saves credentials 
+#' @export
+run_gd_auth <- function(credential_path, credential_name = "gd-credentials.rds"){
   
-  httr_credential_path = file.path(credential_path, credential_name)
-  googledrive::drive_auth(cache = httr_credential_path, verbose = F)
-  while (!(file.exists(httr_credential_path))) {
+  gd_credential_path = file.path(credential_path, credential_name)
+  if(file.exists(gd_credential_path)) file.remove(gd_credential_path)
+  
+  saveRDS(googledrive::drive_auth(reset = T, verbose = F), gd_credential_path)
+  
+  while (!(file.exists(gd_credential_path))) {
     Sys.sleep(1)
   }
   cat("Googledrive API is authenticated \n")
-  
 }
 
 
@@ -303,59 +313,6 @@ get_credential_root <- function() {
   credential_path <- path.expand(path2credentials)
   return(credential_path)
 }
-
-
-
-#' get_ft_id
-#' @importFrom magrittr %>% 
-#' @param ft_name name of the fusiontable
-#' @return fusiontable ID or NA of no fusiontable with given name
-#' @export
-get_ft_id <- function(ft_name, credential_path, credential_name) {
-  
-  # for initial Oauth2.0 authentification
-  client_id <- "313069417367-fh552cjdtbavtkudj034qbl67msbvkeg.apps.googleusercontent.com"
-  client_secret <-  "_Gxo64oU3f34V2BcOFmaAZAO"
-  scope <- "https://www.googleapis.com/auth/fusiontables"
-  authorize <- "https://accounts.google.com/o/oauth2/auth"
-  access <- "https://accounts.google.com/o/oauth2/token"
-  
-  ft_api_endpoints <- httr::oauth_endpoint(authorize = authorize, access = access)
-  # name for application
-  name <- "upload fusion table"
-  
-  myapp <- httr::oauth_app(name,
-                           key = client_id,
-                           secret = client_secret)
-  
-  #  Get OAuth credentials
-  ft_token <- httr::oauth2.0_token(
-    endpoint = ft_api_endpoints, 
-    app =  myapp,
-    scope = scope,
-    cache = file.path(credential_path, credential_name))
-  # "~/.config/earthengine/.httr-oauth"
-  gtoken <- httr::config(token = ft_token)
-  
-  # request for FT ID
-  request <- httr::GET("https://www.googleapis.com/fusiontables/v1/tables", gtoken) 
-  
-  # filter response for ID
-  ft_id <-  try(jsonlite::fromJSON(httr::content(request, type = "text", encoding = "UTF-8"), simplifyVector = T) %>% 
-                  as.data.frame() %>% 
-                  dplyr::filter(items.name == as.character(ft_name)) %>% 
-                  dplyr::select("items.tableId")
-                , silent = T)
-  if(class(ft_id) == "try-error"){
-    result <- NA
-  } else {
-    result <- ft_id
-  }
-  
-  return(result)
-}
-
-
 
 
 
