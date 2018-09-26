@@ -4,7 +4,7 @@
 \alias{run_gd_auth}
 \title{Runs google drive authorisation via googledrive::drive_auth() and saves credentials}
 \usage{
-run_gd_auth(credential_path, credential_name = "gd-credentials.rds")
+run_gd_auth(credential_name = "gd-credentials.rds")
 }
 \description{
 Runs google drive authorisation via googledrive::drive_auth() and saves credentials

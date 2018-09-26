@@ -4,7 +4,8 @@
 \alias{test_credentials}
 \title{Test if credentials can be found in the default location and raises an error message of not.}
 \usage{
-test_credentials(with_error = F)
+test_credentials(with_error = F, credentials = c("gd-credentials.rds",
+  "credentials", "ft_credentials.json"), silent_match = F)
 }
 \arguments{
 \item{with_error}{A logical weather to raise an informative error in case of missing credentials.}

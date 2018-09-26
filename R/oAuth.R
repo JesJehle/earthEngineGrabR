@@ -1,5 +1,20 @@
 
-
+#' Runs google drive authorisation via googledrive::drive_auth() and saves credentials 
+#' @export
+run_gd_auth <- function(credential_name = "gd-credentials.rds"){
+  
+  credential_path <- get_credential_root()
+  gd_credential_path = file.path(credential_path, credential_name)
+  if(file.exists(gd_credential_path)) file.remove(gd_credential_path)
+  
+  saveRDS(googledrive::drive_auth(reset = T, cache = F, verbose = F), gd_credential_path)
+  
+  while (!(file.exists(gd_credential_path))) {
+    Sys.sleep(1)
+  }
+  cat("Googledrive API is authenticated \n")
+}
+ 
 #' Run ee authentication
 #' @export
 run_ee_oauth <- function(){
@@ -44,7 +59,6 @@ run_ft_oauth <- function() {
     test <- try(request_ft_token(code), silent = T)
   }
   cat("Fusion Table API for upload is authenticated \n")
-  
 }
 
 #' The function installs python dependencies
@@ -116,6 +130,7 @@ test_python <- function() {
     stop('No Python version is found \nTo use the earthEngineGrabR library first install Anaconda Python \nTo install Anaconda and Python go to: \n https://www.anaconda.com/download')
   }
 }
+
 #' test virtual environment installation 
 #' @export
 test_virtual_env <- function() {
@@ -210,6 +225,7 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
   library(reticulate)
   try(use_condaenv(env_name, required = T), silent = T)
   try(use_virtualenv(env_name, required = T), silent = T)
+  try(gd_auth(), silent = T)
 }
 
 
@@ -250,26 +266,30 @@ ee_grab_init <- function(clean_credentials = T, conda = T, clean_environment = F
       stop(paste("Sorry! The installation still fails with the error: ", import_test[[2]]))
       }
   }
-  
   # run authentication ---------------------------------------------------------------
+  run_oauth_all(clean_credentials)
+  
   # set path to credentials
+  
+}
+
+#' runs earh engine, fusion table and google drive authentication
+#' @param clean_credentials logical weather to delete existing credentials, default = T
+#' @export
+run_oauth_all <- function(clean_credentials = T) {
   credential_path <- get_credential_root()
   
   # delet credentials if spedified
   if (clean_credentials) {
-    delete_credentials(credential_path)
+    delete_credentials()
   }
   # ee authorisation
   run_ee_oauth()
   # fusion table authorisation
   run_ft_oauth()
   # authentication google drive api 
-  run_gd_auth(credential_path = credential_path)
-  # authentication fusion table get id api via a test run of the get_ft_id function
-  #id <- get_ft_id("test", credential_path = credential_path, credential_name = ".httr-oauth")
-  #cat("Fusiontable API for ID is authenticated")
+  run_gd_auth()
 }
-
 
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @export
@@ -278,69 +298,47 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
   googledrive::drive_auth(credential_path)
 }
 
-#' Runs google drive authorisation via googledrive::drive_auth() and saves credentials 
-#' @export
-run_gd_auth <- function(credential_path, credential_name = "gd-credentials.rds"){
-  
-  gd_credential_path = file.path(credential_path, credential_name)
-  if(file.exists(gd_credential_path)) file.remove(gd_credential_path)
-  
-  saveRDS(googledrive::drive_auth(reset = T, cache = F, verbose = F), gd_credential_path)
-  
-  while (!(file.exists(gd_credential_path))) {
-    Sys.sleep(1)
-  }
-  cat("Googledrive API is authenticated \n")
-}
 
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
 #' @export
-test_credentials <- function(with_error = F) {
-  credential_path <- get_credential_root()
+test_credentials <- function(with_error = F, credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), silent_match = F) {
+  
   credentials <-
-    c("gd-credentials.rds", "credentials", "ft_credentials.json")
-  tests <- c(rep(F, 3))
+    try(match.arg(
+      credentials,
+      c("gd-credentials.rds", "credentials", "ft_credentials.json"),
+      several.ok = T
+    ), silent = silent_match)
   
-  for (i in seq_along(credentials))
-    if (file.exists(file.path(credential_path, credentials[i]))) {
-      tests[i] <- T
-    } else {
-      tests[i] <- F
-    }
+  credential_path <- get_credential_root()
   
-  if (sum(tests) < 3) {
-    if (with_error) {
-      error <-
-        paste(
-          "Following credentials could not be found : ",
-          "\n",
-          paste(credentials, tests, collapse = " ")
-        )
-      stop(error)
-    } else {
-      return(F)
+  test <- credentials %in% list.files(credential_path)
+  for(t in test) {
+    if(!(t) & with_error) {
+      stop(paste("Following credentials could not be found: \n", paste(credentials, test, collapse = " ")))
     }
-  } else {
-    return(T)
+    # test if all credential test are positiv
+  return(sum(test) == length(test))
   }
 }
 
 
 #' deletes credentials to re initialize
 #' @export
-delete_credentials = function(credential_path) {
-  # httr oauth2, googledrive and fusiontable api
-  if(file.exists(file.path(credential_path, "gd-credentials.rds"))) {
-    file.remove(file.path(credential_path, "gd-credentials.rds"))
-  }
-  # earth engine credentials
-  if(file.exists(file.path(credential_path, "credentials"))) {
-    file.remove(file.path(credential_path, "credentials"))
-  }
-  # GDAL API refresh token
-  if(file.exists(file.path(credential_path, "ft_credentials.json"))) {
-    file.remove(file.path(credential_path, "ft_credentials.json"))
+delete_credentials = function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
+  credential_path <- get_credential_root()
+  credentials_match <-
+    match.arg(
+      credentials,
+      c("gd-credentials.rds", "credentials", "ft_credentials.json"),
+      several.ok = T
+    )
+  
+  for (i in credentials_match) {
+    if (file.exists(file.path(credential_path, i))) {
+      file.remove(file.path(credential_path, i))
+    }
   }
 }
 

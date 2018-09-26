@@ -4,7 +4,8 @@
 \alias{delete_credentials}
 \title{deletes credentials to re initialize}
 \usage{
-delete_credentials(credential_path)
+delete_credentials(credentials = c("gd-credentials.rds", "credentials",
+  "ft_credentials.json"))
 }
 \description{
 deletes credentials to re initialize

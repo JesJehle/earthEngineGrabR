@@ -5,6 +5,9 @@ context("test full ee_grab() function evaluation")
 library(earthEngineGrabR)
 
 target <- system.file("data/test-data.shp", package="earthEngineGrabR")
+test_that("test that ee_grab() works with images by returning the final sf object", {
+  skip_test_if_not_possible()
+  activate_environments()
 
 product_image <- create_product(
   productID = "CGIAR/SRTM90_V4",
@@ -17,11 +20,12 @@ image_test <- ee_grab(
   products = product_image,
   verbose = F
   )
-test_that("test that ee_grab() works with images by returning the final sf object", {
-  
   expect_is(image_test, "sf")
 })
 
+test_that("test that ee_grab() works with image collections by returning the final sf object", {
+  skip_test_if_not_possible()
+  activate_environments()
 
 product_image_collection <- create_product(
   productID = "GLCF/GLS_TCC",
@@ -36,7 +40,5 @@ image_collection_test <- ee_grab(
   products = product_image_collection,
   verbose = F
 )
-test_that("test that ee_grab() works with image collections by returning the final sf object", {
-
   expect_is(image_collection_test, "sf")
 })

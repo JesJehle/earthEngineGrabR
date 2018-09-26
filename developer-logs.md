@@ -14,4 +14,5 @@
 * implement info option in ee_grab to extreact formated info about the dataproduct of needed.
 * implement export projection control
 * add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts
+* implement manual use escape in authorisation process, like in httr package
 
