@@ -19,5 +19,9 @@ test_that("test that upload_as_ft uploads test data to google drive as fusion ta
   skip_test_if_not_possible()
   activate_environments()
   upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), "test-upload")
-  test_upload <- googledrive::drive_find("test-upload")
+  test_upload <- googledrive::drive_find("test-upload", verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
 })
+
+

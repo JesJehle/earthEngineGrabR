@@ -22,7 +22,7 @@ test_that("Test that required testing files on google drive exist", {
   expect_true(environment_test)
 })
 
-
+googledrive::drive_rm("test-upload")
 
 
 

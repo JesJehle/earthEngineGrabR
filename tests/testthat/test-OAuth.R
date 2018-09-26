@@ -1,6 +1,5 @@
 
-library(googledrive)
-
+context("OAuth functionality")
 
 #   credential_name_to_test = "gd-credentials.rds"
 #   delete_credentials(credentials_root, credential_name_to_test)
@@ -27,9 +26,6 @@ test_that("test that test_credentials work as expacted",  {
   # expect true if one exists
   credentials_test <- test_credentials(credentials = "credentials")
   expect_true(credentials_test)
-  # expect false if name not exist
-  credentials_test <- test_credentials(credentials = "test")
-  expect_false(credentials_test)
   # expect error if with_error argument true and name not exists
   expect_error(test_credentials(credentials = "test", with_error = T, silent_match = T))
 

@@ -61,6 +61,27 @@ run_ft_oauth <- function() {
   cat("Fusion Table API for upload is authenticated \n")
 }
 
+#' runs earh engine, fusion table and google drive authentication
+#' @param clean_credentials logical weather to delete existing credentials, default = T
+#' @export
+run_oauth_all <- function(clean_credentials = T) {
+  credential_path <- get_credential_root()
+  
+  # delet credentials if spedified
+  if (clean_credentials) {
+    delete_credentials()
+  }
+  # ee authorisation
+  run_ee_oauth()
+  # fusion table authorisation
+  run_ft_oauth()
+  # authentication google drive api 
+  run_gd_auth()
+}
+
+
+
+
 #' The function installs python dependencies
 #' @export
 install_ee_dependencies <- function(conda_env_name) {
@@ -273,23 +294,6 @@ ee_grab_init <- function(clean_credentials = T, conda = T, clean_environment = F
   
 }
 
-#' runs earh engine, fusion table and google drive authentication
-#' @param clean_credentials logical weather to delete existing credentials, default = T
-#' @export
-run_oauth_all <- function(clean_credentials = T) {
-  credential_path <- get_credential_root()
-  
-  # delet credentials if spedified
-  if (clean_credentials) {
-    delete_credentials()
-  }
-  # ee authorisation
-  run_ee_oauth()
-  # fusion table authorisation
-  run_ft_oauth()
-  # authentication google drive api 
-  run_gd_auth()
-}
 
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @export
@@ -304,7 +308,7 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 #' @export
 test_credentials <- function(with_error = F, credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), silent_match = F) {
   
-  credentials <-
+  credentials_match <-
     try(match.arg(
       credentials,
       c("gd-credentials.rds", "credentials", "ft_credentials.json"),
@@ -313,7 +317,7 @@ test_credentials <- function(with_error = F, credentials = c("gd-credentials.rds
   
   credential_path <- get_credential_root()
   
-  test <- credentials %in% list.files(credential_path)
+  test <- credentials_match %in% list.files(credential_path)
   for(t in test) {
     if(!(t) & with_error) {
       stop(paste("Following credentials could not be found: \n", paste(credentials, test, collapse = " ")))
