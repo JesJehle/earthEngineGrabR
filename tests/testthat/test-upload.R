@@ -22,6 +22,24 @@ test_that("test that upload_as_ft uploads test data to google drive as fusion ta
   test_upload <- googledrive::drive_find("test-upload", verbose = F)
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
+  googledrive::drive_rm("test-upload", verbose = F)
+})
+
+
+test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {
+  skip_test_if_not_possible()
+  activate_environments()
+  googledrive::drive_mv("test-data", verbose = F)
+  test_id <- upload_data(target = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
+  
+  # test if file is uploaded
+  test_upload <- googledrive::drive_find("test-data", verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  
+  # test if id is returned
+  expect_named(test_id, c("name", "id", "drive_resource", "ft_id"))
+  googledrive::drive_rm("test-upload")
 })
 
 

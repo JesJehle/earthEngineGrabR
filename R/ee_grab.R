@@ -1,7 +1,6 @@
 
 
 
-
 #' ee_grab
 #' @param products List of dataproduct functions starting with eeProduct
 #' @param target A path to a local geofile, if file is already uploaded, the upload is skipped. 
@@ -18,7 +17,6 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
                         verbose = T)
   
 {
-  library(reticulate)
   activate_environments("earthEngineGrabR")
   # authorise google drive
 
@@ -47,11 +45,8 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
     #googledrive::drive_rm(filename, verbose = F)
     
     # make functions available
-    ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
     
-    source_python(file = ee_helpers)
-    
-    product_info <- get_info(p$productID)
+    product_info <- get_data_info(p$productID)
     
     if(verbose) {
       for(pr in seq_along(product_info)) {
@@ -59,33 +54,9 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
       }
       }
     # get data
+    status <- get_data(p, product_info$data_type)
     
-    if (product_info$data_type == "ImageCollection") {
-      status <- get_data_collection(
-        productID = p$productID,
-        productName = p$productName,
-        spatialReducer = p$spatialReducer,
-        ft_id = p$ft_id,
-        outputFormat = p$outputFormat,
-        resolution = p$resolution,
-        temporalReducer = p$temporalReducer,
-        timeStart = p$timeStart,
-        timeEnd = p$timeEnd
-      )
-    }
-    if (product_info$data_type == "Image") {
-      status <- get_data_image(
-        productID = p$productID,
-        productName = p$productName,
-        spatialReducer = p$spatialReducer,
-        ft_id = p$ft_id,
-        outputFormat = p$outputFormat,
-        resolution = p$resolutio
-      )
-    }
-    
-    filename <-
-      paste0(status$description, ".", casefold(outputFormat))
+    filename <- paste0(status$description, ".", casefold(outputFormat))
     
     product_list[i] <- filename
     
@@ -100,7 +71,7 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
     if (i == 1) {
       if (verbose) cat("waiting for Earth Engine", "\n")
     }
-    download_data_waiting(filename = product_list[i], verbose = verbose)
+    download_data(filename = product_list[i], verbose = verbose)
   }
   final_data <- import_data(product_list, verbose = verbose)
   #delete_if_exist(target)

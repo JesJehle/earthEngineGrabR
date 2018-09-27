@@ -38,7 +38,10 @@ def request_ft_token(auth_code):
     print('\nSuccessfully saved ft authorization token.')
 
 
-request_ft_code()
 
-# auth_token = raw_input('enter ft code here: ')
+# test
+#request_ee_code()
+#code = raw_input("Enter Code here: ")
+#request_ee_token(code)
+
 

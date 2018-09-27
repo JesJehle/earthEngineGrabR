@@ -21,6 +21,7 @@ get_ft_id_gd <- function(ft_name) {
   info <- googledrive::drive_find(ft_name, verbose = F)
   if(nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
   if(nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name))
+  info$ft_id <- paste0("ft:", info$id)
   return(info)
 }
 
@@ -46,7 +47,7 @@ upload_as_ft <- function(file_path, fileName) {
 #' @param target path to vector data to be uploaded
 #' @return Fusion table ID
 #' @export
-upload_data <- function(verbose = T, target) {
+upload_data <- function(target, verbose = T) {
   target_name <- get_name_from_path(target)
   # test if file is already uploaded
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
@@ -63,7 +64,7 @@ upload_data <- function(verbose = T, target) {
 
   # if is na delete credentials and re-authenticate before rerunning get_ft_id
 
-  table_id$ft_id <- paste0("ft:", table_id$id)
+  
   
   return(table_id)
 }

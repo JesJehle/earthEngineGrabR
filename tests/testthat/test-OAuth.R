@@ -1,25 +1,12 @@
-
+library(earthEngineGrabR)
 context("OAuth functionality")
 
-#   credential_name_to_test = "gd-credentials.rds"
-#   delete_credentials(credentials_root, credential_name_to_test)
-#   run_gd_auth(credential_path = credentials_root)
-#   
-# test_that("test that run_gd_oauth creates credentials in credentials root dir", {
-#   skip_test_if_not_possible()
-#   credentials_test <- test_credentials(credentials = credential_name_to_test)
-#   expect_true(credentials_test)
-# })
 
 # run_ee_oauth and run_ft_oauth cause errors during test run cause of readline function that canot be evalueted without a evaluation stop.
 
-
 test_that("test that test_credentials work as expacted",  {
-  skip_test_if_not_possible()
   
-  activate_environments()
-  credentials_root <- get_credential_root()
-
+  skip_test_if_not_possible()
   # expect true if all credentials exists
   credentials_test <- test_credentials()
   expect_true(credentials_test)
@@ -30,6 +17,8 @@ test_that("test that test_credentials work as expacted",  {
   expect_error(test_credentials(credentials = "test", with_error = T, silent_match = T))
 
 })
+
+
 
 
 

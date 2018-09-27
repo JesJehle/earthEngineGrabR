@@ -1,10 +1,14 @@
 import ee
-from ee_get_data import get_info
+#from ee_get_data import get_info
 
-info = get_info("MODIS/006/MOD08_M3")
+ee.Initialize()
+data = ee.Image("CGIAR/SRTM90_V4")
+print(data.getInfo())
 
-print(info['data_type'])
-print(info)
+#info = get_info("MODIS/006/MOD08_M3")
+
+#print(info['data_type'])
+#print(info)
 # productID = "MODIS/006/MOD08_M3"
 #productID  = "CGIAR/SRTM90_V4"
 

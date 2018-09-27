@@ -2,20 +2,20 @@
 % Please edit documentation in R/download.R
 \name{download_data}
 \alias{download_data}
-\title{download_data}
+\title{download_data_waiting}
 \usage{
-download_data(info, path = getwd(), clear = T)
+download_data(filename, path = getwd(), clear = T, verbose = T)
 }
 \arguments{
-\item{info}{Output of the get_data function.}
-
 \item{path}{The local path where the file should be stored, default is working directory.}
 
 \item{clear}{If the file should be removed from Google Drive after the download.}
+
+\item{info}{Output of the get_data function.}
 }
 \value{
 nothing
 }
 \description{
-download_data
+download_data_waiting
 }

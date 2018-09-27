@@ -15,7 +15,7 @@ skip_test_if_not_possible <- function() {
   
   # test environment
   ## check test data on google drive and upload if neccessary
-  
+  try(gd_auth(), silent = T)
   test <- googledrive::drive_find("test-earthEngineGrabR", verbose = F)
   environment_test <- try(nrow(test) == 1, silent = T)
   
@@ -23,7 +23,14 @@ skip_test_if_not_possible <- function() {
   }
 
 
-
+#' delete_on_drive
+#' @param filename ldkjsf
+#' @export
+delete_on_drive <- function(filename) {
+  gd_auth()
+  test <- nrow(googledrive::drive_find(filename, verbose = F)) > 0
+  if (test) googledrive::drive_rm(filename)
+}
 
 
 

@@ -1,5 +1,6 @@
-library(earthEngineGrabR)
 
+library(earthEngineGrabR)
+context("Requirements for the test to run")
 activate_environments()
 
 test_that("Test that required credentials exist", {
@@ -22,14 +23,7 @@ test_that("Test that required testing files on google drive exist", {
   expect_true(environment_test)
 })
 
-# build environment
-# remove upload files if still present
-googledrive::drive_rm("test-upload", verbose = F)
-
-# if test-download data not on google drive upload it.
-if(nrow(googledrive::drive_find("test-download", verbose = F)) == 0) {
-  upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), "test-download")
-}
+googledrive::drive_rm("test-upload")
 
 
 

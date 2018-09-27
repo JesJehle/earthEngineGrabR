@@ -1,76 +1,71 @@
 
-
-
-
-get_data_image <- function(
-  productID,
-  productName,
-  spatialReducer,
-  ft_id,
-  outputFormat,
-  resolution
-) {
+#' get_data
+#' calls get_data_image or get_data_collections, dependent on the info object
+#' @param info Data frame information generated gy ee_grab()
+#' @param data_type either ImageCollection of Image,
+#' @export
+get_data <- function(info, data_type = "ImageCollection") {
+  type <- match.arg(data_type, c("ImageCollection", "Image"))
+  activate_environments("earthEngineGrabR")
+  ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  source_python(file = ee_helpers)
   
-  ee$Initialize()
-  
-  polygon = ee$FeatureCollection(ft_id)
-
-  product_image = ee$Image(productID)
-
-    product_reduced = reduceOverRegions(image = product_image,
-                                      extractionPolygon = polygon,
-                                      scale = resolution, 
-                                      reducer = spatialReducer,
-                                      productName = productName)
-  
-
-  
-  # export feature collection to drive
-  status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
-  
-
-return(status)  
-  
+  if (type == "ImageCollection") {
+    status <- get_data_collection(
+      info$productID,
+      info$productName,
+      info$spatialReducer,
+      info$ft_id,
+      info$outputFormat,
+      info$resolution,
+      info$temporalReducer,
+      info$timeStart,
+      info$timeEnd
+      )
+    }
+  if (type == "Image") {
+    status <- get_data_image(
+      info$productID,
+      info$productName,
+      info$spatialReducer,
+      info$ft_id,
+      info$outputFormat,
+      info$resolutio
+    )
+  }
+  return(status)
 }
 
 
-get_data_collection <- function(
-  productID,
-  productName,
-  spatialReducer,
-  temporalReducer = "mean",
-  timeStart = "2000-3-20",
-  timeEnd = "2005-2-20",
-  ft_id,
-  outputFormat,
-  resolution
-) {
+
+#' get_data_info
+#' retreves info with a given product ID over earthEngine
+#' @param productID String that speciefies a data products in ee
+#' @export
+get_data_info <- function(productID) {
   
-  ee$Initialize()
-  
-  polygon = ee$FeatureCollection(ft_id)
-  
-  product = ee$ImageCollection(productID)
-  # reduce = select_reducer(temporalReducer)
-  product_filtered = product$filterDate(timeStart, timeEnd)
-  product_reduced = product_filtered$reduce(ee$Reducer$mean())
-  
- 
-  product_reduced = reduceOverRegions(image = product_reduced,
-                                      extractionPolygon = polygon,
-                                      scale = resolution, 
-                                      reducer = spatialReducer,
-                                      productName = productName)
-  
-  
-  
-  # export feature collection to drive
-  status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
-  
-  
-  return(status)  
-  
+  activate_environments("earthEngineGrabR")
+  ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  source_python(file = ee_helpers)
+  product_info <- get_info(productID)
+  return(product_info)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
