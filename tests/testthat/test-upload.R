@@ -6,7 +6,7 @@ test_that("test that get_ft_id extracts the id of test-data on google drive", {
   skip_test_if_not_possible()
   test <- get_ft_id_gd(ft_name)
   expect_equal(nrow(test), 1)
-  expect_named(test, c("name", "id", "drive_resource"), ignore.order = T)
+  expect_named(test, c("name", "id", "drive_resource", "ft_id"), ignore.order = T)
   })
 
 wrong_ft_name <- "test-data-error"

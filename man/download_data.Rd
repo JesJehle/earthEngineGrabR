@@ -4,7 +4,7 @@
 \alias{download_data}
 \title{download_data_waiting}
 \usage{
-download_data(filename, path = getwd(), clear = T, verbose = T)
+download_data(filename, path, clear = T, verbose = T)
 }
 \arguments{
 \item{path}{The local path where the file should be stored, default is working directory.}

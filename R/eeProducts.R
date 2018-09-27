@@ -16,17 +16,19 @@ create_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                           timeEnd = "2017-12-31") {
   productInfo <- list(
     productID = productID,
-    productName = paste0(
-      productName,
-      "_",
-      spatialReducer,
-      "_",
-      timeStart,
-      "_",
-      timeEnd,
-      "_",
-      temporalReducer
-    ),
+    
+    productName = productName,
+    #   paste0(
+    #   productName,
+    #   "_",
+    #   spatialReducer,
+    #   "_",
+    #   timeStart,
+    #   "_",
+    #   timeEnd,
+    #   "_",
+    #   temporalReducer
+    # )
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,
     timeStart = timeStart,

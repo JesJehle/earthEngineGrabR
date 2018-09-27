@@ -21,7 +21,6 @@ test_that("test that get_data processes data on earth engine and exports it to d
   test <- wait_for_file_on_drive(df$productNameExtension, verbose = F)
   expect_true(test)
   
-  
   # 
   # temporalReducer,
   # timeStart,

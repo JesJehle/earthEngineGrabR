@@ -13,10 +13,9 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
                                                "earthEngineGrabR"),
                         outputFormat = "GeoJSON",
                         resolution = 100,
-                        products = list(creat_product()),
+                        products = list(create_product()),
                         verbose = T)
-  
-{
+  {
   activate_environments("earthEngineGrabR")
   # authorise google drive
 
@@ -25,7 +24,7 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
   
   googledrive::drive_rm("GEE2R_temp", verbose = F)
   
-  product_list = list()
+  product_list = c()
   
   # check if products is a list of lists, if not creat one.
   
@@ -56,28 +55,37 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
     # get data
     status <- get_data(p, product_info$data_type)
     
-    filename <- paste0(status$description, ".", casefold(outputFormat))
+    filename <- paste0(status$description, ".", casefold(p$outputFormat))
     
-    product_list[i] <- filename
     
     #print(paste0("the projection of result is", drop))
     if (status$state == "READY") {
-      if (verbose)
-        cat("processing:", products[[i]]$productName, '\n')
+      if (verbose) cat("processing:", products[[i]]$productName, '\n')
+      product_list[i] <- filename
+      
+    } else {
+      if (verbose) cat("Processing error on earth engine servers for: ", products[[i]]$productName, '\n')
     }
-  }
   
-  for (i in seq_along(products)) {
+  # product_list_clean <- na.omit(product_list)
+  files_path <- tempdir()
+
+  for (i in seq_along(product_list)) {
     if (i == 1) {
       if (verbose) cat("waiting for Earth Engine", "\n")
     }
-    download_data(filename = product_list[i], verbose = verbose)
+    download_data(filename = product_list[i], 
+                  path = getwd(),
+                  verbose = verbose)
   }
-  final_data <- import_data(product_list, verbose = verbose)
+  final_data <- import_data(product_list,
+                            files_dir = getwd(),
+                            verbose = verbose)
   #delete_if_exist(target)
   googledrive::drive_rm("GEE2R_temp", verbose = F)
   
   return(final_data)
+  }
 }
 
 

@@ -6,7 +6,7 @@
 \usage{
 ee_grab(target = system.file("data/territories.shp", package =
   "earthEngineGrabR"), outputFormat = "GeoJSON", resolution = 100,
-  products = list(creat_product()), verbose = T)
+  products = list(create_product()), verbose = T)
 }
 \arguments{
 \item{target}{A path to a local geofile, if file is already uploaded, the upload is skipped.}

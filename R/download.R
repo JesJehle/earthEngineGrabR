@@ -21,7 +21,7 @@ wait_for_file_on_drive <- function(filename, verbose = T){
 #' @param clear If the file should be removed from Google Drive after the download.
 #' @return nothing
 #' @export
-download_data <- function(filename, path = getwd(), clear = T, verbose = T){
+download_data <- function(filename, path, clear = T, verbose = T){
   
   path_full <- file.path(path, filename)
 
@@ -32,13 +32,10 @@ download_data <- function(filename, path = getwd(), clear = T, verbose = T){
   if (verbose == T) cat("\n")
   googledrive::drive_download(file = filename, path = path_full, overwrite = T, verbose = F)
   if (verbose == T) cat(paste0('download: ', get_name_from_path(filename), "\n"))
-  if(clear == T){
-    # delete file
-    googledrive::drive_rm(filename, verbose = F)
+  if(clear == T) googledrive::drive_rm(filename, verbose = F)
     # delete folder
     # googledrive::drive_rm("GEE2R_temp")
     
-  }
 }
 
 #' import data
@@ -46,31 +43,34 @@ download_data <- function(filename, path = getwd(), clear = T, verbose = T){
 #' @param verbose If true, messages reporting the processing state are printed.
 #' @return nothing
 #' @export
-import_data <- function(productList, verbose = T){
+import_data <- function(productList, verbose = T, files_dir, clean = T){
   
-  product_list <- unlist(productList) 
-  downloads <- list.files(getwd())
+  #product_list <- unlist(productList) 
+  product_list <- productList
+  
+  downloads <- list.files(files_dir)
   downloads_clean <- grep('geojson', downloads, value = T)
   
   while (sum(product_list %in% downloads_clean) != length(product_list)) {
     if (verbose) cat("waiting for Earth Engine", "\n")
     if (verbose) cat(".")
     Sys.sleep(2)
-    downloads <- list.files(getwd())
+    downloads <- list.files(files_dir)
     downloads_clean <- grep('geojson', downloads, value = T)
   }
   
   ## import data
   if (verbose) cat("import: finished", "\n")
-  join <- sf::st_read(downloads_clean[1], quiet = TRUE)
-  file.remove(downloads_clean[1])
+  join <- sf::st_read(file.path(files_dir, downloads_clean[1]), quiet = TRUE)
+  file.remove(file.path(files_dir, downloads_clean[1]))
   if(length(downloads_clean) > 1) {
     for(i in 2:length(downloads_clean)) {
-      data <- sf::st_read(downloads_clean[i], quiet = TRUE)
-      file.remove(downloads_clean[i])
+      data <- sf::st_read(file.path(files_dir, downloads_clean[i]), quiet = TRUE)
+      file.path(files_dir, downloads_clean[i])
       data_no_geom <- sf::st_set_geometry(data, NULL)
       join <- suppressMessages(dplyr::left_join(join, data_no_geom))
     }
   }
   return(join)
+  if(clean) unlink(files_dir, recursive = T)
 }
