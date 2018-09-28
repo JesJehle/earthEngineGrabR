@@ -111,6 +111,20 @@ def get_info(productID):
 
 
 
+
+def process_data(product):
+
+    print(product["productName"])
+
+
+
+
+
+
+
+
+
+
 def get_data_image(
         productID,
         productName,
@@ -129,6 +143,7 @@ def get_data_image(
                                         productName=productName)
     # export feature collection to google drive
     status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+
     return status
 
 

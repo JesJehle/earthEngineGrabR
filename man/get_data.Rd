@@ -5,7 +5,7 @@
 \title{get_data
 calls get_data_image or get_data_collections, dependent on the info object}
 \usage{
-get_data(info, data_type = "ImageCollection")
+get_data(info)
 }
 \arguments{
 \item{info}{Data frame information generated gy ee_grab()}

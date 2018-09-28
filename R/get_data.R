@@ -1,16 +1,19 @@
 
+
+
+
 #' get_data
 #' calls get_data_image or get_data_collections, dependent on the info object
 #' @param info Data frame information generated gy ee_grab()
 #' @param data_type either ImageCollection of Image,
 #' @export
-get_data <- function(info, data_type = "ImageCollection") {
-  type <- match.arg(data_type, c("ImageCollection", "Image"))
+get_data <- function(info) {
+  
   activate_environments("earthEngineGrabR")
   ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
   source_python(file = ee_helpers)
   
-  if (type == "ImageCollection") {
+  if (info$data_type == "ImageCollection") {
     status <- get_data_collection(
       info$productID,
       info$productName,
@@ -23,14 +26,14 @@ get_data <- function(info, data_type = "ImageCollection") {
       info$timeEnd
       )
     }
-  if (type == "Image") {
+  if (info$data_type == "Image") {
     status <- get_data_image(
       info$productID,
       info$productName,
       info$spatialReducer,
       info$ft_id,
       info$outputFormat,
-      info$resolutio
+      info$resolution
     )
   }
   return(status)

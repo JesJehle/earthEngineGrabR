@@ -11,9 +11,7 @@
 #' @export
 ee_grab <- function(target = system.file("data/territories.shp", package =
                                                "earthEngineGrabR"),
-                        outputFormat = "GeoJSON",
-                        resolution = 100,
-                        products = list(create_product()),
+                        products = list(create_image_product()),
                         verbose = T)
   {
   activate_environments("earthEngineGrabR")
@@ -36,27 +34,29 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
   
   for (i in seq_along(products)) {
     p = products[[i]]
-    p$outputFormat = outputFormat
     p$ft_id = table_id$ft_id
-    p$resolution = resolution
-    
+
     #filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
     #googledrive::drive_rm(filename, verbose = F)
     
     # make functions available
     
-    product_info <- get_data_info(p$productID)
+    #product_info <- get_data_info(p$productID)
     
-    if(verbose) {
-      for(pr in seq_along(product_info)) {
-        cat(paste0(names(product_info)[pr], ": ", product_info[pr],"\n"))
-      }
-      }
+    # if(verbose) {
+    #   for(pr in seq_along(product_info)) {
+    #     cat(paste0(names(product_info)[pr], ": ", product_info[pr],"\n"))
+    #   }
+    # }
+    # 
+    
     # get data
-    status <- get_data(p, product_info$data_type)
+    status <- get_data(p)
     
-    filename <- paste0(status$description, ".", casefold(p$outputFormat))
+    # filename <- paste0(status$description, ".", casefold(p$outputFormat))
+    filename <-  p$productNameFull
     
+
     
     #print(paste0("the projection of result is", drop))
     if (status$state == "READY") {
@@ -68,18 +68,18 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
     }
   
   # product_list_clean <- na.omit(product_list)
-  files_path <- tempdir()
+  files_path <- getwd()
 
   for (i in seq_along(product_list)) {
     if (i == 1) {
       if (verbose) cat("waiting for Earth Engine", "\n")
     }
     download_data(filename = product_list[i], 
-                  path = getwd(),
+                  path = files_path,
                   verbose = verbose)
   }
   final_data <- import_data(product_list,
-                            files_dir = getwd(),
+                            files_dir = files_path,
                             verbose = verbose)
   #delete_if_exist(target)
   googledrive::drive_rm("GEE2R_temp", verbose = F)

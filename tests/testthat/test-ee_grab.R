@@ -26,14 +26,13 @@ test_that("test that ee_grab() works with images by returning the final sf objec
   skip_test_if_not_possible()
   activate_environments()
 
-product_image <- create_product(
+product_image <- create_image_product(
   productID = "CGIAR/SRTM90_V4",
   productName = "test_SRTM"
   )
 
 image_test <- ee_grab(
   target = target,
-  resolution = 3000,
   products = product_image,
   verbose = verbose
   )
@@ -44,16 +43,10 @@ test_that("test that ee_grab() works with image collections by returning the fin
   skip_test_if_not_possible()
   activate_environments()
 
-product_image_collection <- create_product(
-  productID = "GLCF/GLS_TCC",
-  productName = "test_TreeCover",
-  timeStart = "2000-3-20",
-  timeEnd = "2005-2-20"
-  )
+product_image_collection <- create_collection_product(productName = "test_chirps")
 
 image_collection_test <- ee_grab(
   target = target,
-  resolution = 3000,
   products = product_image_collection,
   verbose = verbose
 )

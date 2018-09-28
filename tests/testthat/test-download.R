@@ -3,7 +3,7 @@ library(earthEngineGrabR)
 context("Download functionalities")
 
 
-  test_file <- "test-download.geojson"
+  test_file <- "test-download_mean.geojson"
   #test_file <- "test_SRTM.geojson"
   
   
@@ -35,7 +35,6 @@ test_that("Test that import_data import data to R", {
   skip_test_if_not_possible()
   activate_environments()
   
-
   data <- import_data(productList = test_file, 
               files_dir = test_dir, 
               clean = F)

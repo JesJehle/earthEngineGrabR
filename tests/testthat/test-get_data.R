@@ -6,27 +6,18 @@ test_that("test that get_data processes data on earth engine and exports it to d
   
   skip_test_if_not_possible()
   activate_environments()
-  data_type <- "Image"
-  df <- list()
-  df$productID = "CGIAR/SRTM90_V4"
-  df$productName = "test_SRTM"
-  df$spatialReducer = "mean"
-  df$ft_id = get_ft_id_gd("test-data")$ft_id
-  df$outputFormat = "GeoJSON"
-  df$resolution = 3000
-  df$productNameExtension = paste0(df$productName, ".", casefold(df$outputFormat))
   
-  delete_on_drive(df$productNameExtension)
-  status <- get_data(df, data_type)
-  test <- wait_for_file_on_drive(df$productNameExtension, verbose = F)
+  df <- create_image_product(
+        productID = "CGIAR/SRTM90_V4",
+        productName = "test_SRTM"
+        )
+
+      df$ft_id = get_ft_id_gd("test-data")$ft_id
+      delete_on_drive(df$productNameFull)
+
+  status <- get_data(df)
+  test <- wait_for_file_on_drive(df$productNameFull, verbose = F)
   expect_true(test)
-  
-  # 
-  # temporalReducer,
-  # timeStart,
-  # timeEnd
-  # 
-  
-  
 })
+
 
