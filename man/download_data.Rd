@@ -4,14 +4,12 @@
 \alias{download_data}
 \title{download_data_waiting}
 \usage{
-download_data(filename, path, clear = T, verbose = T)
+download_data(ee_response, clear = T, verbose = T)
 }
 \arguments{
-\item{path}{The local path where the file should be stored, default is working directory.}
+\item{ee_response}{Output of the request_data function.}
 
 \item{clear}{If the file should be removed from Google Drive after the download.}
-
-\item{info}{Output of the get_data function.}
 }
 \value{
 nothing

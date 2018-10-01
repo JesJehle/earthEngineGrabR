@@ -48,6 +48,10 @@ upload_as_ft <- function(file_path, fileName) {
 #' @return Fusion table ID
 #' @export
 upload_data <- function(target, verbose = T) {
+  
+  # delete if exists
+  googledrive::drive_rm("GEE2R_temp", verbose = F)
+  
   target_name <- get_name_from_path(target)
   # test if file is already uploaded
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)

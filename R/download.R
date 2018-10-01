@@ -16,36 +16,55 @@ wait_for_file_on_drive <- function(filename, verbose = T){
 
 
 #' download_data_waiting
-#' @param info Output of the get_data function.
-#' @param path The local path where the file should be stored, default is working directory.
+#' @param ee_response Output of the request_data function.
 #' @param clear If the file should be removed from Google Drive after the download.
 #' @return nothing
 #' @export
-download_data <- function(filename, path, clear = T, verbose = T){
+download_data <- function(ee_response,
+                          clear = T,
+                          verbose = T) {
   
-  path_full <- file.path(path, filename)
-
-  # cat("data products are in progress on the Earth Engine servers")
-  
-  wait_for_file_on_drive(filename)
-
-  if (verbose == T) cat("\n")
-  googledrive::drive_download(file = filename, path = path_full, overwrite = T, verbose = F)
-  if (verbose == T) cat(paste0('download: ', get_name_from_path(filename), "\n"))
-  if(clear == T) googledrive::drive_rm(filename, verbose = F)
-    # delete folder
-    # googledrive::drive_rm("GEE2R_temp")
+    path <- get_temp_path()
     
+  for (i in seq_along(ee_response)) {
+    if (i == 1) {
+      if (verbose)
+        cat("\nwaiting for Earth Engine", "\n")
+    }
+    
+    path_full <- file.path(path, ee_response[i])
+    
+    wait_for_file_on_drive(ee_response[i])
+    
+    if (verbose == T)
+      cat("\n")
+    googledrive::drive_download(
+      file = ee_response[i],
+      path = path_full,
+      overwrite = T,
+      verbose = F
+    )
+    
+    if (verbose == T)
+      cat(paste0('download: ', get_name_from_path(ee_response[i]), "\n"))
+    # delete folder
+    if (clear == T)
+      googledrive::drive_rm(ee_response[i], verbose = F)
+  }
+  
 }
+
+
 
 #' import data
 #' @param productList List of products files produced in the ee_grab function
 #' @param verbose If true, messages reporting the processing state are printed.
 #' @return nothing
 #' @export
-import_data <- function(productList, verbose = T, files_dir, clean = T){
+import_data <- function(productList, verbose = T, clean = T){
   
   #product_list <- unlist(productList) 
+  files_dir <- get_temp_path()
   product_list <- productList
   
   downloads <- list.files(files_dir)

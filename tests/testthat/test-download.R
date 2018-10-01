@@ -5,11 +5,10 @@ context("Download functionalities")
 
   test_file <- "test-download_mean.geojson"
   #test_file <- "test_SRTM.geojson"
+  test_dir <- get_temp_path()
   
   
-  
-  test_dir <- tempdir()
-  
+
 # googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T) 
 
 
@@ -19,9 +18,7 @@ test_that("Test that download_data downloads test file from google drive", {
 
   # googledrive::drive_find(test_file, verbose = F)
 
-  download_data(
-    filename = test_file,
-    path = test_dir,
+  download_data(test_file,
     clear = F)
   
   test <- grep(test_file, list.files(test_dir)) 
@@ -36,12 +33,11 @@ test_that("Test that import_data import data to R", {
   activate_environments()
   
   data <- import_data(productList = test_file, 
-              files_dir = test_dir, 
-              clean = F)
+              clean = T)
   
   expect_is(data, "data.frame")
   # googledrive::drive_find(test_file, verbose = F)
-  unlink(test_dir, recursive = T)
+  # unlink(test_dir, recursive = T)
   
 })
 

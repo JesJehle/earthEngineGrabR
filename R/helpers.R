@@ -33,7 +33,24 @@ delete_on_drive <- function(filename) {
 }
 
 
+#' get_temp_path
+#' @description gives path for the storage of local temp files
+#' @export
+get_temp_path <- function() {
+  path <- getwd()
+  return(path)
+}
 
+
+
+#' is_type
+#' @description test of param is of type type and raises an appropriate error
+#' @param param the parameter to test
+#' @param type the required type of the parameter
+#' @export
+is_type <- function(param, type) {
+  if (class(param) != type) stop(paste(deparse(substitute(param)), "must be of class", type), call. = F)
+}
 
 
 

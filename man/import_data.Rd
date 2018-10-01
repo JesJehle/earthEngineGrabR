@@ -4,7 +4,7 @@
 \alias{import_data}
 \title{import data}
 \usage{
-import_data(productList, verbose = T, files_dir, clean = T)
+import_data(productList, verbose = T, clean = T)
 }
 \arguments{
 \item{productList}{List of products files produced in the ee_grab function}

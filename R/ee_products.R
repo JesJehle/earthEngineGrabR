@@ -15,8 +15,14 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
                                  resolution = 3000) {
   
   
-    product_name_new = paste0(productName, "_", spatialReducer)
+  # parameter validation
+  is_type(productID, "character")
+  is_type(productName, "character")
+  match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
+  is_type(resolution, "numeric")
+  
 
+  product_name_new = paste0(productName, "_", spatialReducer)
   productInfo <- list(
     productID = productID,
     productName = product_name_new,
@@ -44,10 +50,27 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
 create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                                       productName = "chirps",
                                       spatialReducer = "mean",
-                                      temporalReducer = "sum",
-                                      timeStart = "2017-1-1",
-                                      timeEnd = "2017-2-1",
+                                      temporalReducer = "mean",
+                                      timeStart = "2017-01-01",
+                                      timeEnd = "2017-02-01",
                                       resolution = 3000) {
+  
+  # parameter validation
+  is_type(productID, "character")
+  is_type(productName, "character")
+  is_type(resolution, "numeric")
+  is_type(timeStart, "character")
+  is_type(timeEnd, "character")
+  match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
+  match.arg(temporalReducer, choices = c("mean", "median", "min", "max", "mode", "sum"))
+  
+  timeStart <- lubridate::ymd(timeStart)
+  timeEnd <- lubridate::ymd(timeEnd)
+  if(is.na(timeStart)) stop(paste(timeStart, "is not a valid Date"), call. = F)
+  if(is.na(timeEnd)) stop(paste(timeEnd, "is not a valid Date"), call. = F)
+  
+
+  
   product_name_new = 
     paste0(
       productName,
