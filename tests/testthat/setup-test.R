@@ -45,7 +45,9 @@ if(nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
 
 }
 
-
+# if tmp dir exists delete it
+temp_path <- get_temp_path(F)
+if (dir.exists(temp_path)) unlink(temp_path, recursive = T)
 
 
 

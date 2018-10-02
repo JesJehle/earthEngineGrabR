@@ -5,7 +5,7 @@ context("Download functionalities")
 
   test_file <- "test-download_mean.geojson"
   #test_file <- "test_SRTM.geojson"
-  test_dir <- get_temp_path()
+  temp_dir <- get_temp_path()
   
   
 

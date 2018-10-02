@@ -28,14 +28,18 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
 
   # request data products form google earth engine servers
   ee_response <- request_data(products, target_id$ft_id)
+  # create temp dir
+  temp_path <- get_temp_path()
   # download data products form google drive
-  download_data(ee_response = ee_response, verbose = verbose)
+  download_data(ee_response = ee_response, verbose = verbose, temp_path = temp_path)
   # import data to R
-  product_data <- import_data(ee_response, verbose = verbose)
-  #delete_if_exist(target)
+  product_data <- import_data(ee_response, verbose = verbose, temp_path = temp_path)
+  # remove tmp files local and from drive
   googledrive::drive_rm("GEE2R_temp", verbose = F)
+  unlink(temp_path, recursive = T)
   
   return(product_data)
+  
   }
 
 

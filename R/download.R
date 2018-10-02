@@ -22,10 +22,9 @@ wait_for_file_on_drive <- function(filename, verbose = T){
 #' @export
 download_data <- function(ee_response,
                           clear = T,
-                          verbose = T) {
+                          verbose = T,
+                          temp_path) {
   
-    temp_path <- get_temp_path()
-    
   for (i in seq_along(ee_response)) {
     if (i == 1) {
       if (verbose)
@@ -61,34 +60,33 @@ download_data <- function(ee_response,
 #' @param verbose If true, messages reporting the processing state are printed.
 #' @return nothing
 #' @export
-import_data <- function(product_list, verbose = T, clean = T){
+import_data <- function(product_list, verbose = T, temp_path){
   
   #product_list <- unlist(productList) 
-  temp_dir <- get_temp_path()
 
-  downloads <- list.files(temp_dir)
+  downloads <- list.files(temp_path)
   downloads_clean <- grep('geojson', downloads, value = T)
   
   while (sum(product_list %in% downloads_clean) != length(product_list)) {
     if (verbose) cat("waiting for Earth Engine", "\n")
     if (verbose) cat(".")
     Sys.sleep(2)
-    downloads <- list.files(temp_dir)
+    downloads <- list.files(temp_path)
     downloads_clean <- grep('geojson', downloads, value = T)
   }
   
   ## import data
   if (verbose) cat("import: finished", "\n")
-  join <- sf::st_read(file.path(temp_dir, downloads_clean[1]), quiet = TRUE)
-  file.remove(file.path(temp_dir, downloads_clean[1]))
+  join <- sf::st_read(file.path(temp_path, downloads_clean[1]), quiet = TRUE)
+  file.remove(file.path(temp_path, downloads_clean[1]))
   if(length(downloads_clean) > 1) {
     for(i in 2:length(downloads_clean)) {
-      data <- sf::st_read(file.path(temp_dir, downloads_clean[i]), quiet = TRUE)
-      file.path(temp_dir, downloads_clean[i])
+      data <- sf::st_read(file.path(temp_path, downloads_clean[i]), quiet = TRUE)
+      file.path(temp_path, downloads_clean[i])
       data_no_geom <- sf::st_set_geometry(data, NULL)
       join <- suppressMessages(dplyr::left_join(join, data_no_geom))
     }
   }
   return(join)
-  if(clean) unlink(temp_dir, recursive = T)
+ # if(clean) unlink(temp_path, recursive = T)
 }

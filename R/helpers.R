@@ -34,10 +34,12 @@ delete_on_drive <- function(filename) {
 
 
 #' get_temp_path
-#' @description gives path for the storage of local temp files
+#' @description creates folder and returns path for the storage of local temp files
+#' @param create logical weather to create a new folder
 #' @export
-get_temp_path <- function() {
-  path <- file.path(dirname(tempdir()), "earthEngineGrabR-temp")
+get_temp_path <- function(create = T) {
+  path <- file.path(dirname(tempdir()), "earthEngineGrabR-tmp")
+  if (create) dir.create(path)
   return(path)
 }
 
