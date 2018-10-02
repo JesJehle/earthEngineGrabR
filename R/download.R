@@ -68,7 +68,7 @@ import_data <- function(product_list, verbose = T, temp_path){
   downloads_clean <- grep('geojson', downloads, value = T)
   
   while (sum(product_list %in% downloads_clean) != length(product_list)) {
-    if (verbose) cat("waiting for Earth Engine", "\n")
+    if (verbose) cat("\nwaiting for Earth Engine", "\n")
     if (verbose) cat(".")
     Sys.sleep(2)
     downloads <- list.files(temp_path)
@@ -76,7 +76,7 @@ import_data <- function(product_list, verbose = T, temp_path){
   }
   
   ## import data
-  if (verbose) cat("import: finished", "\n")
+  if (verbose) cat("\nimport: finished", "\n")
   join <- sf::st_read(file.path(temp_path, downloads_clean[1]), quiet = TRUE)
   file.remove(file.path(temp_path, downloads_clean[1]))
   if(length(downloads_clean) > 1) {

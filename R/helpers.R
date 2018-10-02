@@ -15,11 +15,11 @@ skip_test_if_not_possible <- function() {
   
   # test environment
   ## check test data on google drive and upload if neccessary
-  #try(gd_auth(), silent = T)
-  #test <- googledrive::drive_find("test-download_mean.geojson", verbose = F)
-  #environment_test <- try(nrow(test) == 1, silent = T)
+  try(gd_auth(), silent = T)
+  test <- googledrive::drive_find("test-download_mean.geojson", verbose = F)
+  environment_test <- try(nrow(test) == 1, silent = T)
   
-  #if(!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
+  if(!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
   }
 
 
@@ -109,8 +109,6 @@ get_name_from_path <- function(path){
   return(name)
   
 }
-
-
 
 
 

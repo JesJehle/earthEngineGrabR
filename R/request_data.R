@@ -7,7 +7,7 @@
 #' @param info Data frame information generated gy ee_grab()
 #' @param data_type either ImageCollection of Image,
 #' @export
-get_data <- function(info) {
+get_data <- function(info, test = F) {
   
   activate_environments("earthEngineGrabR")
   ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
@@ -25,7 +25,8 @@ get_data <- function(info) {
       info$resolution,
       info$temporalReducer,
       info$timeStart,
-      info$timeEnd
+      info$timeEnd,
+      test
     )}, error = function(err) {
       return(paste0("Error on Earth Engine servers for data product: " ,info$productName, "\n", err)) 
     })
@@ -39,7 +40,8 @@ get_data <- function(info) {
       info$spatialReducer,
       info$ft_id,
       info$outputFormat,
-      info$resolution
+      info$resolution,
+      test
     )}, error = function(err) {
       return(paste0("Error on Earth Engine servers for data product: " ,info$productName, "\n", err)) 
     })
@@ -70,7 +72,7 @@ get_data_info <- function(productID) {
 #' @param target_id String of fusion table id created by upload_data()
 #' @return ee_responses for each correctly exported data product
 #' @export
-request_data <- function(product_info, target_id, verbose = T) {
+request_data <- function(product_info, target_id, verbose = T, test = F) {
   # check if products is a list of lists, if not creat one.
   if (class(product_info[[1]]) != "list") {
     product_info <- list(product_info)
@@ -89,12 +91,12 @@ request_data <- function(product_info, target_id, verbose = T) {
     p$ft_id = target_id
     
     # get data
-    status <- get_data(p)
+    status <- get_data(p, test = test)
     if (class(status) == "character") {
       if (verbose) warning(status)
     } else {
       if (status$state == "READY") {
-        if (verbose) cat("processing:", product_info[[i]]$productName, '\n')
+        if (verbose) cat("\nprocessing:", product_info[[i]]$productName, '\n')
         ee_responses[i] <- p$productNameFull
       } else {
         if (verbose) warning(

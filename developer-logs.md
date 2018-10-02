@@ -7,11 +7,11 @@
 
 + try to use permanent tokens for the httr package
 + implement parameters checks for ee_grab and create_product
-* catch error from ee servers - no images found example
++ catch error from ee servers - no images found example
 * dokumentation
 * website
 * vigniettes
-* implement tests
++ implement tests
 * clean up python files
 
 * implement info option in ee_grab to extreact formated info about the dataproduct of needed. -- not important

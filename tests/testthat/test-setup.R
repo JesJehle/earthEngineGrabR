@@ -18,7 +18,7 @@ test_that("Test that required python modules can be loaded", {
 
 test_that("Test that required testing files on google drive exist", {
   
-  test <- googledrive::drive_find("test-earthEngineGrabR", verbose = F)
+  test <- googledrive::drive_find("test-download_mean.geojson", verbose = F)
   environment_test <- try(nrow(test) == 1, silent = T)
   expect_true(environment_test)
 })

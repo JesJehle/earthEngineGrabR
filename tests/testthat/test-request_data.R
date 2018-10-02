@@ -1,6 +1,6 @@
 library(earthEngineGrabR)
 
-context("Get data and info from earth engine")
+context("Test EE request functionality")
 
 
 test_that("test that get_data processes data on earth engine and exports it to drive while returning status of process", {
@@ -37,9 +37,9 @@ test_that("test that reguest_data processes multiple data products on earth engi
   
   ft_id = get_ft_id_gd("test-data")
 
-  status <- request_data(df, ft_id)
   delete_on_drive(df[[1]]$productNameFull)
   delete_on_drive(df[[2]]$productNameFull)
+  status <- request_data(df, ft_id)
   
   test_1 <- wait_for_file_on_drive(df[[1]]$productNameFull, verbose = F)
   test_2 <- wait_for_file_on_drive(df[[2]]$productNameFull, verbose = F)
@@ -59,8 +59,7 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
     productName = "test_SRTM"
   )
   df$ft_id = get_ft_id_gd("test-data")
-  delete_on_drive(df$productNameFull)
-  
+
   status <- get_data(df)
   expect_match(status, "Error")  
   expect_match(status, "Image asset 'CGIAR/wrong' not found")  
@@ -73,8 +72,7 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
     )
   
   df$ft_id = get_ft_id_gd("test-data")
-  delete_on_drive(df$productNameFull)
-  
+
   status <- get_data(df)
   expect_match(status, "Error")  
   expect_match(status, "No images found with the given daterange")  
@@ -106,6 +104,7 @@ test_that("test that request_data return anly the valid exports and gives waring
 })
 
 
+googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 
 

@@ -46,13 +46,19 @@ def reduceOverRegions(image, extractionPolygon, scale, reducer, productName):
     return bandsPerFeature
 
 # active
-def exportTableToDrive(featureCollection, format, name, export):
+def exportTableToDrive(featureCollection, format, name, export, test = False):
+
+    if test:
+        folder = "earthEngineGrabR-test"
+    else:
+        folder = "earthEngineGrabR-tmp"
     # format = CSV, GeoJSON, KML, KMZ
+
     task = ee.batch.Export.table.toDrive(
         collection=featureCollection,
         description=str(name),
         fileFormat = str(format),
-        folder = "earthEngineGrabR-tmp"
+        folder = folder
     )
 
     if str(export) == str('TRUE'):
@@ -113,15 +119,14 @@ def get_info(productID):
 
 
 
-
-
 def get_data_image(
         productID,
         productName,
         spatialReducer,
         ft_id,
         outputFormat,
-        resolution):
+        resolution,
+        test = False):
 
     ee.Initialize()
     polygon = ee.FeatureCollection(ft_id)
@@ -132,7 +137,7 @@ def get_data_image(
                                         reducer=spatialReducer,
                                         productName=productName)
     # export feature collection to google drive
-    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE", test=test)
 
     return status
 
@@ -148,7 +153,8 @@ def get_data_collection(
         resolution,
         temporalReducer = 'mean',
         timeStart = '2000-3-20',
-        timeEnd = '2005-2-20'):
+        timeEnd = '2005-2-20',
+        test = False):
 
     ee.Initialize()
     polygon = ee.FeatureCollection(ft_id)
@@ -164,7 +170,7 @@ def get_data_collection(
                                         reducer=spatialReducer,
                                         productName=productName)
     # export feature collection to drive
-    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE")
+    status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE", test=test)
     return status
 
 
