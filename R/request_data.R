@@ -14,7 +14,9 @@ get_data <- function(info) {
   source_python(file = ee_helpers)
   
   if (info$data_type == "ImageCollection") {
-    status <- get_data_collection(
+   
+    status <- tryCatch({ 
+      get_data_collection(
       info$productID,
       info$productName,
       info$spatialReducer,
@@ -24,18 +26,24 @@ get_data <- function(info) {
       info$temporalReducer,
       info$timeStart,
       info$timeEnd
-    )
+    )}, error = function(err) {
+      return(paste0("Error on Earth Engine servers for data product: " ,info$productName, "\n", err)) 
+    })
   }
+  
   if (info$data_type == "Image") {
-    status <- get_data_image(
+    status <- tryCatch({
+      get_data_image(
       info$productID,
       info$productName,
       info$spatialReducer,
       info$ft_id,
       info$outputFormat,
       info$resolution
-    )
-  }
+    )}, error = function(err) {
+      return(paste0("Error on Earth Engine servers for data product: " ,info$productName, "\n", err)) 
+    })
+}
   return(status)
 }
 
@@ -63,10 +71,9 @@ get_data_info <- function(productID) {
 #' @return ee_responses for each correctly exported data product
 #' @export
 request_data <- function(product_info, target_id, verbose = T) {
-  
   # check if products is a list of lists, if not creat one.
-  if (class(product_info[[1]]) != "list"){
-    product_info <- list(product_info) 
+  if (class(product_info[[1]]) != "list") {
+    product_info <- list(product_info)
   }
   
   activate_environments("earthEngineGrabR")
@@ -80,17 +87,26 @@ request_data <- function(product_info, target_id, verbose = T) {
   for (i in seq_along(product_info)) {
     p = product_info[[i]]
     p$ft_id = target_id
-
+    
     # get data
     status <- get_data(p)
-
-    if (status$state == "READY") {
-      if (verbose) cat("processing:", product_info[[i]]$productName, '\n')
-      ee_responses[i] <- p$productNameFull
+    if (class(status) == "character") {
+      if (verbose) warning(status)
     } else {
-      if (verbose) cat("Processing error on earth engine servers for: ", product_info[[i]]$productName, '\n')
+      if (status$state == "READY") {
+        if (verbose) cat("processing:", product_info[[i]]$productName, '\n')
+        ee_responses[i] <- p$productNameFull
+      } else {
+        if (verbose) warning(
+            paste(
+              "Error on Earth Engine servers for data product :",
+              product_info[[i]]$productName,
+              "\nCould not export the data"
+            )
+          )
+      }
     }
   }
   
-return(ee_responses)
-  } 
+  return(na.omit(ee_responses))
+} 

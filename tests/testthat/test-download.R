@@ -8,7 +8,6 @@ context("Download functionalities")
   temp_dir <- get_temp_path()
   
   
-
 # googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T) 
 
 

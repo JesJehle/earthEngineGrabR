@@ -52,7 +52,8 @@ def exportTableToDrive(featureCollection, format, name, export):
         collection=featureCollection,
         description=str(name),
         fileFormat = str(format),
-        folder = "GEE2R_temp")
+        folder = "earthEngineGrabR-tmp"
+    )
 
     if str(export) == str('TRUE'):
         task.start()
@@ -112,17 +113,6 @@ def get_info(productID):
 
 
 
-def process_data(product):
-
-    print(product["productName"])
-
-
-
-
-
-
-
-
 
 
 def get_data_image(
@@ -165,6 +155,8 @@ def get_data_collection(
     product = ee.ImageCollection(productID)
     reduce = select_reducer(temporalReducer)
     product_filtered = product.filterDate(timeStart, timeEnd)
+    if product_filtered.size().getInfo() == 0:
+        raise ValueError("No images found with the given daterange of " + timeStart + " to " + timeEnd + ".")
     product_reduced = product_filtered.reduce(reduce)
     product_reduced = reduceOverRegions(image=product_reduced,
                                         extractionPolygon=polygon,

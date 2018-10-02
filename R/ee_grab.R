@@ -16,15 +16,11 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
   {
   # test required dependencies and activates environment for reticulate
   activate_environments("earthEngineGrabR")
+  googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
   
   # upload vector data is fusion table --------------------
   target_id <-  upload_data(target = target, verbose = verbose)
   
-  # check if products is a list of lists, if not creat one.
-  if (class(products[[1]]) != "list"){
-    products <- list(products) 
-  }
-
   # request data products form google earth engine servers
   ee_response <- request_data(products, target_id)
   # create temp dir
@@ -34,7 +30,7 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
   # import data to R
   product_data <- import_data(ee_response, verbose = verbose, temp_path = temp_path)
   # remove tmp files local and from drive
-  googledrive::drive_rm("GEE2R_temp", verbose = F)
+  googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
   unlink(temp_path, recursive = T)
   
   return(product_data)
