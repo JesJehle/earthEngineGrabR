@@ -37,7 +37,7 @@ delete_on_drive <- function(filename) {
 #' @description gives path for the storage of local temp files
 #' @export
 get_temp_path <- function() {
-  path <- getwd()
+  path <- file.path(dirname(tempdir()), "earthEngineGrabR-temp")
   return(path)
 }
 
