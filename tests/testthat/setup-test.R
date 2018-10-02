@@ -32,10 +32,9 @@ if(nrow(googledrive::drive_find("test-data", verbose = F)) == 0) {
 # remove upload files if still present
 googledrive::drive_rm("test-upload", verbose = F)
 
-
 # upload test data for download test
 
-  df <- create_image_product(productName = "test-download")
+df <- create_image_product(productName = "test-download")
   
 if(nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
   df$ft_id = get_ft_id_gd("test-data")$ft_id
