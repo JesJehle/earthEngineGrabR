@@ -1,7 +1,6 @@
 
 #' wait_for_file_on_drive
 #' @param filename name of the file to scan drive for
-#' @export
 wait_for_file_on_drive <- function(filename, verbose = T){
   
   test <- googledrive::drive_find(filename, verbose = F)
@@ -19,7 +18,6 @@ wait_for_file_on_drive <- function(filename, verbose = T){
 #' @param ee_response Output of the request_data function.
 #' @param clear If the file should be removed from Google Drive after the download.
 #' @return nothing
-#' @export
 download_data <- function(ee_response,
                           clear = T,
                           verbose = T,
@@ -59,7 +57,6 @@ download_data <- function(ee_response,
 #' @param productList List of products files produced in the ee_grab function
 #' @param verbose If true, messages reporting the processing state are printed.
 #' @return nothing
-#' @export
 import_data <- function(product_list, verbose = T, temp_path){
   
   #product_list <- unlist(productList) 

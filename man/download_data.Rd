@@ -4,7 +4,7 @@
 \alias{download_data}
 \title{download_data_waiting}
 \usage{
-download_data(ee_response, clear = T, verbose = T)
+download_data(ee_response, clear = T, verbose = T, temp_path)
 }
 \arguments{
 \item{ee_response}{Output of the request_data function.}

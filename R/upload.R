@@ -3,7 +3,6 @@
 
 #' delete_if_exist
 #' @param path_file path of file to check
-#' @export
 delete_if_exist <- function(path) {
   file_name <- get_name_from_path(path)
   test <- try(nrow(googledrive::drive_find(file_name, verbose = F)), silent = T)
@@ -14,7 +13,6 @@ delete_if_exist <- function(path) {
 
 #' get_ft_id_gd extracts fusion table ID
 #' @param ft_name Name of fusion table in google drive
-#' @export
 get_ft_id_gd <- function(ft_name) {
   info <- googledrive::drive_find(ft_name, verbose = F)
   if(nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
@@ -27,7 +25,6 @@ get_ft_id_gd <- function(ft_name) {
 #' upload vector data as fusion table and parse file to allow large uploads
 #' @param file_path Path to vector data
 #' @param fileName Name of fusion table in google drive
-#' @export
 upload_as_ft <- function(file_path, fileName) {
   
   ogr_to_ft_path = clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
@@ -48,7 +45,6 @@ upload_as_ft <- function(file_path, fileName) {
 #' @param verbose specifies weather information is about the process is printed to the console
 #' @param target path to vector data to be uploaded
 #' @return Fusion table ID
-#' @export
 upload_data <- function(target, verbose = T) {
   
   # delete if exists

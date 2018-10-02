@@ -1,6 +1,5 @@
 
 #' Runs google drive authorisation via googledrive::drive_auth() and saves credentials 
-#' @export
 run_gd_oauth <- function(credential_name = "gd-credentials.rds"){
   
   credential_path <- get_credential_root()
@@ -16,7 +15,6 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds"){
 }
  
 #' Run ee authentication
-#' @export
 run_ee_oauth <- function(){
 #  library(reticulate)
 #  use_condaenv("earthEngineGrabR", required = T)
@@ -42,7 +40,6 @@ run_ee_oauth <- function(){
 }
 
 #' Run ft authentication
-#' @export
 run_ft_oauth <- function() {
 
   # source python functions
@@ -63,7 +60,6 @@ run_ft_oauth <- function() {
 
 #' runs earh engine, fusion table and google drive authentication
 #' @param clean_credentials logical weather to delete existing credentials, default = T
-#' @export
 run_oauth_all <- function(clean_credentials = T) {
   activate_environments()
   credential_path <- get_credential_root()
@@ -83,7 +79,6 @@ run_oauth_all <- function(clean_credentials = T) {
 
 
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
-#' @export
 gd_auth <- function(credential_name = "gd-credentials.rds") {
   credential_path <- file.path(get_credential_root(), credential_name)
   googledrive::drive_auth(credential_path)
@@ -91,7 +86,6 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 
 
 #' activate environment
-#' @export
 activate_environments <- function(env_name = "earthEngineGrabR") {
   
   test_credentials()
@@ -110,7 +104,6 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
 
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
-#' @export
 test_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), silent_match = F, with_error = F) {
   
   credentials_match <-
@@ -134,7 +127,6 @@ test_credentials <- function(credentials = c("gd-credentials.rds", "credentials"
 
 
 #' deletes credentials to re initialize
-#' @export
 delete_credentials = function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
   credential_path <- get_credential_root()
   credentials_match <-
@@ -154,7 +146,6 @@ delete_credentials = function(credentials = c("gd-credentials.rds", "credentials
 
 #' Find path to specified credentials folder
 #' @return  path to credentials folder
-#' @export
 get_credential_root <- function() {
   # define values
   path2credentials <- '~/.config/earthengine'

@@ -6,7 +6,6 @@
 #' calls get_data_image or get_data_collections, dependent on the info object
 #' @param info Data frame information generated gy ee_grab()
 #' @param data_type either ImageCollection of Image,
-#' @export
 get_data <- function(info, test = F) {
   
   activate_environments("earthEngineGrabR")
@@ -54,7 +53,6 @@ get_data <- function(info, test = F) {
 #' get_data_info
 #' retreves info with a given product ID over earthEngine
 #' @param productID String that speciefies a data products in ee
-#' @export
 get_data_info <- function(productID) {
   
   activate_environments("earthEngineGrabR")
@@ -71,7 +69,6 @@ get_data_info <- function(productID) {
 #' @param product_info list object created by ee_product functions
 #' @param target_id String of fusion table id created by upload_data()
 #' @return ee_responses for each correctly exported data product
-#' @export
 request_data <- function(product_info, target_id, verbose = T, test = F) {
   # check if products is a list of lists, if not creat one.
   if (class(product_info[[1]]) != "list") {

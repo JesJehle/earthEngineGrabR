@@ -1,6 +1,5 @@
 
 #' skips test in testthat evaluation if requirement are not met. The function tests for credentials python modules and test files on google drive
-#' @export
 skip_test_if_not_possible <- function() {
   
   credentials_test <- try(test_credentials(), silent = T)
@@ -25,7 +24,6 @@ skip_test_if_not_possible <- function() {
 
 #' delete_on_drive
 #' @param filename ldkjsf
-#' @export
 delete_on_drive <- function(filename) {
   gd_auth()
   test <- nrow(googledrive::drive_find(filename, verbose = F)) > 0
@@ -36,7 +34,6 @@ delete_on_drive <- function(filename) {
 #' get_temp_path
 #' @description creates folder and returns path for the storage of local temp files, if folder alreday exists it gets deleted and new created.
 #' @param create logical weather to create a new folder
-#' @export
 get_temp_path <- function(create = T) {
   path <- file.path(dirname(tempdir()), "earthEngineGrabR-tmp")
   if (create) {
@@ -47,21 +44,13 @@ get_temp_path <- function(create = T) {
 }
 
 
-
 #' is_type
 #' @description test of param is of type type and raises an appropriate error
 #' @param param the parameter to test
 #' @param type the required type of the parameter
-#' @export
 is_type <- function(param, type) {
   if (class(param) != type) stop(paste(deparse(substitute(param)), "must be of class", type), call. = F)
 }
-
-
-
-
-
-
 
 
 
@@ -69,7 +58,6 @@ is_type <- function(param, type) {
 #' @param foldername the name of the folder to search
 #' @param root_dir the initial directory the to search
 #' @return the given folder with the path
-#' @export
 find_folder <- function(foldername, root_dir){
   directories <- list.dirs(path.expand(root_dir))
   found_folder <- list("start")
@@ -86,7 +74,6 @@ find_folder <- function(foldername, root_dir){
 #' @param filename the name of the file to search, with extension
 #' @param root_dir the initial directory the to search
 #' @return the given file with the path
-#' @export
 find_file <- function(filename, root_dir) {
   directories <- list.dirs(path.expand(root_dir))
   found_file <- list("start")
@@ -103,7 +90,6 @@ find_file <- function(filename, root_dir) {
 #' get_name_from_path
 #' @param path A file path
 #' @return basename without extension
-#' @export
 get_name_from_path <- function(path){
   name =   sub('\\..*$', '', basename(path))
   return(name)
@@ -111,9 +97,7 @@ get_name_from_path <- function(path){
 }
 
 
-
 #' Add quotes to paths with spaces
-#' @export
 clean_spaces <- function(path) {
   if (length(grep(" ", path) > 0)) {
     path <-  shQuote(path)

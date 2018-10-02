@@ -5,7 +5,8 @@
 \title{jrc_distanceToWater}
 \usage{
 eeProduct_jrc_distanceToWater(spatialReducer = "mean",
-  temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F)
+  temporalReducer = "mean", yearIntervall = c(2000, 2002),
+  byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}

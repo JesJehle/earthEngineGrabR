@@ -4,8 +4,11 @@
 \alias{get_temp_path}
 \title{get_temp_path}
 \usage{
-get_temp_path()
+get_temp_path(create = T)
+}
+\arguments{
+\item{create}{logical weather to create a new folder}
 }
 \description{
-gives path for the storage of local temp files
+creates folder and returns path for the storage of local temp files, if folder alreday exists it gets deleted and new created.
 }

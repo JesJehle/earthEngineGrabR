@@ -5,7 +5,8 @@
 \title{ee_grab}
 \usage{
 ee_grab(target = system.file("data/territories.shp", package =
-  "earthEngineGrabR"), products = list(create_image_product()), verbose = T)
+  "earthEngineGrabR"), products = list(create_image_product()),
+  verbose = T)
 }
 \arguments{
 \item{target}{A path to a local geofile, if file is already uploaded, the upload is skipped.}

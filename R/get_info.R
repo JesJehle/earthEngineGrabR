@@ -5,7 +5,6 @@
 #' @description Retrives Metadata of data product
 #' @param product_id String of the product id
 #' @param path String, specifieng the path for the medata
-
 get_product_info <- function(prodct_id, path) {
   activate_environments()
   ee <- import("ee")
@@ -13,7 +12,6 @@ get_product_info <- function(prodct_id, path) {
   info <- ee$Image("CGIAR/SRTM90_V4")$getInfo()
 
 }
-
 
 
 #product_info <- get_data_info(p$productID)

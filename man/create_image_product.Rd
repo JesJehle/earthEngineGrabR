@@ -4,8 +4,8 @@
 \alias{create_image_product}
 \title{create_image_collection}
 \usage{
-create_image_product(productID = "CGIAR/SRTM90_V4", productName = "srtm",
-  spatialReducer = "mean", resolution = 3000)
+create_image_product(productID = "CGIAR/SRTM90_V4",
+  productName = "srtm", spatialReducer = "mean", resolution = 3000)
 }
 \arguments{
 \item{productID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}

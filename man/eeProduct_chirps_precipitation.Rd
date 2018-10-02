@@ -5,7 +5,8 @@
 \title{chirps_precipitation}
 \usage{
 eeProduct_chirps_precipitation(spatialReducer = "mean",
-  temporalReducer = "mean", yearIntervall = c(2000, 2002), byYear = F)
+  temporalReducer = "mean", yearIntervall = c(2000, 2002),
+  byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}

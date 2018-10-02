@@ -4,7 +4,7 @@
 \alias{request_data}
 \title{request_data}
 \usage{
-request_data(product_info, target_id, verbose = T)
+request_data(product_info, target_id, verbose = T, test = F)
 }
 \arguments{
 \item{product_info}{list object created by ee_product functions}

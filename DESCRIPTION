@@ -7,6 +7,6 @@ Depends: R (>= 3.2.3)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 imports: googledrive, rjson, dplyr, reticulate, sf
 Suggests: testthat

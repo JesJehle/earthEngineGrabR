@@ -4,8 +4,9 @@
 \alias{eeProduct_modis_treeCover}
 \title{modis_treeCover}
 \usage{
-eeProduct_modis_treeCover(spatialReducer = "mean", temporalReducer = "mean",
-  yearIntervall = c(2000, 2002), byYear = F)
+eeProduct_modis_treeCover(spatialReducer = "mean",
+  temporalReducer = "mean", yearIntervall = c(2000, 2002),
+  byYear = F)
 }
 \arguments{
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
