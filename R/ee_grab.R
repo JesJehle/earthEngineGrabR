@@ -14,20 +14,19 @@ ee_grab <- function(target = system.file("data/territories.shp", package =
                         products = list(create_image_product()),
                         verbose = T)
   {
+  # test required dependencies and activates environment for reticulate
   activate_environments("earthEngineGrabR")
-  # authorise google drive
-
+  
   # upload vector data is fusion table --------------------
   target_id <-  upload_data(target = target, verbose = verbose)
   
   # check if products is a list of lists, if not creat one.
-  
   if (class(products[[1]]) != "list"){
     products <- list(products) 
   }
 
   # request data products form google earth engine servers
-  ee_response <- request_data(products, target_id$ft_id)
+  ee_response <- request_data(products, target_id)
   # create temp dir
   temp_path <- get_temp_path()
   # download data products form google drive

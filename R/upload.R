@@ -1,8 +1,6 @@
 
 
 
-
-
 #' delete_if_exist
 #' @param path_file path of file to check
 #' @export
@@ -21,8 +19,8 @@ get_ft_id_gd <- function(ft_name) {
   info <- googledrive::drive_find(ft_name, verbose = F)
   if(nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
   if(nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name))
-  info$ft_id <- paste0("ft:", info$id)
-  return(info)
+  ft_id <- paste0("ft:", info$id)
+  return(ft_id)
 }
 
 
@@ -37,8 +35,12 @@ upload_as_ft <- function(file_path, fileName) {
   # make functions available
   source_python(file = ogr_to_ft_path)
   
-  convert(file_path, fileName)
-  
+  tryCatch({
+    convert(file_path, fileName)
+  },
+  error = function(err) {
+    stop(paste("could no upload target file", file_path, "\n", err), call. = F)
+  }) 
 }
 
 
@@ -66,10 +68,6 @@ upload_data <- function(target, verbose = T) {
   credential_path <- get_credential_root()
   table_id <- get_ft_id_gd(target_name)
 
-  # if is na delete credentials and re-authenticate before rerunning get_ft_id
-
-  
-  
   return(table_id)
 }
 

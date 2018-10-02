@@ -1,5 +1,61 @@
 
 
+
+
+#' get_data
+#' calls get_data_image or get_data_collections, dependent on the info object
+#' @param info Data frame information generated gy ee_grab()
+#' @param data_type either ImageCollection of Image,
+#' @export
+get_data <- function(info) {
+  
+  activate_environments("earthEngineGrabR")
+  ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  source_python(file = ee_helpers)
+  
+  if (info$data_type == "ImageCollection") {
+    status <- get_data_collection(
+      info$productID,
+      info$productName,
+      info$spatialReducer,
+      info$ft_id,
+      info$outputFormat,
+      info$resolution,
+      info$temporalReducer,
+      info$timeStart,
+      info$timeEnd
+    )
+  }
+  if (info$data_type == "Image") {
+    status <- get_data_image(
+      info$productID,
+      info$productName,
+      info$spatialReducer,
+      info$ft_id,
+      info$outputFormat,
+      info$resolution
+    )
+  }
+  return(status)
+}
+
+
+
+#' get_data_info
+#' retreves info with a given product ID over earthEngine
+#' @param productID String that speciefies a data products in ee
+#' @export
+get_data_info <- function(productID) {
+  
+  activate_environments("earthEngineGrabR")
+  ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  source_python(file = ee_helpers)
+  product_info <- get_info(productID)
+  return(product_info)
+}
+
+
+
 #' request_data
 #' @description Starts processing on earth engine retrieves info from data product
 #' @param product_info list object created by ee_product functions
@@ -7,6 +63,12 @@
 #' @return ee_responses for each correctly exported data product
 #' @export
 request_data <- function(product_info, target_id, verbose = T) {
+  
+  # check if products is a list of lists, if not creat one.
+  if (class(product_info[[1]]) != "list"){
+    product_info <- list(product_info) 
+  }
+  
   activate_environments("earthEngineGrabR")
   ee_helpers = system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
   source_python(file = ee_helpers)
@@ -18,20 +80,10 @@ request_data <- function(product_info, target_id, verbose = T) {
   for (i in seq_along(product_info)) {
     p = product_info[[i]]
     p$ft_id = target_id
-    
-    #filename <- paste0(products[[i]]$productName,".", casefold(outputFormat))
-    #googledrive::drive_rm(filename, verbose = F)
-    
-    # make functions available
-    
 
     # get data
     status <- get_data(p)
-    
-    # filename <- paste0(status$description, ".", casefold(p$outputFormat))
-    
-    
-    #print(paste0("the projection of result is", drop))
+
     if (status$state == "READY") {
       if (verbose) cat("processing:", product_info[[i]]$productName, '\n')
       ee_responses[i] <- p$productNameFull
@@ -40,8 +92,5 @@ request_data <- function(product_info, target_id, verbose = T) {
     }
   }
   
-  
-  
 return(ee_responses)
-  
   } 

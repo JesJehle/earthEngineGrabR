@@ -90,6 +90,24 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 }
 
 
+#' activate environment
+#' @export
+activate_environments <- function(env_name = "earthEngineGrabR") {
+  
+  test_credentials()
+  library(reticulate)
+  conda_test <- try(use_condaenv(env_name, required = T), silent = T)
+  virtual_test <- try(use_virtualenv(env_name, required = T), silent = T)
+  if (class(conda_test) == "try-error" & class(virtual_test) == "try-error") {
+    stop("Could not find a valid conda or virtual environment. \nPlease run ee_grab_install() to install a valid environment.", call. = F)
+  }
+  try(gd_auth(), silent = T)
+}
+
+
+
+
+
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
 #' @export
@@ -107,7 +125,7 @@ test_credentials <- function(credentials = c("gd-credentials.rds", "credentials"
   test <- credentials_match %in% list.files(credential_path)
   for(t in test) {
     if(!(t) & with_error) {
-      stop(paste("Following credentials could not be found: \n", paste(credentials, test, collapse = " ")))
+      stop(paste("Following credentials could not be found: \n", paste(credentials, test, collapse = " "), "\nPlease run ee_grab_install() to create the required credentials"), call. = F)
     }
     # test if all credential test are positiv
   return(sum(test) == length(test))

@@ -166,11 +166,3 @@ clean_environments <- function(env_name = "earthEngineGrabR") {
 }
 
 
-#' activate environment
-#' @export
-activate_environments <- function(env_name = "earthEngineGrabR") {
-  library(reticulate)
-  try(use_condaenv(env_name, required = T), silent = T)
-  try(use_virtualenv(env_name, required = T), silent = T)
-  try(gd_auth(), silent = T)
-}

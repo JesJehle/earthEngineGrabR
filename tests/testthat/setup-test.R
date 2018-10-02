@@ -37,7 +37,7 @@ googledrive::drive_rm("test-upload", verbose = F)
 df <- create_image_product(productName = "test-download")
   
 if(nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
-  df$ft_id = get_ft_id_gd("test-data")$ft_id
+  df$ft_id = get_ft_id_gd("test-data")
 
   status <- get_data(df)
   test <- wait_for_file_on_drive(df$productNameFull, verbose = F)

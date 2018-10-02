@@ -5,9 +5,8 @@ ft_name <- "test-data"
 test_that("test that get_ft_id extracts the id of test-data on google drive", {
   skip_test_if_not_possible()
   test <- get_ft_id_gd(ft_name)
-  expect_equal(nrow(test), 1)
-  expect_named(test, c("name", "id", "drive_resource", "ft_id"), ignore.order = T)
-  })
+  expect_is(test, "character")
+})
 
 wrong_ft_name <- "test-data-error"
 test_that("test that get_ft_id raise error with wrong ft_name argument", {
@@ -25,6 +24,17 @@ test_that("test that upload_as_ft uploads test data to google drive as fusion ta
   googledrive::drive_rm("test-upload", verbose = F)
 })
 
+test_that("test that upload_as_ft throws error with non valid file", {
+  skip_test_if_not_possible()
+  activate_environments()
+  expect_error(upload_as_ft(system.file("data/not-valid.shp", package = "earthEngineGrabR"), "test-upload"))
+})
+
+
+
+
+
+
 
 test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {
   skip_test_if_not_possible()
@@ -38,7 +48,7 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   expect_true(test)
   
   # test if id is returned
-  expect_named(test_id, c("name", "id", "drive_resource", "ft_id"))
+  expect_is(test_id, "character")
   googledrive::drive_rm("test-upload")
 })
 

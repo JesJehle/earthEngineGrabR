@@ -15,11 +15,12 @@ test_that("test that test_credentials work as expacted",  {
   expect_true(credentials_test)
   # expect error if with_error argument true and name not exists
   expect_error(test_credentials(credentials = "test", with_error = T, silent_match = T))
-
 })
 
 
-
+test_that("test that activate_environment raises error if no environment can be found", {
+  expect_error(activate_environments("wrong_name"))
+})
 
 
 

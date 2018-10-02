@@ -64,10 +64,14 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   match.arg(temporalReducer, choices = c("mean", "median", "min", "max", "mode", "sum"))
   
-  timeStart <- lubridate::ymd(timeStart)
-  timeEnd <- lubridate::ymd(timeEnd)
+  timeStart <- as.Date(timeStart, format = "%Y-%m-%d", tryFormats = c("%Y-%m-%d"))
+  timeEnd <- as.Date(timeEnd, format = "%Y-%m-%d", tryFormats = c("%Y-%m-%d"))
+  
   if(is.na(timeStart)) stop(paste(timeStart, "is not a valid Date"), call. = F)
   if(is.na(timeEnd)) stop(paste(timeEnd, "is not a valid Date"), call. = F)
+  
+  timeStart <- as.character(timeStart)
+  timeEnd <- as.character(timeEnd)
   
 
   
