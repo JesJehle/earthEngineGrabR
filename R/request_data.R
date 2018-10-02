@@ -63,7 +63,6 @@ get_data_info <- function(productID) {
 }
 
 
-
 #' request_data
 #' @description Starts processing on earth engine retrieves info from data product
 #' @param product_info list object created by ee_product functions
