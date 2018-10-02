@@ -2,7 +2,7 @@ library(earthEngineGrabR)
 context("Test create_image_product and create_collection_product")
 
 
-test_that("Test that create_image_procuts and create_collection_product return correct output if input is valid", {
+test_that("Test that create_image_product and create_collection_product return correct output if input is valid", {
   output_image <- create_image_product(productID = "Test_xyz", productName = "test", spatialReducer = "mean", resolution = 200)
   names(output_image)
   expect_named(output_image, c("productID","productName","spatialReducer","resolution" ,"productNameFull", "data_type", "outputFormat" ))
