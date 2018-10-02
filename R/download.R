@@ -44,10 +44,10 @@ download_data <- function(ee_response,
       verbose = F
     )
     
-    if (verbose == T)
+    if (verbose)
       cat(paste0('download: ', get_name_from_path(ee_response[i]), "\n"))
     # delete folder
-    if (clear == T)
+    if (clear)
       googledrive::drive_rm(ee_response[i], verbose = F)
   }
   

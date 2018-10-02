@@ -34,12 +34,15 @@ delete_on_drive <- function(filename) {
 
 
 #' get_temp_path
-#' @description creates folder and returns path for the storage of local temp files
+#' @description creates folder and returns path for the storage of local temp files, if folder alreday exists it gets deleted and new created.
 #' @param create logical weather to create a new folder
 #' @export
 get_temp_path <- function(create = T) {
   path <- file.path(dirname(tempdir()), "earthEngineGrabR-tmp")
-  if (create) dir.create(path)
+  if (create) {
+    if (dir.exists(path)) unlink(path, recursive = T) 
+    dir.create(path)
+  }
   return(path)
 }
 

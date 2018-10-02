@@ -19,9 +19,10 @@ test_that("Test that download_data downloads test file from google drive", {
   # googledrive::drive_find(test_file, verbose = F)
 
   download_data(test_file,
-    clear = F)
+                clear = F, 
+                temp_path = temp_dir)
   
-  test <- grep(test_file, list.files(test_dir)) 
+  test <- grep(test_file, list.files(temp_dir)) 
   expect_is(test, "integer")
   #unlink(test_dir, recursive = T)
 
@@ -32,8 +33,9 @@ test_that("Test that import_data import data to R", {
   skip_test_if_not_possible()
   activate_environments()
   
-  data <- import_data(productList = test_file, 
-              clean = T)
+  data <- import_data(
+    product_list = test_file, 
+    temp_path = temp_dir)
   
   expect_is(data, "data.frame")
   # googledrive::drive_find(test_file, verbose = F)
