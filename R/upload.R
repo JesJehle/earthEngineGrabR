@@ -6,7 +6,7 @@
 delete_if_exist <- function(path) {
   file_name <- get_name_from_path(path)
   test <- try(nrow(googledrive::drive_find(file_name, verbose = F)), silent = T)
-  if(!(class(test) == "try-error")){
+  if (!(class(test) == "try-error")) {
     googledrive::drive_rm(file_name, verbose = F)
   }
 }
@@ -15,8 +15,8 @@ delete_if_exist <- function(path) {
 #' @param ft_name Name of fusion table in google drive
 get_ft_id_gd <- function(ft_name) {
   info <- googledrive::drive_find(ft_name, verbose = F)
-  if(nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
-  if(nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name))
+  if (nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
+  if (nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name))
   ft_id <- paste0("ft:", info$id)
   return(ft_id)
 }
@@ -26,18 +26,18 @@ get_ft_id_gd <- function(ft_name) {
 #' @param file_path Path to vector data
 #' @param fileName Name of fusion table in google drive
 upload_as_ft <- function(file_path, fileName) {
-  
-  ogr_to_ft_path = clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
-  
+  ogr_to_ft_path <- clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
+
   # make functions available
   source_python(file = ogr_to_ft_path)
-  
+
   tryCatch({
     convert(file_path, fileName)
   },
   error = function(err) {
     stop(paste("could no upload target file", file_path, "\n", err), call. = F)
-  }) 
+  }
+  )
 }
 
 
@@ -46,25 +46,25 @@ upload_as_ft <- function(file_path, fileName) {
 #' @param target path to vector data to be uploaded
 #' @return Fusion table ID
 upload_data <- function(target, verbose = T) {
-  
+
   # delete if exists
   googledrive::drive_rm("GEE2R_temp", verbose = F)
-  
+
   target_name <- get_name_from_path(target)
   # test if file is already uploaded
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
   if (!test) {
-    if (verbose == T)
+    if (verbose == T) {
       cat("upload:", target_name, "\n")
+    }
     upload_as_ft(target, target_name)
   } else {
-    if (verbose == T)
+    if (verbose == T) {
       cat("upload:", target_name, "is already uploaded", "\n")
+    }
   }
   credential_path <- get_credential_root()
   table_id <- get_ft_id_gd(target_name)
 
   return(table_id)
 }
-
-

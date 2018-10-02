@@ -13,22 +13,22 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
                                  productName = "srtm",
                                  spatialReducer = "mean",
                                  resolution = 3000) {
-  
-  
+
+
   # parameter validation
   is_type(productID, "character")
   is_type(productName, "character")
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   is_type(resolution, "numeric")
-  
 
-  product_name_new = paste0(productName, "_", spatialReducer)
+
+  product_name_new <- paste0(productName, "_", spatialReducer)
   productInfo <- list(
     productID = productID,
     productName = product_name_new,
     spatialReducer = spatialReducer,
     resolution = resolution,
-    productNameFull= paste0(product_name_new, ".", "geojson"),
+    productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "Image",
     outputFormat = "GeoJSON"
   )
@@ -54,7 +54,7 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                                       timeStart = "2017-01-01",
                                       timeEnd = "2017-02-01",
                                       resolution = 3000) {
-  
+
   # parameter validation
   is_type(productID, "character")
   is_type(productName, "character")
@@ -63,19 +63,19 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
   is_type(timeEnd, "character")
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   match.arg(temporalReducer, choices = c("mean", "median", "min", "max", "mode", "sum"))
-  
+
   timeStart <- as.Date(timeStart, format = "%Y-%m-%d", tryFormats = c("%Y-%m-%d"))
   timeEnd <- as.Date(timeEnd, format = "%Y-%m-%d", tryFormats = c("%Y-%m-%d"))
-  
-  if(is.na(timeStart)) stop(paste(timeStart, "is not a valid Date"), call. = F)
-  if(is.na(timeEnd)) stop(paste(timeEnd, "is not a valid Date"), call. = F)
-  
+
+  if (is.na(timeStart)) stop(paste(timeStart, "is not a valid Date"), call. = F)
+  if (is.na(timeEnd)) stop(paste(timeEnd, "is not a valid Date"), call. = F)
+
   timeStart <- as.character(timeStart)
   timeEnd <- as.character(timeEnd)
-  
 
-  
-  product_name_new = 
+
+
+  product_name_new <-
     paste0(
       productName,
       "_",
@@ -85,8 +85,9 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
       "_",
       timeEnd,
       "_",
-      temporalReducer)
-  
+      temporalReducer
+    )
+
   productInfo <- list(
     productID = productID,
     productName = product_name_new,
@@ -95,12 +96,9 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
     timeStart = timeStart,
     timeEnd = timeEnd,
     resolution = resolution,
-    productNameFull= paste0(product_name_new, ".", "geojson"),
+    productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "ImageCollection",
     outputFormat = "GeoJSON"
   )
   return(productInfo)
 }
-
-
-

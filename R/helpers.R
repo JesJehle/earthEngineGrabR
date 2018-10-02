@@ -1,25 +1,24 @@
 
 #' skips test in testthat evaluation if requirement are not met. The function tests for credentials python modules and test files on google drive
 skip_test_if_not_possible <- function() {
-  
   credentials_test <- try(test_credentials(), silent = T)
-  if(!credentials_test) skip(paste("Testing is not possible. \n", "credentials: ", credentials_test))
+  if (!credentials_test) skip(paste("Testing is not possible. \n", "credentials: ", credentials_test))
   # test the installation of required python modules
-  
+
   module_test_conda <- test_import_ee_gdal_conda()
   module_test_virtual <- test_import_ee_gdal_virtual()
   module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
-  
-  if(!module_test) skip(paste("Testing is not possible. \n", "modules: ", module_test))
-  
+
+  if (!module_test) skip(paste("Testing is not possible. \n", "modules: ", module_test))
+
   # test environment
   ## check test data on google drive and upload if neccessary
   try(gd_auth(), silent = T)
   test <- googledrive::drive_find("test-download_mean.geojson", verbose = F)
   environment_test <- try(nrow(test) == 1, silent = T)
-  
-  if(!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
-  }
+
+  if (!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
+}
 
 
 #' delete_on_drive
@@ -37,7 +36,7 @@ delete_on_drive <- function(filename) {
 get_temp_path <- function(create = T) {
   path <- file.path(dirname(tempdir()), "earthEngineGrabR-tmp")
   if (create) {
-    if (dir.exists(path)) unlink(path, recursive = T) 
+    if (dir.exists(path)) unlink(path, recursive = T)
     dir.create(path)
   }
   return(path)
@@ -58,10 +57,10 @@ is_type <- function(param, type) {
 #' @param foldername the name of the folder to search
 #' @param root_dir the initial directory the to search
 #' @return the given folder with the path
-find_folder <- function(foldername, root_dir){
+find_folder <- function(foldername, root_dir) {
   directories <- list.dirs(path.expand(root_dir))
   found_folder <- list("start")
-  
+
   for (folder in directories) {
     if (foldername %in% dir(folder)) {
       found_folder[length(found_folder)] <- file.path(folder, foldername)
@@ -90,18 +89,16 @@ find_file <- function(filename, root_dir) {
 #' get_name_from_path
 #' @param path A file path
 #' @return basename without extension
-get_name_from_path <- function(path){
-  name =   sub('\\..*$', '', basename(path))
+get_name_from_path <- function(path) {
+  name <- sub("\\..*$", "", basename(path))
   return(name)
-  
 }
 
 
 #' Add quotes to paths with spaces
 clean_spaces <- function(path) {
   if (length(grep(" ", path) > 0)) {
-    path <-  shQuote(path)
+    path <- shQuote(path)
   }
   return(path)
 }
-

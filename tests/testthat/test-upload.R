@@ -41,15 +41,13 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   activate_environments()
   googledrive::drive_mv("test-data", verbose = F)
   test_id <- upload_data(target = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
-  
+
   # test if file is uploaded
   test_upload <- googledrive::drive_find("test-data", verbose = F)
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
-  
+
   # test if id is returned
   expect_is(test_id, "character")
   googledrive::drive_rm("test-upload")
 })
-
-

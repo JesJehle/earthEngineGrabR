@@ -12,7 +12,7 @@ ee_grab_install <- function(clean_credentials = T, conda = T, clean_environment 
   # test python dependencies ----------------------------------------------------------------------------------------------------------
   test_python()
   # install python dependencies ----------------------------------------------------------------------------------------------
-  if(conda) {
+  if (conda) {
     # test if anaconda is installed on the system
     test_anaconda()
     # install dependencies via an anaconda environment if it's no yet installed
@@ -20,7 +20,7 @@ ee_grab_install <- function(clean_credentials = T, conda = T, clean_environment 
     # test import of all modules.
     import_test <- test_import_ee_gdal_conda()
     # if test fails a workaround via the use of a virtual environment is used.
-    if(!import_test[[1]]) {
+    if (!import_test[[1]]) {
       warning(paste("Problems with loading modules", import_test[[2]], "Further a workaround via the use of virtual environments is used."))
       # test for requirements for the workaround
       test_for_gdal_workaround()
@@ -32,14 +32,13 @@ ee_grab_install <- function(clean_credentials = T, conda = T, clean_environment 
   } else {
     # test import via the virtual environment
     import_test <- test_import_ee_gdal_virtual()
-    # if test fails again, fatal error!!!    
-    if(!import_test[[1]]) {
+    # if test fails again, fatal error!!!
+    if (!import_test[[1]]) {
       stop(paste("Sorry! The installation still fails with the error: ", import_test[[2]]))
     }
   }
   # run authentication ---------------------------------------------------------------
   run_oauth_all(clean_credentials)
-  
+
   # set path to credentials
-  
 }

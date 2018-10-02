@@ -9,7 +9,6 @@ test_that("Test that required credentials exist", {
 })
 
 test_that("Test that required python modules can be loaded", {
-  
   module_test_conda <- test_import_ee_gdal_conda()
   module_test_virtual <- test_import_ee_gdal_virtual()
   module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
@@ -17,13 +16,9 @@ test_that("Test that required python modules can be loaded", {
 })
 
 test_that("Test that required testing files on google drive exist", {
-  
   test <- googledrive::drive_find("test-download_mean.geojson", verbose = F)
   environment_test <- try(nrow(test) == 1, silent = T)
   expect_true(environment_test)
 })
 
 googledrive::drive_rm("test-upload")
-
-
-

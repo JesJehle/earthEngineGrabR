@@ -1,34 +1,33 @@
 
-#' Runs google drive authorisation via googledrive::drive_auth() and saves credentials 
-run_gd_oauth <- function(credential_name = "gd-credentials.rds"){
-  
+#' Runs google drive authorisation via googledrive::drive_auth() and saves credentials
+run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
   credential_path <- get_credential_root()
-  gd_credential_path = file.path(credential_path, credential_name)
-  if(file.exists(gd_credential_path)) file.remove(gd_credential_path)
-  
+  gd_credential_path <- file.path(credential_path, credential_name)
+  if (file.exists(gd_credential_path)) file.remove(gd_credential_path)
+
   saveRDS(googledrive::drive_auth(reset = T, cache = F, verbose = F), gd_credential_path)
-  
+
   while (!(file.exists(gd_credential_path))) {
     Sys.sleep(1)
   }
   cat("Googledrive API is authenticated \n")
 }
- 
+
 #' Run ee authentication
-run_ee_oauth <- function(){
-#  library(reticulate)
-#  use_condaenv("earthEngineGrabR", required = T)
+run_ee_oauth <- function() {
+  #  library(reticulate)
+  #  use_condaenv("earthEngineGrabR", required = T)
   # source python functions
-  
+
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
   source_python(oauth_func_path)
-  
+
   request_ee_code()
-  
+
   code <- readline("Enter authorisation code here: ")
-  
+
   test <- try(request_ee_token(code), silent = T)
-  
+
   while (class(test) == "try-error") {
     cat("Problem with Authentication key input. \nPlease follow the authentication steps in the browser and copy paste the authentication token into the R console again.")
     request_ee_code()
@@ -36,7 +35,6 @@ run_ee_oauth <- function(){
     test <- try(request_ee_token(code), silent = T)
   }
   cat("Earth Engine Python API is authenticated \n")
-  
 }
 
 #' Run ft authentication
@@ -48,7 +46,7 @@ run_ft_oauth <- function() {
   request_ft_code()
   code <- readline("Enter authorisation code here: ")
   test <- try(request_ft_token(code), silent = T)
-  
+
   while (class(test) == "try-error") {
     cat("Problem with Authentication key input. \nPlease follow the authentication steps in the browser and copy paste the authentication token into the R console again.")
     request_ft_code()
@@ -63,7 +61,7 @@ run_ft_oauth <- function() {
 run_oauth_all <- function(clean_credentials = T) {
   activate_environments()
   credential_path <- get_credential_root()
-  
+
   # delet credentials if spedified
   if (clean_credentials) {
     delete_credentials()
@@ -72,7 +70,7 @@ run_oauth_all <- function(clean_credentials = T) {
   run_ee_oauth()
   # fusion table authorisation
   run_ft_oauth()
-  # authentication google drive api 
+  # authentication google drive api
   run_gd_oauth()
 }
 
@@ -87,7 +85,6 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 
 #' activate environment
 activate_environments <- function(env_name = "earthEngineGrabR") {
-  
   test_credentials()
   library(reticulate)
   conda_test <- try(use_condaenv(env_name, required = T), silent = T)
@@ -105,29 +102,28 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
 test_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), silent_match = F, with_error = F) {
-  
   credentials_match <-
     try(match.arg(
       credentials,
       c("gd-credentials.rds", "credentials", "ft_credentials.json"),
       several.ok = T
     ), silent = silent_match)
-  
+
   credential_path <- get_credential_root()
-  
+
   test <- credentials_match %in% list.files(credential_path)
-  for(t in test) {
-    if(!(t) & with_error) {
+  for (t in test) {
+    if (!(t) & with_error) {
       stop(paste("Following credentials could not be found: \n", paste(credentials, test, collapse = " "), "\nPlease run ee_grab_install() to create the required credentials"), call. = F)
     }
     # test if all credential test are positiv
-  return(sum(test) == length(test))
+    return(sum(test) == length(test))
   }
 }
 
 
 #' deletes credentials to re initialize
-delete_credentials = function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
+delete_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
   credential_path <- get_credential_root()
   credentials_match <-
     match.arg(
@@ -135,7 +131,7 @@ delete_credentials = function(credentials = c("gd-credentials.rds", "credentials
       c("gd-credentials.rds", "credentials", "ft_credentials.json"),
       several.ok = T
     )
-  
+
   for (i in credentials_match) {
     if (file.exists(file.path(credential_path, i))) {
       file.remove(file.path(credential_path, i))
@@ -148,23 +144,7 @@ delete_credentials = function(credentials = c("gd-credentials.rds", "credentials
 #' @return  path to credentials folder
 get_credential_root <- function() {
   # define values
-  path2credentials <- '~/.config/earthengine'
+  path2credentials <- "~/.config/earthengine"
   credential_path <- path.expand(path2credentials)
   return(credential_path)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

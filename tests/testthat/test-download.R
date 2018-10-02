@@ -3,12 +3,12 @@ library(earthEngineGrabR)
 context("Download functionalities")
 
 
-  test_file <- "test-download_mean.geojson"
-  #test_file <- "test_SRTM.geojson"
-  temp_dir <- get_temp_path()
-  
-  
-# googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T) 
+test_file <- "test-download_mean.geojson"
+# test_file <- "test_SRTM.geojson"
+temp_dir <- get_temp_path()
+
+
+# googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T)
 
 
 test_that("Test that download_data downloads test file from google drive", {
@@ -18,35 +18,35 @@ test_that("Test that download_data downloads test file from google drive", {
   # googledrive::drive_find(test_file, verbose = F)
 
   download_data(test_file,
-                clear = F, 
-                temp_path = temp_dir)
-  
-  test <- grep(test_file, list.files(temp_dir)) 
-  expect_is(test, "integer")
-  #unlink(test_dir, recursive = T)
+    clear = F,
+    temp_path = temp_dir
+  )
 
+  test <- grep(test_file, list.files(temp_dir))
+  expect_is(test, "integer")
+  # unlink(test_dir, recursive = T)
 })
 
 
 test_that("Test that import_data import data to R", {
   skip_test_if_not_possible()
   activate_environments()
-  
+
   data <- import_data(
-    product_list = test_file, 
-    temp_path = temp_dir)
-  
+    product_list = test_file,
+    temp_path = temp_dir
+  )
+
   expect_is(data, "data.frame")
   # googledrive::drive_find(test_file, verbose = F)
   # unlink(test_dir, recursive = T)
-  
 })
 
 
 
 
-#   
-# 
+#
+#
 #   list.files(test_dir)
 #   unlink(test_dir, T)
-#   
+#
