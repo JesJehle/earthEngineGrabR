@@ -22,6 +22,7 @@ test_that("Test that get_data_info retrieves info of given Product ID", {
 })
 
 
+
 test_that("test that ee_grab() works with images by returning the final sf object", {
   skip_test_if_not_possible()
   activate_environments()
@@ -52,3 +53,128 @@ test_that("test that ee_grab() works with image collections by returning the fin
   )
   expect_is(image_collection_test, "sf")
 })
+
+test_that("Test that ee_grab() raises an error if target is not spedified", {
+  expect_error(ee_grab(target = 123))
+})
+
+
+test_that("Test that band selection and naming behaves like expected", {
+  
+  skip_test_if_not_possible()
+  earthEngineGrabR:::activate_environments()
+  
+  # test band selection and naming 
+  product_image <- create_image_product(
+    productID =   "ESA/GLOBCOVER_L4_200901_200912_V2_3",
+    productName = "test_GLOBCOVER",
+    bands = "landcover", 
+    spatialReducer = "mean"
+  )
+  
+  image_test <- ee_grab(products = product_image,
+                           target = target)
+  
+  expect_true(sum(names(image_test) %in% "landcover_mean") == 1)
+  expect_true(sum(names(image_test) %in% "qa_mean") == 0)
+  
+  # test with no band selection
+  
+  product_image <- create_image_product(
+    productID =   "ESA/GLOBCOVER_L4_200901_200912_V2_3",
+    productName = "test_GLOBCOVER",
+    spatialReducer = "mean"
+  )
+  
+  image_test <- ee_grab(products = product_image,
+                        target = target)
+  
+  expect_true(sum(names(image_test) %in% "landcover_mean") == 1)
+  expect_true(sum(names(image_test) %in% "qa_mean") == 1)
+  
+  # test with image collections, get all bands
+  product_collection <- create_collection_product(
+    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+    productName = "test_climate",
+    spatialReducer = "mean",
+    timeStart = "2000-01-01",
+    timeEnd = "2001-01-01",
+    temporalReducer = "mean"
+  )
+  
+  image_test <- ee_grab(products = product_collection,
+                        target = target)
+  expect_length(names(image_test), 27)
+
+  # select bands
+
+  product_collection <- create_collection_product(
+    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+    productName = "test_climate",
+    spatialReducer = "mean",
+    timeStart = "2000-01-01",
+    timeEnd = "2001-01-01",
+    temporalReducer = "mean",
+    bands = c("pdsi", "vap", "soil")
+  )
+  
+  image_test <- ee_grab(products = product_collection,
+                        target = target)
+
+  expect_length(charmatch(c("pdsi", "vap", "soil"), names(image_test)), 3)
+  
+  # test_woring bandname
+  
+  product_collection <- create_collection_product(
+    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+    productName = "test_climate",
+    spatialReducer = "mean",
+    timeStart = "2000-01-01",
+    timeEnd = "2001-01-01",
+    temporalReducer = "mean",
+    bands = "wrong"
+  )
+  
+  expect_warning(expect_error(ee_grab(products = product_collection,
+                        target = target)))
+  
+  # one band selected
+  product_collection <- create_collection_product(
+    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+    productName = "test_climate",
+    spatialReducer = "mean",
+    timeStart = "2000-01-01",
+    timeEnd = "2001-01-01",
+    temporalReducer = "mean",
+    bands = "soil"
+  )
+  
+  test_collection <- ee_grab(products = product_collection,
+                       target = target)
+  
+  expect_length(charmatch(c("soil"), names(test_collection)), 1)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 
 #' wait_for_file_on_drive
 #' @param filename name of the file to scan drive for
+#' @noRd
 wait_for_file_on_drive <- function(filename, verbose = T) {
   test <- googledrive::drive_find(filename, verbose = F)
 
@@ -13,9 +14,10 @@ wait_for_file_on_drive <- function(filename, verbose = T) {
 }
 
 
-#' download_data_waiting
+#' download_data
 #' @param ee_response Output of the request_data function.
 #' @param clear If the file should be removed from Google Drive after the download.
+#' @noRd
 #' @return nothing
 download_data <- function(ee_response,
                           clear = T,

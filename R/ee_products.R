@@ -12,7 +12,8 @@
 create_image_product <- function(productID = "CGIAR/SRTM90_V4",
                                  productName = "srtm",
                                  spatialReducer = "mean",
-                                 resolution = 3000) {
+                                 resolution = 3000,
+                                 bands = "all") {
 
 
   # parameter validation
@@ -30,7 +31,8 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
     resolution = resolution,
     productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "Image",
-    outputFormat = "GeoJSON"
+    outputFormat = "GeoJSON",
+    bands = bands
   )
   return(productInfo)
 }
@@ -53,7 +55,8 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                                       temporalReducer = "mean",
                                       timeStart = "2017-01-01",
                                       timeEnd = "2017-02-01",
-                                      resolution = 3000) {
+                                      resolution = 3000,
+                                      bands = "all") {
 
   # parameter validation
   is_type(productID, "character")
@@ -61,6 +64,9 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
   is_type(resolution, "numeric")
   is_type(timeStart, "character")
   is_type(timeEnd, "character")
+  
+  is_type(bands, "character")
+  
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   match.arg(temporalReducer, choices = c("mean", "median", "min", "max", "mode", "sum"))
 
@@ -72,8 +78,6 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
 
   timeStart <- as.character(timeStart)
   timeEnd <- as.character(timeEnd)
-
-
 
   product_name_new <-
     paste0(
@@ -98,7 +102,8 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
     resolution = resolution,
     productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "ImageCollection",
-    outputFormat = "GeoJSON"
+    outputFormat = "GeoJSON",
+    bands = bands
   )
   return(productInfo)
 }

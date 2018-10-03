@@ -16,6 +16,10 @@ ee_grab <- function(target = system.file("data/territories.shp",
                     products = list(create_image_product()),
                     verbose = T) {
   # test required dependencies and activates environment for reticulate
+  
+  if (!exists("target")) stop("target is not defiened", call. = F)
+  is_type(target, "character")
+  
   activate_environments("earthEngineGrabR")
   googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
@@ -30,9 +34,12 @@ ee_grab <- function(target = system.file("data/territories.shp",
   download_data(ee_response = ee_response, verbose = verbose, temp_path = temp_path)
   # import data to R
   product_data <- import_data(ee_response, verbose = verbose, temp_path = temp_path)
-  # remove tmp files local and from drive
-  googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
-  unlink(temp_path, recursive = T)
 
   return(product_data)
+  
+  # remove tmp files local and from drive
+  on.exit({
+    googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+    unlink(temp_path, recursive = T)
+    })
 }

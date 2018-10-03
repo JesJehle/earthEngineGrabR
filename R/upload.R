@@ -60,7 +60,7 @@ upload_data <- function(target, verbose = T) {
     upload_as_ft(target, target_name)
   } else {
     if (verbose == T) {
-      cat("upload:", target_name, "is already uploaded", "\n")
+      cat("\nupload:", target_name, "is already uploaded", "\n")
     }
   }
   credential_path <- get_credential_root()

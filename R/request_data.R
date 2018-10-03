@@ -23,6 +23,7 @@ get_data <- function(info, test = F) {
         info$temporalReducer,
         info$timeStart,
         info$timeEnd,
+        info$bands,
         test
       )
     }, error = function(err) {
@@ -39,6 +40,7 @@ get_data <- function(info, test = F) {
         info$ft_id,
         info$outputFormat,
         info$resolution,
+        info$bands,
         test
       )
     }, error = function(err) {
@@ -88,7 +90,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
     # get data
     status <- get_data(p, test = test)
     if (class(status) == "character") {
-      if (verbose) warning(status)
+      if (verbose) warning(status, call. = F)
     } else {
       if (status$state == "READY") {
         if (verbose) cat("\nprocessing:", product_info[[i]]$productName, "\n")
@@ -100,12 +102,13 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
               "Error on Earth Engine servers for data product :",
               product_info[[i]]$productName,
               "\nCould not export the data"
-            )
+            ), call. = F
           )
         }
       }
     }
   }
-
+  
+  if (length(ee_responses) == 0) stop("With the given product argument no valid data products could be requested.", call. = F)
   return(na.omit(ee_responses))
 }
