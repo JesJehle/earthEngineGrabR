@@ -28,8 +28,9 @@ test_that("test that ee_grab() works with images by returning the final sf objec
   activate_environments()
 
   product_image <- create_image_product(
-    productID = "CGIAR/SRTM90_V4",
-    productName = "test_SRTM"
+    productID = "CGIAR/SRTM90_V4", 
+    spatialReducer = "mean", 
+    scale = 3000
   )
 
   image_test <- ee_grab(
@@ -44,7 +45,13 @@ test_that("test that ee_grab() works with image collections by returning the fin
   skip_test_if_not_possible()
   activate_environments()
 
-  product_image_collection <- create_collection_product(productName = "test_chirps")
+  product_image_collection <- create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY",
+                                                        spatialReducer = "mean",
+                                                        temporalReducer = "mean", 
+                                                        timeStart = "2017-01-01",
+                                                        timeEnd = "2017-02-01", 
+                                                        scale = 3000, 
+                                                        bands = "all")
 
   image_collection_test <- ee_grab(
     target = target,
@@ -54,7 +61,7 @@ test_that("test that ee_grab() works with image collections by returning the fin
   expect_is(image_collection_test, "sf")
 })
 
-test_that("Test that ee_grab() raises an error if target is not spedified", {
+test_that("Test that ee_grab() raises an error if target is not specified", {
   expect_error(ee_grab(target = 123))
 })
 
@@ -65,88 +72,81 @@ test_that("Test that band selection and naming behaves like expected", {
   earthEngineGrabR:::activate_environments()
   
   # test band selection and naming 
-  product_image <- create_image_product(
-    productID =   "ESA/GLOBCOVER_L4_200901_200912_V2_3",
-    productName = "test_GLOBCOVER",
-    bands = "landcover", 
-    spatialReducer = "mean"
-  )
+  product_image <- create_image_product(productID = "ESA/GLOBCOVER_L4_200901_200912_V2_3",
+                                        bands = "landcover", 
+                                        spatialReducer = "mean",
+                                        scale = 3000
+                                        )
   
   image_test <- ee_grab(products = product_image,
                            target = target)
   
-  expect_true(sum(names(image_test) %in% "landcover_mean") == 1)
-  expect_true(sum(names(image_test) %in% "qa_mean") == 0)
+  expect_true(sum(names(image_test) %in% "landcover_s.mean") == 1)
+  expect_true(sum(names(image_test) %in% "qa_s.mean") == 0)
   
   # test with no band selection
   
-  product_image <- create_image_product(
-    productID =   "ESA/GLOBCOVER_L4_200901_200912_V2_3",
-    productName = "test_GLOBCOVER",
-    spatialReducer = "mean"
+  product_image <- create_image_product(productID =   "ESA/GLOBCOVER_L4_200901_200912_V2_3",
+                                        spatialReducer = "mean",
+                                        scale = 3000
   )
   
   image_test <- ee_grab(products = product_image,
                         target = target)
   
-  expect_true(sum(names(image_test) %in% "landcover_mean") == 1)
-  expect_true(sum(names(image_test) %in% "qa_mean") == 1)
+  expect_true(sum(names(image_test) %in% "landcover_s.mean") == 1)
+  expect_true(sum(names(image_test) %in% "qa_s.mean") == 1)
   
   # test with image collections, get all bands
-  product_collection <- create_collection_product(
-    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
-    productName = "test_climate",
-    spatialReducer = "mean",
-    timeStart = "2000-01-01",
-    timeEnd = "2001-01-01",
-    temporalReducer = "mean"
-  )
+  product_collection <- create_collection_product(productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+                                                  spatialReducer = "mean",
+                                                  timeStart = "2000-01-01",
+                                                  timeEnd = "2001-01-01",
+                                                  temporalReducer = "mean", 
+                                                  scale = 3000)
   
   image_test <- ee_grab(products = product_collection,
                         target = target)
-  expect_length(names(image_test), 27)
+  expect_length(names(image_test), 17)
 
   # select bands
-
-  product_collection <- create_collection_product(
-    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
-    productName = "test_climate",
-    spatialReducer = "mean",
-    timeStart = "2000-01-01",
-    timeEnd = "2001-01-01",
-    temporalReducer = "mean",
-    bands = c("pdsi", "vap", "soil")
-  )
+  product_collection <- create_collection_product(productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+                                                  spatialReducer = "mean",
+                                                  timeStart = "2000-01-01",
+                                                  timeEnd = "2001-01-01",
+                                                  temporalReducer = "mean",
+                                                  bands = c("pdsi", "vap", "soil"),
+                                                  scale = 3000
+                                                  )
   
   image_test <- ee_grab(products = product_collection,
                         target = target)
 
   expect_length(charmatch(c("pdsi", "vap", "soil"), names(image_test)), 3)
+  expect_length(grep(c("t.mean"), names(image_test)[2]), 1)
+  expect_length(grep(c("s.mean"), names(image_test)[2]), 1)
   
-  # test_woring bandname
-  
-  product_collection <- create_collection_product(
-    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
-    productName = "test_climate",
-    spatialReducer = "mean",
-    timeStart = "2000-01-01",
-    timeEnd = "2001-01-01",
-    temporalReducer = "mean",
-    bands = "wrong"
-  )
+  # test_wrong bandname
+product_collection <- create_collection_product(productID = "IDAHO_EPSCOR/TERRACLIMATE",
+                                                spatialReducer = "mean",
+                                                timeStart = "2000-01-01",
+                                                timeEnd = "2001-01-01",
+                                                temporalReducer = "mean",
+                                                bands = "wrong",
+                                                scale = 3000
+                                                )
   
   expect_warning(expect_error(ee_grab(products = product_collection,
                         target = target)))
   
   # one band selected
-  product_collection <- create_collection_product(
-    productID =   "IDAHO_EPSCOR/TERRACLIMATE",
-    productName = "test_climate",
-    spatialReducer = "mean",
-    timeStart = "2000-01-01",
-    timeEnd = "2001-01-01",
-    temporalReducer = "mean",
-    bands = "soil"
+  product_collection <- create_collection_product(productID =   "IDAHO_EPSCOR/TERRACLIMATE",
+                                                  spatialReducer = "mean",
+                                                  timeStart = "2000-01-01",
+                                                  timeEnd = "2001-01-01",
+                                                  temporalReducer = "mean",
+                                                  bands = "soil", 
+                                                  scale = 3000
   )
   
   test_collection <- ee_grab(products = product_collection,

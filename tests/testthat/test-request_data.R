@@ -7,9 +7,10 @@ test_that("test that get_data processes data on earth engine and exports it to d
   skip_test_if_not_possible()
   activate_environments()
 
-  df <- create_image_product(
-    productID = "CGIAR/SRTM90_V4",
-    productName = "test_SRTM"
+  df <- create_image_product(productID = "CGIAR/SRTM90_V4", 
+                             spatialReducer = "mean", 
+                             scale = 3000, 
+                             bands = "all"
   )
 
   df$ft_id <- get_ft_id_gd("test-data")
@@ -27,14 +28,18 @@ test_that("test that reguest_data processes multiple data products on earth engi
   activate_environments()
 
   df <- list(
-    create_image_product(
-      productID = "CGIAR/SRTM90_V4",
-      productName = "test_SRTM"
+    create_image_product(productID = "CGIAR/SRTM90_V4", 
+                         spatialReducer = "mean", 
+                         scale = 3000, 
+                         bands = "all"
     ),
-    create_collection_product(
-      timeStart = "2017-01-01",
-      timeEnd = "2017-01-20"
-    )
+    create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+                              spatialReducer = "mean", 
+                              temporalReducer = "mean",
+                              timeStart = "2017-01-01",
+                              timeEnd = "2017-01-20", 
+                              scale = 5000
+                              )
   )
 
   ft_id <- get_ft_id_gd("test-data")
@@ -56,10 +61,7 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
   activate_environments()
 
   # wrong product ID
-  df <- create_image_product(
-    productID = "CGIAR/wrong",
-    productName = "test_SRTM"
-  )
+  df <- create_image_product(productID = "CGIAR/wrong")
   df$ft_id <- get_ft_id_gd("test-data")
 
   status <- get_data(df)
@@ -67,11 +69,13 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
   expect_match(status, "Image asset 'CGIAR/wrong' not found")
 
   # wrong product ID
-  df <- create_collection_product(
-    productName = "test_chirps",
-    timeStart = "1950-01-01",
-    timeEnd = "1955-01-01"
-  )
+  df <- create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+                                  timeStart = "1950-01-01",
+                                  timeEnd = "1955-01-01",
+                                  spatialReducer = "mean", 
+                                  temporalReducer = "mean",
+                                  scale = 4000
+                                  )
 
   df$ft_id <- get_ft_id_gd("test-data")
 
@@ -85,19 +89,23 @@ test_that("test that request_data return anly the valid exports and gives waring
   skip_test_if_not_possible()
   activate_environments()
   df <- list(
-    create_image_product(
-      productID = "CGIAR/SRTM90_V4",
-      productName = "test_SRTM"
-    ),
-    create_collection_product(
-      timeStart = "2050-01-01",
-      timeEnd = "2051-01-20"
-    ),
-    create_image_product(
-      productID = "CGIAR/SRTM90_V4",
-      productName = "test_SRTM_2"
+    create_image_product(productID = "CGIAR/SRTM90_V4", 
+                         spatialReducer = "mean", 
+                         scale = 3000, 
+                         bands = "all"),
+    
+    create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+                              timeStart = "1950-01-01",
+                              timeEnd = "1955-01-01",
+                              spatialReducer = "mean", 
+                              temporalReducer = "mean",
+                              scale = 4000
+                              ),
+    create_image_product(productID = "CGIAR/SRTM90_V4", 
+                         spatialReducer = "mode", 
+                         scale = 3000, 
+                         bands = "all")
     )
-  )
 
   ft_id <- get_ft_id_gd("test-data")
 

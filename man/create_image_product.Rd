@@ -5,14 +5,14 @@
 \title{create_image_collection}
 \usage{
 create_image_product(productID = "CGIAR/SRTM90_V4",
-  productName = "srtm", spatialReducer = "mean", resolution = 3000)
+  spatialReducer = "mean", scale = 3000, bands = "all")
 }
 \arguments{
 \item{productID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}
 
-\item{productName}{A name for the data product specified by the user.}
-
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
+
+\item{productName}{A name for the data product specified by the user.}
 
 \item{temporalReducer}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
 

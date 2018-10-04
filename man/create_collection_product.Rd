@@ -5,18 +5,18 @@
 \title{create_product_collection}
 \usage{
 create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY",
-  productName = "chirps", spatialReducer = "mean",
-  temporalReducer = "mean", timeStart = "2017-01-01",
-  timeEnd = "2017-02-01", resolution = 3000)
+  spatialReducer = "mean", temporalReducer = "mean",
+  timeStart = "2017-01-01", timeEnd = "2017-02-01", scale = 3000,
+  bands = "all")
 }
 \arguments{
 \item{productID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}
 
-\item{productName}{A name for the data product specified by the user.}
-
 \item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
 
 \item{temporalReducer}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
+
+\item{productName}{A name for the data product specified by the user.}
 
 \item{yearIntervall}{A path to a local file or a name of a already uploaded to earth engine}
 }

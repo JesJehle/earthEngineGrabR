@@ -19,7 +19,7 @@ get_data <- function(info, test = F) {
         info$spatialReducer,
         info$ft_id,
         info$outputFormat,
-        info$resolution,
+        info$scale,
         info$temporalReducer,
         info$timeStart,
         info$timeEnd,
@@ -39,7 +39,7 @@ get_data <- function(info, test = F) {
         info$spatialReducer,
         info$ft_id,
         info$outputFormat,
-        info$resolution,
+        info$scale,
         info$bands,
         test
       )

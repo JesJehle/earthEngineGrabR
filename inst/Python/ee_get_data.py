@@ -140,7 +140,7 @@ def get_data_image(
     else:
         product_image = ee.Image(productID).select(bands)
 
-    product_names = [n + "_" + spatialReducer for n in product_image.bandNames().getInfo()]
+    product_names = [n + "_" + "s-" + spatialReducer for n in product_image.bandNames().getInfo()]
     # with only one band reduceRegions renames output to reducer name e.g mean, with multiple bands original band names are used.
     # to rename bands first, the selected bands are renames and second in the case of only one band, the output of the reducer is changed with .setOutputs(), .setOutputs() is ignored if the image has multiple bands ????
 
@@ -190,7 +190,7 @@ def get_data_collection(
     product_reduced_time = product_filtered.reduce(reduce_time)
     band_names = ee.Image(product_collection.first()).bandNames().getInfo()
 
-    product_name = [n + "_" + spatialReducer + "_for_" + temporalReducer + "_in_" + timeStart + "_to_" + timeEnd for n in band_names]
+    product_name = [n + "_s-"+ spatialReducer + "_t-" + temporalReducer + "_" + timeStart + "_to_" + timeEnd for n in band_names]
     product_reduced_time_renamed = product_reduced_time.rename(product_name)
 
     product_reduced = reduceOverRegions(image=product_reduced_time_renamed,

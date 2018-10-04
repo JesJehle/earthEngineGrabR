@@ -1,7 +1,7 @@
 library(earthEngineGrabR)
 
 context("Set up test environment")
-activate_environments()
+earthEngineGrabR:::activate_environments()
 
 test_that("Test that required credentials exist", {
   credentials_test <- try(test_credentials(), silent = T)
@@ -32,12 +32,14 @@ googledrive::drive_rm("test-upload", verbose = F)
 
 # upload test data for download test
 
-df <- create_image_product(productName = "test-download")
+df <- create_image_product(productID = "CGIAR/SRTM90_V4", 
+                           spatialReducer = "mean", 
+                           scale = 3000)
 
 if (nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
-  df$ft_id <- get_ft_id_gd("test-data")
+  df$ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
 
-  status <- get_data(df, test = T)
+  status <- earthEngineGrabR:::get_data(df, test = T)
   test <- wait_for_file_on_drive(df$productNameFull, verbose = F)
   expect_true(test)
 }

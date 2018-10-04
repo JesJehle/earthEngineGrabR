@@ -10,25 +10,23 @@
 #' @return depend on output
 #' @export
 create_image_product <- function(productID = "CGIAR/SRTM90_V4",
-                                 productName = "srtm",
                                  spatialReducer = "mean",
-                                 resolution = 3000,
+                                 scale = 3000,
                                  bands = "all") {
 
 
   # parameter validation
   is_type(productID, "character")
-  is_type(productName, "character")
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
-  is_type(resolution, "numeric")
+  is_type(scale, "numeric")
 
 
-  product_name_new <- paste0(productName, "_", spatialReducer)
+  product_name_new <- paste0(gsub("/", "-", productID), "_", "s-", spatialReducer)
   productInfo <- list(
     productID = productID,
     productName = product_name_new,
     spatialReducer = spatialReducer,
-    resolution = resolution,
+    scale = scale,
     productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "Image",
     outputFormat = "GeoJSON",
@@ -36,8 +34,6 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
   )
   return(productInfo)
 }
-
-
 
 
 #' create_product_collection
@@ -50,18 +46,16 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
 #' @return depend on output
 #' @export
 create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
-                                      productName = "chirps",
                                       spatialReducer = "mean",
                                       temporalReducer = "mean",
                                       timeStart = "2017-01-01",
                                       timeEnd = "2017-02-01",
-                                      resolution = 3000,
+                                      scale = 3000,
                                       bands = "all") {
 
   # parameter validation
   is_type(productID, "character")
-  is_type(productName, "character")
-  is_type(resolution, "numeric")
+  is_type(scale, "numeric")
   is_type(timeStart, "character")
   is_type(timeEnd, "character")
   
@@ -81,15 +75,15 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
 
   product_name_new <-
     paste0(
-      productName,
+      gsub("/", "-", productID),
       "_",
-      spatialReducer,
+      paste0("s-", spatialReducer),
+      "_",
+      paste0("t-", temporalReducer),
       "_",
       timeStart,
-      "_",
-      timeEnd,
-      "_",
-      temporalReducer
+      "to",
+      timeEnd
     )
 
   productInfo <- list(
@@ -99,7 +93,7 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
     temporalReducer = temporalReducer,
     timeStart = timeStart,
     timeEnd = timeEnd,
-    resolution = resolution,
+    scale = scale,
     productNameFull = paste0(product_name_new, ".", "geojson"),
     data_type = "ImageCollection",
     outputFormat = "GeoJSON",
