@@ -93,7 +93,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
       if (verbose) warning(status, call. = F)
     } else {
       if (status$state == "READY") {
-        if (verbose) cat("\nprocessing:", product_info[[i]]$productName, "\n")
+        if (verbose) cat("\nrequest:", product_info[[i]]$productName, "\n")
         ee_responses[i] <- p$productNameFull
       } else {
         if (verbose) {

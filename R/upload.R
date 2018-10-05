@@ -15,8 +15,8 @@ delete_if_exist <- function(path) {
 #' @param ft_name Name of fusion table in google drive
 get_ft_id_gd <- function(ft_name) {
   info <- googledrive::drive_find(ft_name, verbose = F)
-  if (nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name))
-  if (nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name))
+  if (nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name), call. = F)
+  if (nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name), call. = F)
   ft_id <- paste0("ft:", info$id)
   return(ft_id)
 }
@@ -55,7 +55,7 @@ upload_data <- function(target, verbose = T) {
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
   if (!test) {
     if (verbose == T) {
-      cat("upload:", target_name, "\n")
+      cat("\nupload:", target_name, "\n")
     }
     upload_as_ft(target, target_name)
   } else {
