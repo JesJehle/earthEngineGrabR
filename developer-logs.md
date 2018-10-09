@@ -20,3 +20,20 @@
 * add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts
 * implement manual use escape in authorisation process, like in httr package
 * test with list of product IDs
+
+# rename functions
+
+* rename create_image_product-> ee_data_image, 
+* rename create_collection_product -> ee_data_collection .
+* rename productID -> datasetID
+* rename products -> data
+* rename target -> targetArea
+
+# workflow
+
+* search for data - with earth engine data catalog
+* grab data - with ee_grab(data = ee_data_*, targetArea = geo-file, 
+  * requested data is defiend by list of ee_data_* functions.
+  * targetArea is defiend by a path to a local geo-file
+  
+

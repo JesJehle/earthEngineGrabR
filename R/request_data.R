@@ -14,10 +14,10 @@ get_data <- function(info, test = F) {
   if (info$data_type == "ImageCollection") {
     status <- tryCatch({
       get_data_collection(
-        info$productID,
+        info$datasetID,
         info$productName,
         info$spatialReducer,
-        info$ft_id,
+        info$ftID,
         info$outputFormat,
         info$scale,
         info$temporalReducer,
@@ -34,10 +34,10 @@ get_data <- function(info, test = F) {
   if (info$data_type == "Image") {
     status <- tryCatch({
       get_data_image(
-        info$productID,
+        info$datasetID,
         info$productName,
         info$spatialReducer,
-        info$ft_id,
+        info$ftID,
         info$outputFormat,
         info$scale,
         info$bands,
@@ -54,12 +54,12 @@ get_data <- function(info, test = F) {
 
 #' get_data_info
 #' retreves info with a given product ID over earthEngine
-#' @param productID String that speciefies a data products in ee
-get_data_info <- function(productID) {
+#' @param datasetID String that speciefies the data in ee
+get_data_info <- function(datasetID) {
   activate_environments("earthEngineGrabR")
   ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
   source_python(file = ee_helpers)
-  product_info <- get_info(productID)
+  product_info <- get_info(datasetID)
   return(product_info)
 }
 
@@ -70,7 +70,7 @@ get_data_info <- function(productID) {
 #' @param target_id String of fusion table id created by upload_data()
 #' @return ee_responses for each correctly exported data product
 request_data <- function(product_info, target_id, verbose = T, test = F) {
-  # check if products is a list of lists, if not creat one.
+  # check if data is a list of lists, if not creat one.
   if (class(product_info[[1]]) != "list") {
     product_info <- list(product_info)
   }
@@ -81,11 +81,11 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
 
   ee_responses <- c()
 
-  # loop over data products
+  # loop over data
 
   for (i in seq_along(product_info)) {
     p <- product_info[[i]]
-    p$ft_id <- target_id
+    p$ftID <- target_id
 
     # get data
     status <- get_data(p, test = test)
@@ -109,6 +109,6 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
     }
   }
   
-  if (length(ee_responses) == 0) stop("With the given product argument no valid data products could be requested.", call. = F)
+  if (length(ee_responses) == 0) stop("With the given product argument no valid data could be requested.", call. = F)
   return(na.omit(ee_responses))
 }

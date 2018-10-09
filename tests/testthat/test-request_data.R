@@ -7,13 +7,13 @@ test_that("test that get_data processes data on earth engine and exports it to d
   skip_test_if_not_possible()
   activate_environments()
 
-  df <- create_image_product(productID = "CGIAR/SRTM90_V4", 
+  df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                              spatialReducer = "mean", 
                              scale = 3000, 
                              bands = "all"
   )
 
-  df$ft_id <- get_ft_id_gd("test-data")
+  df$ftID <- get_ft_id_gd("test-data")
   delete_on_drive(df$productNameFull)
 
   status <- get_data(df)
@@ -23,17 +23,17 @@ test_that("test that get_data processes data on earth engine and exports it to d
 })
 
 
-test_that("test that reguest_data processes multiple data products on earth engine and exports it to drive while returning status of process", {
+test_that("test that reguest_data processes multiple data on earth engine and exports it to drive while returning status of process", {
   skip_test_if_not_possible()
   activate_environments()
 
   df <- list(
-    create_image_product(productID = "CGIAR/SRTM90_V4", 
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mean", 
                          scale = 3000, 
                          bands = "all"
     ),
-    create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+    ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
                               spatialReducer = "mean", 
                               temporalReducer = "mean",
                               timeStart = "2017-01-01",
@@ -61,15 +61,15 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
   activate_environments()
 
   # wrong product ID
-  df <- create_image_product(productID = "CGIAR/wrong")
-  df$ft_id <- get_ft_id_gd("test-data")
+  df <- ee_data_image(datasetID = "CGIAR/wrong")
+  df$ftID <- get_ft_id_gd("test-data")
 
   status <- get_data(df)
   expect_match(status, "Error")
   expect_match(status, "Image asset 'CGIAR/wrong' not found")
 
   # wrong product ID
-  df <- create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+  df <- ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
                                   timeStart = "1950-01-01",
                                   timeEnd = "1955-01-01",
                                   spatialReducer = "mean", 
@@ -77,7 +77,7 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
                                   scale = 4000
                                   )
 
-  df$ft_id <- get_ft_id_gd("test-data")
+  df$ftID <- get_ft_id_gd("test-data")
 
   status <- get_data(df)
   expect_match(status, "Error")
@@ -89,19 +89,19 @@ test_that("test that request_data return anly the valid exports and gives waring
   skip_test_if_not_possible()
   activate_environments()
   df <- list(
-    create_image_product(productID = "CGIAR/SRTM90_V4", 
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mean", 
                          scale = 3000, 
                          bands = "all"),
     
-    create_collection_product(productID = "UCSB-CHG/CHIRPS/DAILY", 
+    ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
                               timeStart = "1950-01-01",
                               timeEnd = "1955-01-01",
                               spatialReducer = "mean", 
                               temporalReducer = "mean",
                               scale = 4000
                               ),
-    create_image_product(productID = "CGIAR/SRTM90_V4", 
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mode", 
                          scale = 3000, 
                          bands = "all")

@@ -1,7 +1,7 @@
 
 
-#' create_image_collection
-#' @param productID Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer
+#' Defines requested image data
+#' @param datasetID A \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the snippet section of the dataset in the Earth Engine Catalog.
 #' @param productName A name for the data product specified by the user.
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
@@ -9,21 +9,21 @@
 #' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 #' @return depend on output
 #' @export
-create_image_product <- function(productID = "CGIAR/SRTM90_V4",
+ee_data_image <- function(datasetID = "CGIAR/SRTM90_V4",
                                  spatialReducer = "mean",
                                  scale = 3000,
                                  bands = "all") {
 
 
   # parameter validation
-  is_type(productID, "character")
+  is_type(datasetID, "character")
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   is_type(scale, "numeric")
 
 
-  product_name_new <- paste0(gsub("/", "-", productID), "_", "s-", spatialReducer)
+  product_name_new <- paste0(gsub("/", "-", datasetID), "_", "s-", spatialReducer)
   productInfo <- list(
-    productID = productID,
+    datasetID = datasetID,
     productName = product_name_new,
     spatialReducer = spatialReducer,
     scale = scale,
@@ -36,8 +36,8 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
 }
 
 
-#' create_product_collection
-#' @param productID Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer
+#' Defines requested collection data
+#' @param datasetID Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer
 #' @param productName A name for the data product specified by the user.
 #' @param spatialReducer Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)
 #' @param temporalReducer Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).
@@ -45,7 +45,7 @@ create_image_product <- function(productID = "CGIAR/SRTM90_V4",
 #' @description Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
 #' @return depend on output
 #' @export
-create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
+ee_data_collection <- function(datasetID = "UCSB-CHG/CHIRPS/DAILY",
                                       spatialReducer = "mean",
                                       temporalReducer = "mean",
                                       timeStart = "2017-01-01",
@@ -54,7 +54,7 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
                                       bands = "all") {
 
   # parameter validation
-  is_type(productID, "character")
+  is_type(datasetID, "character")
   is_type(scale, "numeric")
   is_type(timeStart, "character")
   is_type(timeEnd, "character")
@@ -75,7 +75,7 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
 
   product_name_new <-
     paste0(
-      gsub("/", "-", productID),
+      gsub("/", "-", datasetID),
       "_",
       paste0("s-", spatialReducer),
       "_",
@@ -87,7 +87,7 @@ create_collection_product <- function(productID = "UCSB-CHG/CHIRPS/DAILY",
     )
 
   productInfo <- list(
-    productID = productID,
+    datasetID = datasetID,
     productName = product_name_new,
     spatialReducer = spatialReducer,
     temporalReducer = temporalReducer,

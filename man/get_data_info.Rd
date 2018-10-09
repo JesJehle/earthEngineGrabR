@@ -5,10 +5,10 @@
 \title{get_data_info
 retreves info with a given product ID over earthEngine}
 \usage{
-get_data_info(productID)
+get_data_info(datasetID)
 }
 \arguments{
-\item{productID}{String that speciefies a data products in ee}
+\item{datasetID}{String that speciefies the data in ee}
 }
 \description{
 get_data_info

@@ -57,7 +57,7 @@ download_data <- function(ee_response,
 
 
 #' import data
-#' @param productList List of products files produced in the ee_grab function
+#' @param productList List of data files produced in the ee_grab function
 #' @param verbose If true, messages reporting the processing state are printed.
 #' @return nothing
 import_data <- function(product_list, verbose = T, temp_path) {

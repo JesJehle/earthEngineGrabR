@@ -4,10 +4,10 @@
 \alias{upload_data}
 \title{upload vector data and return fusion table ID}
 \usage{
-upload_data(target, verbose = T)
+upload_data(targetArea, verbose = T)
 }
 \arguments{
-\item{target}{path to vector data to be uploaded}
+\item{targetArea}{path to vector data to be uploaded}
 
 \item{verbose}{specifies weather information is about the process is printed to the console}
 }

@@ -35,7 +35,7 @@ upload_as_ft <- function(file_path, fileName) {
     convert(file_path, fileName)
   },
   error = function(err) {
-    stop(paste("could no upload target file", file_path, "\n", err), call. = F)
+    stop(paste("could not upload targetArea file", file_path, "\n", err), call. = F)
   }
   )
 }
@@ -43,21 +43,21 @@ upload_as_ft <- function(file_path, fileName) {
 
 #' upload vector data and return fusion table ID
 #' @param verbose specifies weather information is about the process is printed to the console
-#' @param target path to vector data to be uploaded
+#' @param targetArea path to vector data to be uploaded
 #' @return Fusion table ID
-upload_data <- function(target, verbose = T) {
+upload_data <- function(targetArea, verbose = T) {
 
   # delete if exists
   googledrive::drive_rm("GEE2R_temp", verbose = F)
 
-  target_name <- get_name_from_path(target)
+  target_name <- get_name_from_path(targetArea)
   # test if file is already uploaded
   test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
   if (!test) {
     if (verbose == T) {
       cat("\nupload:", target_name, "\n")
     }
-    upload_as_ft(target, target_name)
+    upload_as_ft(targetArea, target_name)
   } else {
     if (verbose == T) {
       cat("\nupload:", target_name, "is already uploaded", "\n")

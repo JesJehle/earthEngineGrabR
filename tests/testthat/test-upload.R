@@ -40,7 +40,7 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   skip_test_if_not_possible()
   activate_environments()
   googledrive::drive_mv("test-data", verbose = F)
-  test_id <- upload_data(target = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
+  test_id <- upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
 
   # test if file is uploaded
   test_upload <- googledrive::drive_find("test-data", verbose = F)

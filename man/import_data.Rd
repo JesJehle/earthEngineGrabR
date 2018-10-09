@@ -9,7 +9,7 @@ import_data(product_list, verbose = T, temp_path)
 \arguments{
 \item{verbose}{If true, messages reporting the processing state are printed.}
 
-\item{productList}{List of products files produced in the ee_grab function}
+\item{productList}{List of data files produced in the ee_grab function}
 }
 \value{
 nothing
