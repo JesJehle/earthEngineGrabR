@@ -10,7 +10,7 @@ test_that("test that get_data processes data on earth engine and exports it to d
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                              spatialReducer = "mean", 
                              scale = 3000, 
-                             bands = "all"
+                             bandSelection = NULL
   )
 
   df$ftID <- get_ft_id_gd("test-data")
@@ -31,7 +31,7 @@ test_that("test that reguest_data processes multiple data on earth engine and ex
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mean", 
                          scale = 3000, 
-                         bands = "all"
+                         bandSelection = NULL
     ),
     ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
                               spatialReducer = "mean", 
@@ -92,7 +92,7 @@ test_that("test that request_data return anly the valid exports and gives waring
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mean", 
                          scale = 3000, 
-                         bands = "all"),
+                         bandSelection = NULL),
     
     ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
                               timeStart = "1950-01-01",
@@ -104,7 +104,7 @@ test_that("test that request_data return anly the valid exports and gives waring
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mode", 
                          scale = 3000, 
-                         bands = "all")
+                         bandSelection = NULL)
     )
 
   ft_id <- get_ft_id_gd("test-data")

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>upload vector data as fusion table and parse file to allow large uploads — upload_as_ft • earthEngineGrabR</title>
+<title>Defines request for image data — ee_data_image • earthEngineGrabR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="upload vector data as fusion table and parse file to allow large uploads — upload_as_ft" />
+<meta property="og:title" content="Defines request for image data — ee_data_image" />
 
-<meta property="og:description" content="upload vector data as fusion table and parse file to allow large uploads" />
+<meta property="og:description" content="ee_data_image() and ee_data_collection() are used to define the requested earth enigne data for the ee_grab() function." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,31 +93,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>upload vector data as fusion table and parse file to allow large uploads</h1>
+    <h1>Defines request for image data</h1>
     
-    <div class="hidden name"><code>upload_as_ft.Rd</code></div>
+    <div class="hidden name"><code>ee_data_image.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>upload vector data as fusion table and parse file to allow large uploads</p>
+    <p><code>ee_data_image()</code> and <code><a href='ee_data_collection.html'>ee_data_collection()</a></code> are used to define the requested earth enigne data for the <code><a href='ee_grab.html'>ee_grab()</a></code> function.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>upload_as_ft</span>(<span class='no'>file_path</span>, <span class='no'>fileName</span>)</pre>
+    <pre class="usage"><span class='fu'>ee_data_image</span>(<span class='kw'>datasetID</span> <span class='kw'>=</span> <span class='st'>"CGIAR/SRTM90_V4"</span>, <span class='kw'>spatialReducer</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>bandSelection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file_path</th>
-      <td><p>Path to vector data</p></td>
+      <th>datasetID</th>
+      <td><p>A <code>string</code> that specifies the dataset in Earth Engine. The dataset ID can be found in the <a href='link to tutorial '>snippet section</a> of the dataset in the Earth Engine <a href='https://developers.google.com/earth-engine/datasets/'>Data Catalog</a>.</p></td>
     </tr>
     <tr>
-      <th>fileName</th>
-      <td><p>Name of fusion table in google drive</p></td>
+      <th>spatialReducer</th>
+      <td><p>A <code>string</code> that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of <code>"mean", "median", "min", "max", "mode"</code></p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>A <code>integer</code> that controls the <a href='https://developers.google.com/earth-engine/scale'>scale of analysis</a> in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.</p></td>
+    </tr>
+    <tr>
+      <th>bandSelection</th>
+      <td><p>A <code>string</code> or a <code>vector</code> of <code>strings</code> of bands names to select from the requested dataset. By default bandSelection is set to <code>NULL</code> and all bands of the dataset are used.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>object of class <code>list</code> that defines the data request for <code><a href='ee_grab.html'>ee_grab()</a></code>.</p>
+    
+    <h2 class="hasAnchor" id="image-and-image-collections-in-earth-engine"><a class="anchor" href="#image-and-image-collections-in-earth-engine"></a>Image and Image Collections in Earth Engine</h2>
+
+    
+    <p>In Earth Engine raster data is stored as an <code>Image</code> object. 
+Images are composed of one or more bands and each band has its own name, data type, scale, mask and projection. A time series or stack of Images is stored as an Image Collection.
+To request data from an Image use <code>ee_data_image()</code> to define the request. 
+To request data from a time series of Images stored in an Image Collection use <code><a href='ee_data_collection.html'>ee_data_collection()</a></code> instead.</p>
     
 
   </div>
@@ -125,7 +146,11 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#image-and-image-collections-in-earth-engine">Image and Image Collections in Earth Engine</a></li>
+          </ul>
 
   </div>
 </div>

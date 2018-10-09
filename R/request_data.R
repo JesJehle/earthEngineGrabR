@@ -23,7 +23,7 @@ get_data <- function(info, test = F) {
         info$temporalReducer,
         info$timeStart,
         info$timeEnd,
-        info$bands,
+        info$bandSelection,
         test
       )
     }, error = function(err) {
@@ -40,7 +40,7 @@ get_data <- function(info, test = F) {
         info$ftID,
         info$outputFormat,
         info$scale,
-        info$bands,
+        info$bandSelection,
         test
       )
     }, error = function(err) {

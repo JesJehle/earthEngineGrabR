@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ee_grab — ee_grab • earthEngineGrabR</title>
+<title>Request and import data from Earth Engine — ee_grab • earthEngineGrabR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="ee_grab — ee_grab" />
+<meta property="og:title" content="Request and import data from Earth Engine — ee_grab" />
 
-<meta property="og:description" content="ee_grab" />
+<meta property="og:description" content="The ee_grab() function Request and import data from Earth Engine according to a user defined data request." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -62,7 +62,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">earthEngineGrabR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.1</span>
       </span>
     </div>
 
@@ -93,51 +93,105 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>ee_grab</h1>
+    <h1>Request and import data from Earth Engine</h1>
     
     <div class="hidden name"><code>ee_grab.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>ee_grab</p>
+    <p>The <code>ee_grab()</code> function Request and import data from Earth Engine according to a user defined data request.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ee_grab</span>(<span class='kw'>target</span> <span class='kw'>=</span> <span class='fu'>system.file</span>(<span class='st'>"data/territories.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span>
-  <span class='st'>"earthEngineGrabR"</span>), <span class='kw'>products</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'><a href='create_image_product.html'>create_image_product</a></span>()),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
+    <pre class="usage"><span class='fu'>ee_grab</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>targetArea</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>target</th>
-      <td><p>A path to a local geofile, if file is already uploaded, the upload is skipped.</p></td>
+      <th>data</th>
+      <td><p>A <code>list</code> of <code><a href='ee_data_image.html'>ee_data_image()</a></code> or <code><a href='ee_data_collection.html'>ee_data_collection()</a></code> functions which define the requested data. Multiple functions are passed inside a <code>list</code>, while a single function can be passed directly.</p></td>
     </tr>
     <tr>
-      <th>products</th>
-      <td><p>List of dataproduct functions starting with eeProduct</p></td>
+      <th>targetArea</th>
+      <td><p>A <code>character</code> path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>if true, prints messages about the state of processing</p></td>
-    </tr>
-    <tr>
-      <th>outputFormat</th>
-      <td><p>A string specifying the output format: CSV, GeoJSON, KML or KMZ.</p></td>
-    </tr>
-    <tr>
-      <th>resolution</th>
-      <td><p>Resolution of the dataproducts.</p></td>
+      <td><p>A <code>logical</code>, whether to inform the user about the processing state of the data. Default is set to <code>True</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of class sf.</p>
+    <p>Object of class <code>sf</code>. <code>ee_grab()</code> returns the targetArea file with the bands of the requested data added as columns.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>To define the data request:</p> 
+<p>use <code><a href='ee_data_image.html'>ee_data_image()</a></code> and <code><a href='ee_data_collection.html'>ee_data_collection()</a></code> to define the data.</p>
+<p>use <code>targetArea</code> to define the spatial target, in which the data sould be aggregated.</p>
+    
+    <h2 class="hasAnchor" id="earthenginegrabr-workflow"><a class="anchor" href="#earthenginegrabr-workflow"></a><code>earthEngineGrabR</code> Workflow</h2>
+
+    
+    <p>Search for dataset in Earth Engine <a href='https://developers.google.com/earth-engine/datasets/'>Data Catalog</a>.</p>
+<p>Grab data according to a user defines data reuquest.</p>
+    
+    <h2 class="hasAnchor" id="search-for-data"><a class="anchor" href="#search-for-data"></a>Search for data</h2>
+
+    
+    <p>Use Earth Engine's <a href='https://developers.google.com/earth-engine/datasets/'>Data Catalog</a> to browse and find datasets you want to grab using the earthEngineGrabR. Once you have found a dataset, use the <a href='link to tutorial '>snippet section</a> to obtain the dataset ID and whether the dataset is an image or a collection of images. The snippet section consists of one line of code (don't open the link) and shows how Earth Engine loads the dataset. If it is an image, the  ee.Image(dataset-ID) constructor is used. if it is a collection the ee.ImageCollection(dataset-id) constructor is used instead.</p>
+    
+    <h2 class="hasAnchor" id="grab-data"><a class="anchor" href="#grab-data"></a>Grab data</h2>
+
+    
+    <p><code>ee_grab()</code> requests and imports data from Earth Engine to R.
+<code>ee_grab()</code> takes two arguments, <code>data</code> and <code>targetArea</code>. 
+<code>data</code> takes a single or a <code>list</code> of <code><a href='ee_data_image.html'>ee_data_image()</a></code> and <code><a href='ee_data_collection.html'>ee_data_collection()</a></code> functions, which define the requested data to <code>ee_grab()</code>.
+If the requested data is an image use <code><a href='ee_data_image.html'>ee_data_image()</a></code>, if it's a collection use <code><a href='ee_data_collection.html'>ee_data_collection()</a></code>.
+<code>targetAreo</code> takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.</p>
+    
+    <h2 class="hasAnchor" id="internal-processing"><a class="anchor" href="#internal-processing"></a>Internal processing</h2>
+
+    
+    <p>The <code>ee_grab()</code> processing runs in 4 steps:</p>
+<p>1. Upload - The targetArea is uploaded to Google Drive.</p>
+<p>2. Request - The data is requested from Google Earth Engine and exported to Google Drive.</p>
+<p>3. Download -  The data is downloaded from Drive.</p>
+<p>4. Import - The data is imported to R and merged.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Request a srtm image data product to get topographic data.</span>
+<span class='co'># Grab the spatial mean of the elevation band in the polygons of your targetArea. The calculation are based on a 100 meter scale, which means that the original SRTM data product is resampled to 100 * 100 meter Pixel size.</span>
+
+<span class='no'>srtm_data</span> <span class='kw'>&lt;-</span> <span class='fu'>ee_grab</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='ee_data_image.html'>ee_data_image</a></span>(<span class='kw'>datasetID</span> <span class='kw'>=</span> <span class='st'>"CGIAR/SRTM90_V4"</span>,
+                                         <span class='kw'>spatialReducer</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
+                                         <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+                                         <span class='kw'>bandSelection</span> <span class='kw'>=</span> <span class='st'>"elevation"</span>
+                                         ),
+                   <span class='kw'>targetArea</span> <span class='kw'>=</span> <span class='fu'>system.file</span>(<span class='st'>"data/territories.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"earthEngineGrabR"</span>)
+                   )
+
+<span class='co'># Request a chirps collection data product to get precipitation data.</span>
+<span class='co'># Grab the yearly precipitation sum for 2016 and get the spatial mean in the polygons of your targetArea.</span>
+
+<span class='no'>chirps_data</span> <span class='kw'>&lt;-</span> <span class='fu'>ee_grab</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='ee_data_collection.html'>ee_data_collection</a></span>(<span class='kw'>datasetID</span> <span class='kw'>=</span> <span class='st'>"UCSB-CHG/CHIRPS/DAILY"</span>,
+                                                <span class='kw'>spatialReducer</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
+                                                <span class='kw'>temporalReducer</span> <span class='kw'>=</span> <span class='st'>"sum"</span>,
+                                                <span class='kw'>timeStart</span> <span class='kw'>=</span> <span class='st'>"2016-01-01"</span>,
+                                                <span class='kw'>timeEnd</span> <span class='kw'>=</span> <span class='st'>"2016-12-31"</span>,
+                                                <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>200</span>
+                                                ),
+                      <span class='kw'>targetArea</span> <span class='kw'>=</span> <span class='fu'>system.file</span>(<span class='st'>"data/territories.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"earthEngineGrabR"</span>)
+                     )
+
+
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -145,7 +199,19 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#earthenginegrabr-workflow"><code>earthEngineGrabR</code> Workflow</a></li>
+
+      <li><a href="#search-for-data">Search for data</a></li>
+
+      <li><a href="#grab-data">Grab data</a></li>
+
+      <li><a href="#internal-processing">Internal processing</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

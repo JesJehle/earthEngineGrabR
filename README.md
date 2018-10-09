@@ -1,20 +1,32 @@
 # earthEngineGrabR
 
-The earthEngineGrabR package is supposed to provide an interface of R and the Google Earth Engine to acquire geodata for environmental system modelling. This Interface is supposed to extract data from the Earth Engine data catalogue while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user. This way, the package uses both, the massive public data catalogue of available data products and the processing resources supplied by the Google Earth Engine, to extract data in a strongly user-specified approach.
+
+The earthEngineGrabR simplifies the acquisition of remote sensing data by building an interface between R and the Google Earth Engine. 
+
+The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user. 
+
+Any acquiring and processing of the remote sensing data is entirely outsourced to EE with only the derived datasets, being exported and imported into R. 
+
+This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.
 
 
-## Dependencies and installation of the earthEngineGrabR
-
+# Dependencies of the earthEngineGrabR
 
 The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run sucessfully:
 
+## required Accounts
+
 * [you need a Google Account](https://accounts.google.com/SignUp?hl=de)
 * [sign up for Earth Engine access](https://signup.earthengine.google.com/#!/)
-* [you need a Python version >= 2.7, with PYTHONPATH set](https://www.python.org/downloads/)
-* [install GDAL](https://github.com/domlysz/BlenderGIS/wiki/How-to-install-GDAL)
+
+## required dependencies
+
+* [install Anaconda](https://www.anaconda.com/download/)
+
 * [install sf](https://github.com/r-spatial/sf)
 
-Next, you can install the earthEngineGrabR with:
+
+Next, you can install the developmenet version of the earthEngineGrabR with:
 
 ```r
 library(devtools)
@@ -22,19 +34,37 @@ install_github("JesJehle/earthEngineGrabR")
 library(earthEngineGrabR)
 ```
 
-To initialize the earthEngineGrabR run:
+# install and authentication of the earthEngineGrabR
+
+The earthEngineGrabR has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.
+
+To simplify the installation and authentication process, the earthEngineGrabR includes a function `ee_grab_install()` that installs Python dependencies and furthermore guides the user through the different authentications. Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
+
 ```r
-ee_grab_init()
+ee_grab_install()
 ```
-The `ee_grab_init()`  function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's. To authenticate to the API the user has to log in to his Google account and allow the API to access data on googles servers on the user's behalf. 
-If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which creates persistent credentials. To simplify this procedure, the `ee_grab_init()`  function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token.  The 
+After the succesfull installation the user has to log in to log in to his Google account and allow the API to access data on googles servers on the user's behalf. 
+To simplify this procedure, the `ee_grab_install()`  function successively opens a browser window to log into the Google account.
+
+If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
+
 
 ## Test 
+
 To test the earthEngineGrabR run:
 ```r
-data <- ee_grab(
-  target = system.file("data/territories.shp", package="earthEngineGrabR"),
-  products = list(eeProduct_modis_treeCover(yearIntervall = c(2008, 2012))),
-  resolution = 1000
-)
+srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                                          spatialReducer = "mean", 
+                                          scale = 100, 
+                                          bandSelection = "elevation"
+                                          ),
+                    targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
+                    )
+
 ```
+
+
+
+
+
+

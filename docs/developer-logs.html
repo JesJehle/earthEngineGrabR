@@ -59,7 +59,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">earthEngineGrabR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.1</span>
       </span>
     </div>
 
@@ -118,6 +118,27 @@
 <li>add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts</li>
 <li>implement manual use escape in authorisation process, like in httr package</li>
 <li><p>test with list of product IDs</p></li>
+</ul>
+</div>
+<div id="rename-functions" class="section level1">
+<h1 class="hasAnchor">
+<a href="#rename-functions" class="anchor"></a>rename functions</h1>
+<ul>
+<li>rename create_image_product-&gt; ee_data_image,</li>
+<li>rename create_collection_product -&gt; ee_data_collection .</li>
+<li>rename productID -&gt; datasetID</li>
+<li>rename products -&gt; data</li>
+<li>rename target -&gt; targetArea</li>
+</ul>
+</div>
+<div id="workflow" class="section level1">
+<h1 class="hasAnchor">
+<a href="#workflow" class="anchor"></a>workflow</h1>
+<ul>
+<li>search for data - with earth engine data catalog</li>
+<li>grab data - with ee_grab(data = ee_data_*, targetArea = geo-file,</li>
+<li>requested data is defiend by list of ee_data_* functions.</li>
+<li>targetArea is defiend by a path to a local geo-file</li>
 </ul>
 </div>
 

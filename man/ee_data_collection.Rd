@@ -2,27 +2,40 @@
 % Please edit documentation in R/ee_products.R
 \name{ee_data_collection}
 \alias{ee_data_collection}
-\title{create_product_collection}
+\title{Defines request for collection data}
 \usage{
 ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY",
   spatialReducer = "mean", temporalReducer = "mean",
   timeStart = "2017-01-01", timeEnd = "2017-02-01", scale = 3000,
-  bands = "all")
+  bandSelection = NULL)
 }
 \arguments{
-\item{datasetID}{Strong of the Image/ImageCollection ID found in Earth Engine Data Explorer}
+\item{datasetID}{A \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.}
 
-\item{spatialReducer}{Reducer to spatially aggregate all dataproducts in each geometry of the feature, can be: mean, median or mode)}
+\item{spatialReducer}{A \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}}
 
-\item{temporalReducer}{Integers to spedify the beginning and end of timeperiod to reduce over as c(yearStart, yearEnd).}
+\item{temporalReducer}{A \code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}}
 
-\item{productName}{A name for the data product specified by the user.}
+\item{timeStart}{A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
 
-\item{yearIntervall}{A path to a local file or a name of a already uploaded to earth engine}
+\item{timeEnd}{A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
+
+\item{scale}{A \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.}
+
+\item{bandSelection}{A \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.}
 }
 \value{
-depend on output
+object of class \code{list} that defines request for collection data in \code{ee_grab()}.
 }
 \description{
-Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 30+ year quasi-global rainfall dataset. CHIRPS incorporates 0.05° resolution satellite imagery with in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
+\code{ee_data_image()} and \code{ee_data_collection()} are used to define the requested earth enigne data for the \code{ee_grab()} function.
 }
+\section{Image and Image Collections in Earth Engine}{
+
+
+In Earth Engine raster data is stored as an \code{Image} object. 
+Images are composed of one or more bands and each band has its own name, data type, scale, mask and projection. A time series or stack of Images is stored as an Image Collection.
+To request data from an Image use \code{ee_data_image()} to define the request. 
+To request data from a time series of Images stored in an Image Collection use \code{ee_data_collection()} instead.
+}
+

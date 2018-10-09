@@ -128,17 +128,17 @@ def get_data_image(
         ft_id,
         outputFormat,
         resolution,
-        bands ="all",
+        bandSelection = None,
         test = False):
 
     ee.Initialize()
 
     polygon = ee.FeatureCollection(ft_id)
 
-    if bands == "all":
+    if bandSelection == None:
         product_image = ee.Image(productID)
     else:
-        product_image = ee.Image(productID).select(bands)
+        product_image = ee.Image(productID).select(bandSelection)
 
     product_names = [n + "_" + "s-" + spatialReducer for n in product_image.bandNames().getInfo()]
     # with only one band reduceRegions renames output to reducer name e.g mean, with multiple bands original band names are used.
@@ -169,16 +169,16 @@ def get_data_collection(
         temporalReducer = 'mean',
         timeStart = '2000-3-20',
         timeEnd = '2005-2-20',
-        bands = "all",
+        bandSelection = None,
         test = False):
 
     ee.Initialize()
     polygon = ee.FeatureCollection(ft_id)
 
-    if bands == "all":
+    if bandSelection == None:
         product_collection = ee.ImageCollection(productID)
     else:
-        product_collection = ee.ImageCollection(productID).select(bands)
+        product_collection = ee.ImageCollection(productID).select(bandSelection)
 
     product_filtered = product_collection.filterDate(timeStart, timeEnd)
 

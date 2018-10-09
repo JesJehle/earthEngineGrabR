@@ -1,6 +1,6 @@
 Package: earthEngineGrabR
 Title: Grabs Geodata from Google Earth Engine
-Version: 1.0.0.1
+Version: 0.1.0.1
 Authors@R: person("Janusch", "Jehle", email = "JesJehle@gmx.de", role = c("aut", "cre"))
 Description: Simplify the aquisition of remote sensing data.
 Depends: R (>= 3.2.3)

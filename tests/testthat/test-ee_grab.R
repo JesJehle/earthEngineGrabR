@@ -51,7 +51,7 @@ test_that("test that ee_grab() works with image collections by returning the fin
                                                         timeStart = "2017-01-01",
                                                         timeEnd = "2017-02-01", 
                                                         scale = 3000, 
-                                                        bands = "all")
+                                                        bandSelection = NULL)
 
   image_collection_test <- ee_grab(
     targetArea = targetArea,
@@ -73,7 +73,7 @@ test_that("Test that band selection and naming behaves like expected", {
   
   # test band selection and naming 
   product_image <- ee_data_image(datasetID = "ESA/GLOBCOVER_L4_200901_200912_V2_3",
-                                        bands = "landcover", 
+                                        bandSelection = "landcover", 
                                         spatialReducer = "mean",
                                         scale = 3000
                                         )
@@ -115,7 +115,7 @@ test_that("Test that band selection and naming behaves like expected", {
                                                   timeStart = "2000-01-01",
                                                   timeEnd = "2001-01-01",
                                                   temporalReducer = "mean",
-                                                  bands = c("pdsi", "vap", "soil"),
+                                                  bandSelection = c("pdsi", "vap", "soil"),
                                                   scale = 3000
                                                   )
   
@@ -132,7 +132,7 @@ product_collection <- ee_data_collection(datasetID = "IDAHO_EPSCOR/TERRACLIMATE"
                                                 timeStart = "2000-01-01",
                                                 timeEnd = "2001-01-01",
                                                 temporalReducer = "mean",
-                                                bands = "wrong",
+                                                bandSelection = "wrong",
                                                 scale = 3000
                                                 )
   
@@ -145,7 +145,7 @@ product_collection <- ee_data_collection(datasetID = "IDAHO_EPSCOR/TERRACLIMATE"
                                                   timeStart = "2000-01-01",
                                                   timeEnd = "2001-01-01",
                                                   temporalReducer = "mean",
-                                                  bands = "soil", 
+                                                  bandSelection = "soil", 
                                                   scale = 3000
   )
   
