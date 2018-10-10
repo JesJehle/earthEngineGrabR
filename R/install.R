@@ -2,7 +2,39 @@
 # installations -----------------------------------------------------------------------------------------------------------------------------------------------
 
 #' The function installs python dependencies
+#' @import reticulate
 install_ee_dependencies <- function(conda_env_name) {
+  # virtual_exists <-
+  #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
+  # if (class(virtual_exists) == "try-error") {
+  if (!(conda_env_name %in% reticulate::conda_list()$name)) {
+    reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal==2.1.0"))
+    reticulate::conda_install(
+      packages = c("earthengine-api", "shapely"),
+      envname = conda_env_name
+    )
+    # Reticulate-bug, to activate the environment the r manual restart of R is necessary
+  }
+}
+
+
+# test installation by import modules
+#' @import reticulate
+test_import <- function() {
+  test_ee <- try(import("ee"))
+  test_gdal <- try(import("gdal"))
+  
+  if (class(test_ee)[1] == "try-error") stop("ee import no possible", call. = F)
+  if (class(test_gdal)[1] == "try-error") stop("gdal import no possible", call. = F)
+  
+}
+
+
+
+
+
+#' The function installs python dependencies
+install_ee_dependencies_old <- function(conda_env_name) {
   # virtual_exists <-
   #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
   # if (class(virtual_exists) == "try-error") {
@@ -150,5 +182,5 @@ test_import_ee_gdal_conda <- function() {
 #' clean virtual and conda environments
 clean_environments <- function(env_name = "earthEngineGrabR") {
   try(reticulate::conda_remove(env_name))
-  try(reticulate::virtualenv_remove(env_name))
+  #try(reticulate::virtualenv_remove(env_name))
 }

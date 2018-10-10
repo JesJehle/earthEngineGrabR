@@ -2,11 +2,43 @@
 % Please edit documentation in R/ee_grab_install.R
 \name{ee_grab_install}
 \alias{ee_grab_install}
-\title{The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's}
+\title{Install dependencies and run authentications}
 \usage{
-ee_grab_install(clean_credentials = T, conda = T,
+ee_grab_install(conda = T, clean_credentials = T,
   clean_environment = F)
 }
-\description{
-To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
+\arguments{
+\item{conda}{\code{logical}, if \code{True} a conda environment is used for the installation of the earthEngineGrabR dependencies. Default to \code{True}. If set to \code{False}, a virtual environment is used instead.}
+
+\item{clean_credentials}{\code{logical}, if \code{True} already present credential are deleted recreated by a reauthenticate. Default is set to \code{True}. This argument is used for development and not meant to be changed by the user.}
+
+\item{clean_environment}{\code{logical}, if \code{True} already installed environments are deleted to be reinstalled again. Default is set to \code{False}. This argument is used for development and not meant to be changed by the user.}
 }
+\description{
+\code{ee_grab_install()} installs the required dependencies and guides the user through the authentication processes to activate the different API's.
+}
+\section{Installation of Dependencies}{
+
+
+To encapsulate the dependencies from the users system, and at the same time simplify the installation the \code{earthEngineGrabR}, by default, uses a conda environment.
+By running \code{ee_grab_install()} first the conda envritonemt "earthEngineGrabR" is created. 
+Further all dependencies are installed inside the "earthEngineGrabR" envrironment.
+}
+
+\section{Authentication of API's}{
+
+
+The earthEngineGrabR connets to 3 Google API's: 
+
+  \href{https://www.gdal.org/drv_gft.html}{Google Fusion Table} API for uploading data. 
+  
+  \href{https://developers.google.com/earth-engine/}{Google Earth Engine} API for data aquisition and processing.  
+  
+  \href{https://github.com/tidyverse/googledrive}{Google Drive} API for data download. 
+
+To authenticate to the API's the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. 
+To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account.
+If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
+This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
+}
+

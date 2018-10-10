@@ -21,9 +21,9 @@ The earthEngineGrabR R package has some dependencies that need to be satisfied b
 
 ## required dependencies
 
-* [install Anaconda](https://www.anaconda.com/download/)
+* install [Anaconda](https://www.anaconda.com/download/)
 
-* [install sf](https://github.com/r-spatial/sf)
+* install [sf](https://github.com/r-spatial/sf)
 
 
 Next, you can install the developmenet version of the earthEngineGrabR with:
@@ -43,7 +43,7 @@ To simplify the installation and authentication process, the earthEngineGrabR in
 ```r
 ee_grab_install()
 ```
-After the succesfull installation the user has to log in to log in to his Google account and allow the API to access data on googles servers on the user's behalf. 
+After the succesfull installation the user has to log in to his Google account and allow the API to access data on googles servers on the user's behalf. 
 To simplify this procedure, the `ee_grab_install()`  function successively opens a browser window to log into the Google account.
 
 If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 

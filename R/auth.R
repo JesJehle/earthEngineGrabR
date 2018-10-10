@@ -83,10 +83,23 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 }
 
 
+
 #' activate environment
 activate_environments <- function(env_name = "earthEngineGrabR") {
-  test_credentials()
+  earthEngineGrabR:::test_credentials()
   library(reticulate)
+  conda_test <- try(use_condaenv(env_name, required = T), silent = T)
+  if (class(conda_test) == "try-error") {
+    stop("Could not find a valid conda or virtual environment. \nPlease run ee_grab_install() to install a valid environment.", call. = F)
+  }
+  try(gd_auth(), silent = T)
+}
+
+
+#' activate environment
+activate_environments_old <- function(env_name = "earthEngineGrabR") {
+  earthEngineGrabR:::test_credentials()
+  #library(reticulate)
   conda_test <- try(use_condaenv(env_name, required = T), silent = T)
   virtual_test <- try(use_virtualenv(env_name, required = T), silent = T)
   if (class(conda_test) == "try-error" & class(virtual_test) == "try-error") {
