@@ -57,52 +57,88 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    
-<div id="earthenginegrabr" class="section level1">
+    <div id="earthenginegrabr" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#earthenginegrabr" class="anchor"></a>earthEngineGrabR</h1></div>
-<p>The earthEngineGrabR simplifies the acquisition of remote sensing data by building an interface between R and the Google Earth Engine.</p>
-<p>The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user.</p>
-<p>Any acquiring and processing of the remote sensing data is entirely outsourced to EE with only the derived datasets, being exported and imported into R.</p>
-<p>This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.</p>
+<p>The <code>earthEngineGrabR</code> simplifies the acquisition of remote sensing data by building an interface between R and the <a href="https://earthengine.google.com/">Google Earth Engine</a>. The R package extracts data from the <a href="https://developers.google.com/earth-engine/datasets/">Earth Engine Data Catalog</a> according to a target area and a user-defined aggregation process. Any acquiring and processing of the data are entirely outsourced to EE with only the derived datasets, in an analysis-ready format being imported into R. This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.</p>
+<div id="usage" class="section level4">
+<h4 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h4>
+<p>The example shows how to grab the yearly precipitation sum from the <a href="https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY">CHIRPS Daily</a> dataset for elephant territories in Africa. To extract data from the EE Data Catalog the <code>earthEngineGrabR</code> uses <code><a href="reference/ee_grab.html">ee_grab()</a></code>. The <code><a href="reference/ee_grab.html">ee_grab()</a></code> function grabs data from the <a href="https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY">CHIRPS Daily</a> dataset according to the target area defined by the feature geometries of the territories shapefile and an aggregation process defined by <code><a href="reference/ee_data_collection.html">ee_data_collection()</a></code>.</p>
+<p>The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a <a href="https://developers.google.com/earth-engine/scale"><code>scale</code></a> of 200 meters per pixel.</p>
+<p>After a short processing time of approximately 1 -2 minutes, <code><a href="reference/ee_grab.html">ee_grab()</a></code> returns the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(earthEngineGrabR)
+
+chirps_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/ee_grab.html">ee_grab</a></span>(<span class="dt">data =</span> <span class="kw"><a href="reference/ee_data_collection.html">ee_data_collection</a></span>(<span class="dt">datasetID =</span> <span class="st">"UCSB-CHG/CHIRPS/DAILY"</span>,
+                                                 <span class="dt">spatialReducer =</span> <span class="st">"mean"</span>,
+                                                 <span class="dt">temporalReducer =</span> <span class="st">"sum"</span>, 
+                                                 <span class="dt">timeStart =</span> <span class="st">"2016-01-01"</span>,
+                                                 <span class="dt">timeEnd =</span> <span class="st">"2016-12-31"</span>, 
+                                                 <span class="dt">scale =</span> <span class="dv">200</span>
+                                                 ),
+                       <span class="dt">targetArea =</span> <span class="kw">system.file</span>(<span class="st">"data/territories.shp"</span>, <span class="dt">package =</span> <span class="st">"earthEngineGrabR"</span>)
+                      )
+
+chirps_data
+
+Simple feature collection with <span class="dv">53</span> features and <span class="dv">3</span> fields
+geometry type<span class="op">:</span><span class="st">  </span>MULTIPOLYGON
+dimension<span class="op">:</span><span class="st">      </span>XY
+bbox<span class="op">:</span><span class="st">           </span>xmin<span class="op">:</span><span class="st"> </span><span class="fl">-13.71389</span> ymin<span class="op">:</span><span class="st"> </span><span class="fl">-25.52952</span> xmax<span class="op">:</span><span class="st"> </span><span class="fl">43.10118</span> ymax<span class="op">:</span><span class="st"> </span><span class="fl">16.63924</span>
+<span class="kw">epsg</span> (SRID)<span class="op">:</span><span class="st">    </span><span class="dv">4326</span>
+proj4string<span class="op">:</span><span class="st">    </span><span class="op">+</span>proj=longlat <span class="op">+</span>datum=WGS84 <span class="op">+</span>no_defs
+First <span class="dv">10</span> features<span class="op">:</span>
+<span class="st">   </span>id area_sqkm precipitation_s.mean_t.sum_<span class="dv">2016</span>.<span class="fl">01.01</span>_to_<span class="dv">2016</span>.<span class="fl">12.31</span>                       geometry
+<span class="dv">1</span>  <span class="dv">40</span>     <span class="dv">32356</span>                                            <span class="fl">500.2795</span> <span class="kw">MULTIPOLYGON</span> (((<span class="fl">37.76223</span> <span class="dv">0</span>....
+<span class="dv">2</span>  <span class="dv">29</span>     <span class="dv">42612</span>                                            <span class="fl">914.9900</span> <span class="kw">MULTIPOLYGON</span> (((<span class="fl">36.58819</span> <span class="dv">-1</span>...
+<span class="dv">3</span>  <span class="dv">12</span>     <span class="dv">47000</span>                                           <span class="fl">1321.1984</span> <span class="kw">MULTIPOLYGON</span> (((<span class="fl">37.10833</span> <span class="dv">-7</span>...
+<span class="dv">4</span>   <span class="dv">9</span>     <span class="dv">19624</span>                                            <span class="fl">572.1886</span> <span class="kw">MULTIPOLYGON</span> (((<span class="fl">31.87845</span> <span class="dv">-2</span>...</code></pre></div>
 </div>
-<div id="dependencies-of-the-earthenginegrabr" class="section level1">
-<h1 class="hasAnchor">
-<a href="#dependencies-of-the-earthenginegrabr" class="anchor"></a>Dependencies of the earthEngineGrabR</h1>
-<p>The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run sucessfully:</p>
-<div id="required-accounts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#required-accounts" class="anchor"></a>required Accounts</h2>
+<div id="requirements" class="section level3">
+<h3 class="hasAnchor">
+<a href="#requirements" class="anchor"></a>Requirements</h3>
+<p>The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run successfully:</p>
+<div id="required-accounts" class="section level4">
+<h4 class="hasAnchor">
+<a href="#required-accounts" class="anchor"></a>Required accounts</h4>
 <ul>
-<li><a href="https://accounts.google.com/SignUp?hl=de">you need a Google Account</a></li>
-<li><a href="https://signup.earthengine.google.com/#!/">sign up for Earth Engine access</a></li>
+<li>You need a <a href="https://accounts.google.com/SignUp?hl=de">Google Account</a>.</li>
+<li>You need to sign up for <a href="https://signup.earthengine.google.com/#!/">Earth Engine access</a>.</li>
 </ul>
 </div>
-<div id="required-dependencies" class="section level2">
-<h2 class="hasAnchor">
-<a href="#required-dependencies" class="anchor"></a>required dependencies</h2>
+<div id="required-dependencies" class="section level4">
+<h4 class="hasAnchor">
+<a href="#required-dependencies" class="anchor"></a>Required dependencies</h4>
 <ul>
-<li><p><a href="https://www.anaconda.com/download/">install Anaconda</a></p></li>
-<li><p><a href="https://github.com/r-spatial/sf">install sf</a></p></li>
+<li>You have to install <a href="https://www.anaconda.com/download/">Anaconda</a> (Python =&gt; 2.7)</li>
+<li>You need to install <a href="https://github.com/r-spatial/sf">sf</a>
+</li>
 </ul>
-<p>Next, you can install the developmenet version of the earthEngineGrabR with:</p>
+<p>Next, you can install the development version of the <code>earthEngineGrabR</code> with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"JesJehle/earthEngineGrabR"</span>)
 <span class="kw">library</span>(earthEngineGrabR)</code></pre></div>
 </div>
 </div>
-<div id="install-and-authentication-of-the-earthenginegrabr" class="section level1">
-<h1 class="hasAnchor">
-<a href="#install-and-authentication-of-the-earthenginegrabr" class="anchor"></a>install and authentication of the earthEngineGrabR</h1>
-<p>The earthEngineGrabR has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.</p>
-<p>To simplify the installation and authentication process, the earthEngineGrabR includes a function <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code> that installs Python dependencies and furthermore guides the user through the different authentications. Before using the earthEngineGrabR, the user has to call <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code></p>
+<div id="installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h3>
+<p>The package has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.</p>
+<p>To simplify the installation and authentication process, the earthEngineGrabR includes a function <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code> that installs Python dependencies and furthermore guides the user through the different authentications.</p>
+<p>Before using the earthEngineGrabR, the user has to call <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ee_grab_install.html">ee_grab_install</a></span>()</code></pre></div>
-<p>After the succesfull installation the user has to log in to log in to his Google account and allow the API to access data on googles servers on the user’s behalf. To simplify this procedure, the <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code> function successively opens a browser window to log into the Google account.</p>
-<p>If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials.</p>
-<div id="test" class="section level2">
-<h2 class="hasAnchor">
-<a href="#test" class="anchor"></a>Test</h2>
-<p>To test the earthEngineGrabR run:</p>
+<div id="authentication" class="section level4">
+<h4 class="hasAnchor">
+<a href="#authentication" class="anchor"></a>Authentication</h4>
+<p>The earthEngineGrabR connects to 3 Google API’s:</p>
+<p><em><a href="https://www.gdal.org/drv_gft.html">Google Fusion Table</a> API for uploading data. </em><a href="https://developers.google.com/earth-engine/">Google Earth Engine</a> API for data aquisition and processing. *<a href="https://github.com/tidyverse/googledrive">Google Drive}</a> API for data download.</p>
+<p>To authenticate to the API’s the user has to log in with his google account and allow the API to access data on googles servers on the user’s behalf. To simplify this procedure the <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code> function successively opens a browser window to log into the Google account. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.</p>
+<p>Before using the earthEngineGrabR, the user has to call <code><a href="reference/ee_grab_install.html">ee_grab_install()</a></code></p>
+</div>
+<div id="test-installation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#test-installation" class="anchor"></a>Test installation</h4>
+<p>To test the installation run:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">srtm_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/ee_grab.html">ee_grab</a></span>(<span class="dt">data =</span> <span class="kw"><a href="reference/ee_data_image.html">ee_data_image</a></span>(<span class="dt">datasetID =</span> <span class="st">"CGIAR/SRTM90_V4"</span>, 
                                           <span class="dt">spatialReducer =</span> <span class="st">"mean"</span>, 
                                           <span class="dt">scale =</span> <span class="dv">100</span>, 
@@ -112,7 +148,25 @@
                     )</code></pre></div>
 </div>
 </div>
-
+<div id="earthenginegrabr-workflow" class="section level3">
+<h3 class="hasAnchor">
+<a href="#earthenginegrabr-workflow" class="anchor"></a>earthEngineGrabR Workflow</h3>
+<ul>
+<li><p><strong>Search</strong> for dataset in Earth Engine <a href="https://developers.google.com/earth-engine/datasets/">Data Catalog</a> .</p></li>
+<li><p><strong>Grab</strong> data according to a user defines data reuquest.</p></li>
+</ul>
+<div id="search-for-data" class="section level4">
+<h4 class="hasAnchor">
+<a href="#search-for-data" class="anchor"></a>Search for data</h4>
+<p>Use Earth Engine’s <a href="https://developers.google.com/earth-engine/datasets/">Data Catalog</a> to browse and find datasets you want to grab using the earthEngineGrabR. Once you have found a dataset, use the snippet section to obtain the <strong>dataset ID</strong> and whether the dataset is an <strong>image</strong> or a <strong>collection of images</strong>. The snippet section consists of one line of code (don’t open the link) and shows how Earth Engine loads the dataset. If it is an image, the <code>ee.Image(dataset-ID)</code> constructor is used. if it is a collection the <code>ee.ImageCollection(dataset-id)</code> constructor is used instead.</p>
+</div>
+<div id="grab-data" class="section level4">
+<h4 class="hasAnchor">
+<a href="#grab-data" class="anchor"></a>Grab data</h4>
+<p><code><a href="reference/ee_grab.html">ee_grab()</a></code> requests and imports data from Earth Engine to R. <code><a href="reference/ee_grab.html">ee_grab()</a></code> takes two arguments, <code>data</code> and <code>targetArea</code>. <code>data</code> takes a single or a list of <code><a href="reference/ee_data_image.html">ee_data_image()</a></code> and <code><a href="reference/ee_data_collection.html">ee_data_collection()</a></code> functions, which define the requested data to <code><a href="reference/ee_grab.html">ee_grab()</a></code>. If the requested data is an image use <code><a href="reference/ee_data_image.html">ee_data_image()</a></code>, if it’s a collection use <code><a href="reference/ee_data_collection.html">ee_data_collection()</a></code>. <code>targetArea</code> takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.</p>
+</div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3" id="sidebar">

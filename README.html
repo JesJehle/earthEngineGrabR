@@ -127,11 +127,10 @@ $(document).ready(function () {
 <div id="earthenginegrabr" class="section level1">
 <h1>earthEngineGrabR</h1>
 <p>The <code>earthEngineGrabR</code> simplifies the acquisition of remote sensing data by building an interface between R and the <a href="https://earthengine.google.com/">Google Earth Engine</a>. The R package extracts data from the <a href="https://developers.google.com/earth-engine/datasets/">Earth Engine Data Catalog</a> according to a target area and a user-defined aggregation process. Any acquiring and processing of the data are entirely outsourced to EE with only the derived datasets, in an analysis-ready format being imported into R. This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.</p>
+<hr />
 <div id="usage" class="section level4">
 <h4>Usage</h4>
 <p>The example shows how to grab the yearly precipitation sum from the <a href="https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY">CHIRPS Daily</a> dataset for elephant territories in Africa. To extract data from the EE Data Catalog the <code>earthEngineGrabR</code> uses <code>ee_grab()</code>. The <code>ee_grab()</code> function grabs data from the <a href="https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY">CHIRPS Daily</a> dataset according to the target area defined by the feature geometries of the territories shapefile and an aggregation process defined by <code>ee_data_collection()</code>.</p>
-<p>The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a <a href="https://developers.google.com/earth-engine/scale"><code>scale</code></a> of 200 meters per pixel.</p>
-<p>After a short processing time of approximately 1 -2 minutes, <code>ee_grab()</code> returns the data.</p>
 <pre class="r"><code>library(earthEngineGrabR)
 
 chirps_data &lt;- ee_grab(data = ee_data_collection(datasetID = &quot;UCSB-CHG/CHIRPS/DAILY&quot;,
@@ -158,9 +157,12 @@ First 10 features:
 2  29     42612                                            914.9900 MULTIPOLYGON (((36.58819 -1...
 3  12     47000                                           1321.1984 MULTIPOLYGON (((37.10833 -7...
 4   9     19624                                            572.1886 MULTIPOLYGON (((31.87845 -2...</code></pre>
+<p>The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a <a href="https://developers.google.com/earth-engine/scale"><code>scale</code></a> of 200 meters per pixel.</p>
+<p>After a short processing time of approximately 1 -2 minutes, <code>ee_grab()</code> returns the data.</p>
+<hr />
 </div>
-<div id="requirements" class="section level3">
-<h3>Requirements</h3>
+<div id="requirements" class="section level2">
+<h2>Requirements</h2>
 <p>The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run successfully:</p>
 <div id="required-accounts" class="section level4">
 <h4>Required accounts</h4>
@@ -179,10 +181,11 @@ First 10 features:
 <pre class="r"><code>library(devtools)
 install_github(&quot;JesJehle/earthEngineGrabR&quot;)
 library(earthEngineGrabR)</code></pre>
+<hr />
 </div>
 </div>
-<div id="installation" class="section level3">
-<h3>Installation</h3>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
 <p>The package has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.</p>
 <p>To simplify the installation and authentication process, the earthEngineGrabR includes a function <code>ee_grab_install()</code> that installs Python dependencies and furthermore guides the user through the different authentications.</p>
 <p>Before using the earthEngineGrabR, the user has to call <code>ee_grab_install()</code></p>
@@ -190,12 +193,13 @@ library(earthEngineGrabR)</code></pre>
 <div id="authentication" class="section level4">
 <h4>Authentication</h4>
 <p>The earthEngineGrabR connects to 3 Google API’s:</p>
-<p><em><a href="https://www.gdal.org/drv_gft.html">Google Fusion Table</a> API for uploading data. </em><a href="https://developers.google.com/earth-engine/">Google Earth Engine</a> API for data aquisition and processing. *<a href="https://github.com/tidyverse/googledrive">Google Drive}</a> API for data download.</p>
+<ul>
+<li><a href="https://www.gdal.org/drv_gft.html">Google Fusion Table</a> API for uploading data.</li>
+<li><a href="https://developers.google.com/earth-engine/">Google Earth Engine</a> API for data aquisition and processing.</li>
+<li><a href="https://github.com/tidyverse/googledrive">Google Drive}</a> API for data download.</li>
+</ul>
 <p>To authenticate to the API’s the user has to log in with his google account and allow the API to access data on googles servers on the user’s behalf. To simplify this procedure the <code>ee_grab_install()</code> function successively opens a browser window to log into the Google account. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.</p>
 <p>Before using the earthEngineGrabR, the user has to call <code>ee_grab_install()</code></p>
-</div>
-<div id="test-installation" class="section level4">
-<h4>Test installation</h4>
 <p>To test the installation run:</p>
 <pre class="r"><code>srtm_data &lt;- ee_grab(data = ee_data_image(datasetID = &quot;CGIAR/SRTM90_V4&quot;, 
                                           spatialReducer = &quot;mean&quot;, 
@@ -205,10 +209,10 @@ library(earthEngineGrabR)</code></pre>
                     targetArea = system.file(&quot;data/territories.shp&quot;, package = &quot;earthEngineGrabR&quot;)
                     )
 </code></pre>
+<hr />
 </div>
-</div>
-<div id="earthenginegrabr-workflow" class="section level3">
-<h3>earthEngineGrabR Workflow</h3>
+<div id="the-earthenginegrabr-workflow" class="section level3">
+<h3>The earthEngineGrabR Workflow</h3>
 <ul>
 <li><p><strong>Search</strong> for dataset in Earth Engine <a href="https://developers.google.com/earth-engine/datasets/">Data Catalog</a> .</p></li>
 <li><p><strong>Grab</strong> data according to a user defines data reuquest.</p></li>
@@ -220,6 +224,7 @@ library(earthEngineGrabR)</code></pre>
 <div id="grab-data" class="section level4">
 <h4>Grab data</h4>
 <p><code>ee_grab()</code> requests and imports data from Earth Engine to R. <code>ee_grab()</code> takes two arguments, <code>data</code> and <code>targetArea</code>. <code>data</code> takes a single or a list of <code>ee_data_image()</code> and <code>ee_data_collection()</code> functions, which define the requested data to <code>ee_grab()</code>. If the requested data is an image use <code>ee_data_image()</code>, if it’s a collection use <code>ee_data_collection()</code>. <code>targetArea</code> takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.</p>
+</div>
 </div>
 </div>
 </div>

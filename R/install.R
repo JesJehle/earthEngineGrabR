@@ -2,7 +2,6 @@
 # installations -----------------------------------------------------------------------------------------------------------------------------------------------
 
 #' The function installs python dependencies
-#' @import reticulate
 #' @noRd
 install_ee_dependencies <- function(conda_env_name) {
   # virtual_exists <-
@@ -20,7 +19,6 @@ install_ee_dependencies <- function(conda_env_name) {
 
 
 # test installation by import modules
-#' @import reticulate
 #' @noRd
 test_import <- function() {
   test_ee <- try(import("ee"))

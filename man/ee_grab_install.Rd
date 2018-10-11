@@ -4,12 +4,9 @@
 \alias{ee_grab_install}
 \title{Install dependencies and run authentications}
 \usage{
-ee_grab_install(conda = T, clean_credentials = T,
-  clean_environment = F)
+ee_grab_install(clean_credentials = T, clean_environment = F)
 }
 \arguments{
-\item{conda}{\code{logical}, if \code{True} a conda environment is used for the installation of the earthEngineGrabR dependencies. Default to \code{True}. If set to \code{False}, a virtual environment is used instead.}
-
 \item{clean_credentials}{\code{logical}, if \code{True} already present credential are deleted recreated by a reauthenticate. Default is set to \code{True}. This argument is used for development and not meant to be changed by the user.}
 
 \item{clean_environment}{\code{logical}, if \code{True} already installed environments are deleted to be reinstalled again. Default is set to \code{False}. This argument is used for development and not meant to be changed by the user.}
@@ -20,7 +17,7 @@ ee_grab_install(conda = T, clean_credentials = T,
 \section{Installation of Dependencies}{
 
 
-To encapsulate the dependencies from the users system, and at the same time simplify the installation the \code{earthEngineGrabR}, by default, uses a conda environment.
+To encapsulate the dependencies from the users system, and at the same time simplify the installation the \code{earthEngineGrabR}, uses a conda environment.
 By running \code{ee_grab_install()} first the conda envritonemt "earthEngineGrabR" is created. 
 Further all dependencies are installed inside the "earthEngineGrabR" envrironment.
 }
@@ -28,7 +25,7 @@ Further all dependencies are installed inside the "earthEngineGrabR" envrironmen
 \section{Authentication of API's}{
 
 
-The earthEngineGrabR connets to 3 Google API's: 
+The earthEngineGrabR connects to 3 Google API's: 
 
   \href{https://www.gdal.org/drv_gft.html}{Google Fusion Table} API for uploading data. 
   

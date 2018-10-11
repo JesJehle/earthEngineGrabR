@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>dependencies • earthEngineGrabR</title>
+<title>today • earthEngineGrabR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="dependencies" />
+<meta property="og:title" content="today" />
 
 
 
@@ -90,16 +90,20 @@
 <div class="row">
   <div class="contents col-md-9">
     <div class="page-header">
-      <h1>dependencies</h1>
+      <h1>today</h1>
     </div>
 
 
-<div id="dependencies" class="section level1">
+<div id="today" class="section level1">
 
+<p>finish readme</p>
 <ul>
-<li>sf needs gdal to be installed for the own installation, putting sf in the description file, requires gdal to be installed on the system</li>
-<li>reticulate bug - To use a spedific virtual or conda environment, the environment has to be acrivated as first reticulate function. A later change is not possible ans requires a manual restart of R.</li>
+<li>one introduction sentence</li>
+<li>good example</li>
+<li>how to install, authenticate</li>
+<li>describe workflow.</li>
 </ul>
+<p>check spelling in documentation and readme</p>
 </div>
 <div id="to-do" class="section level1">
 <h1 class="hasAnchor">
@@ -107,17 +111,21 @@
 <ul>
 <li>try to use permanent tokens for the httr package</li>
 <li>implement parameters checks for ee_grab and create_product</li>
-<li>catch error from ee servers - no images found example</li>
-<li>dokumentation</li>
+<li>catch error from ee servers - no images found an example</li>
+<li>documentation</li>
 <li>website</li>
-<li>vigniettes</li>
+<li>vignettes</li>
 <li>implement tests</li>
 <li><p>clean up python files</p></li>
-<li><p>implement info option in ee_grab to extreact formated info about the dataproduct of needed. – not important</p></li>
+<li><p>implement info option in ee_grab to extract formatted info about the data product if needed. – not important</p></li>
 <li>implement export projection control</li>
-<li>add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts</li>
-<li>implement manual use escape in authorisation process, like in httr package</li>
-<li><p>test with list of product IDs</p></li>
+<li>add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts</li>
+<li>implement manual use escape in the authorisation process, like in the httr package</li>
+<li>test with a list of product IDs</li>
+<li>catch error no sf library</li>
+<li>pass error in tryCatch installation test failed.</li>
+<li>installation test on windows</li>
+<li><p>build and test on Travis ??</p></li>
 </ul>
 </div>
 <div id="rename-functions" class="section level1">
@@ -140,6 +148,11 @@
 <li>requested data is defiend by list of ee_data_* functions.</li>
 <li>targetArea is defiend by a path to a local geo-file</li>
 </ul>
+</div>
+<div id="rest" class="section level1">
+<h1 class="hasAnchor">
+<a href="#rest" class="anchor"></a>rest</h1>
+<p>The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user.</p>
 </div>
 
 

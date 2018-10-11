@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's — ee_grab_install • earthEngineGrabR</title>
+<title>Install dependencies and run authentications — ee_grab_install • earthEngineGrabR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's — ee_grab_install" />
+<meta property="og:title" content="Install dependencies and run authentications — ee_grab_install" />
 
-<meta property="og:description" content="To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification." />
+<meta property="og:description" content="ee_grab_install() installs the required dependencies and guides the user through the authentication processes to activate the different API's." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,26 +93,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The function installs additionally required dependencies and guides the user through the authentication processes to activate the different API's</h1>
+    <h1>Install dependencies and run authentications</h1>
     
     <div class="hidden name"><code>ee_grab_install.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>To authenticate to the API the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into a running command line script, which stores the token as persistent credentials. Later, the credentials are used to authenticate a request to the API. To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account and a corresponding command line window to enter the token. This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.</p>
+    <p><code>ee_grab_install()</code> installs the required dependencies and guides the user through the authentication processes to activate the different API's.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ee_grab_install</span>(<span class='kw'>clean_credentials</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>conda</span> <span class='kw'>=</span> <span class='no'>T</span>,
-  <span class='kw'>clean_environment</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
-        
+    <pre class="usage"><span class='fu'>ee_grab_install</span>(<span class='kw'>clean_credentials</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>clean_environment</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>clean_credentials</th>
+      <td><p><code>logical</code>, if <code>True</code> already present credential are deleted recreated by a reauthenticate. Default is set to <code>True</code>. This argument is used for development and not meant to be changed by the user.</p></td>
+    </tr>
+    <tr>
+      <th>clean_environment</th>
+      <td><p><code>logical</code>, if <code>True</code> already installed environments are deleted to be reinstalled again. Default is set to <code>False</code>. This argument is used for development and not meant to be changed by the user.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="installation-of-dependencies"><a class="anchor" href="#installation-of-dependencies"></a>Installation of Dependencies</h2>
+
+    
+    <p>To encapsulate the dependencies from the users system, and at the same time simplify the installation the <code>earthEngineGrabR</code>, uses a conda environment.
+By running <code>ee_grab_install()</code> first the conda envritonemt "earthEngineGrabR" is created. 
+Further all dependencies are installed inside the "earthEngineGrabR" envrironment.</p>
+    
+    <h2 class="hasAnchor" id="authentication-of-api-s"><a class="anchor" href="#authentication-of-api-s"></a>Authentication of API's</h2>
+
+    
+    <p>The earthEngineGrabR connects to 3 Google API's:</p>
+<p><a href='https://www.gdal.org/drv_gft.html'>Google Fusion Table</a> API for uploading data.</p>  
+<p><a href='https://developers.google.com/earth-engine/'>Google Earth Engine</a> API for data aquisition and processing.</p>  
+<p><a href='https://github.com/tidyverse/googledrive'>Google Drive</a> API for data download.</p>
+<p>To authenticate to the API's the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. 
+To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account.
+If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
+This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-                </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#installation-of-dependencies">Installation of Dependencies</a></li>
+
+      <li><a href="#authentication-of-api-s">Authentication of API's</a></li>
+          </ul>
 
   </div>
 </div>

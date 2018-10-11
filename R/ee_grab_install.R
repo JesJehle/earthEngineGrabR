@@ -31,8 +31,7 @@
 #' To simplify this procedure the ee_grab_install function successively opens a browser window to log into the Google account.
 #' If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
 #' This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
-#' @import reticulate
-#' @section 
+#' 
 #' 
 ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   # initialize or clean environments --------------------------------------------------------------------------------------
