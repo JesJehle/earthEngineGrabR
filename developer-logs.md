@@ -14,7 +14,7 @@ check spelling in documentation and readme
 + try to use permanent tokens for the httr package
 + implement parameters checks for ee_grab and create_product
 + catch error from ee servers - no images found an example
-* documentation
++ documentation
 * website
 * vignettes
 + implement tests
@@ -26,8 +26,9 @@ check spelling in documentation and readme
 * add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts
 * implement manual use escape in the authorisation process, like in the httr package
 * test with a list of product IDs
-* catch error no sf library
-* pass error in tryCatch installation test failed.
+
++ catch error no sf library
++ pass error in tryCatch installation test failed.
 * installation test on windows
 * build and test on Travis ??
 

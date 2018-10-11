@@ -34,16 +34,15 @@
 #' 
 #' 
 ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
-  # initialize or clean environments --------------------------------------------------------------------------------------
-  # for testing purpose clean all environment installations
+  
+  # test installation of sf
+  if(class(try(library(sf), silent = T)) == "try-error") stop("Library sf could not be loaded \nPlease install sf to use earthEngineGrabR", call. = F)
+
   library(reticulate)
+  # initialize or clean environments --------------------------------------------------------------------------------------
   if (clean_environment) clean_environments()
-  # acrivate conda or virtual environment depended on which environment is installed
-  # test python dependencies ----------------------------------------------------------------------------------------------------------
-  # install python dependencies ----------------------------------------------------------------------------------------------
-  # test if anaconda is installed on the system
-  #test_anaconda()
-    # install dependencies via an anaconda environment if it's no yet installed
+
+  # install dependencies via an anaconda environment if it's no yet installed
   conda_env_name <- "earthEngineGrabR"
   
   conda_create(conda_env_name, packages = c("Python = 2.7", "gdal==2.1.0", "geos=3.5.0"))
@@ -51,19 +50,20 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
   
   use_condaenv("earthEngineGrabR")
-  # install_ee_dependencies("earthEngineGrabR")
-    # test import of all modules.
+
+  # test import of all modules.
   
   tryCatch({
     
   test_ee <- try(import("ee"))
   test_gdal <- try(import("gdal"))
   
-  if (class(test_ee)[1] == "try-error") stop("ee import no possible", call. = F)
-  if (class(test_gdal)[1] == "try-error") stop("gdal import no possible", call. = F)
+  if (class(test_ee)[1] == "try-error") stop("Module ee could not be imported", call. = F)
+  if (class(test_gdal)[1] == "try-error") stop("Module gdal could not be imported", call. = F)
   }, error = function(err) {
     test_python()
     test_anaconda()
+    stop(paste("Installation problem\n", err), call. = F)
   })
   
   # run authentication ---------------------------------------------------------------

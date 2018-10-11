@@ -92,7 +92,7 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 #' activate environment
 #' @noRd
 activate_environments <- function(env_name = "earthEngineGrabR") {
-  earthEngineGrabR:::test_credentials()
+  test_credentials()
   library(reticulate)
   conda_test <- try(use_condaenv(env_name, required = T), silent = T)
   if (class(conda_test) == "try-error") {
