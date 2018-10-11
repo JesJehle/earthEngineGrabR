@@ -3,6 +3,7 @@
 
 #' The function installs python dependencies
 #' @import reticulate
+#' @noRd
 install_ee_dependencies <- function(conda_env_name) {
   # virtual_exists <-
   #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
@@ -20,6 +21,7 @@ install_ee_dependencies <- function(conda_env_name) {
 
 # test installation by import modules
 #' @import reticulate
+#' @noRd
 test_import <- function() {
   test_ee <- try(import("ee"))
   test_gdal <- try(import("gdal"))
@@ -31,28 +33,8 @@ test_import <- function() {
 
 
 
-
-
 #' The function installs python dependencies
-install_ee_dependencies_old <- function(conda_env_name) {
-  # virtual_exists <-
-  #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
-  # if (class(virtual_exists) == "try-error") {
-  if (!(conda_env_name %in% reticulate::conda_list()$name)) {
-    reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
-    reticulate::conda_install(
-      packages = c("earthengine-api"),
-      envname = conda_env_name
-    )
-    # Reticulate-bug, to activate the environment the r manual restart of R is necessary
-    stop(
-      "To activate the newly installed conda environment a manual restart of R is necessary. \nPlease restart R now and run ee_grab_install() again to proceed"
-    )
-  }
-}
-
-
-#' The function installs python dependencies
+#' @noRd
 install_ee_dependencies_workaround <- function(conda_env_name) {
   if (!(conda_env_name %in% reticulate::virtualenv_list())) {
     reticulate::virtualenv_create(conda_env_name)
@@ -71,6 +53,7 @@ install_ee_dependencies_workaround <- function(conda_env_name) {
 
 
 #' test python and anaconda installation
+#' @noRd
 test_dependencies <- function() {
   # test python and anaconda installation installation
   test_python()
@@ -80,6 +63,7 @@ test_dependencies <- function() {
 
 
 #' test anaconda installation
+#' @noRd
 test_anaconda <- function() {
   conda_test <- try(reticulate::conda_list(), silent = T)
   if (class(conda_test) == "try-error") {
@@ -89,6 +73,7 @@ test_anaconda <- function() {
 
 
 #' test local gdal installation for vir-env workaround
+#' @noRd
 test_gdal_installation <- function() {
   # 1. look for local installation of GDAL in the default usr/lib
   info <- reticulate::py_discover_config("gdal")
@@ -109,6 +94,7 @@ test_gdal_installation <- function() {
 }
 
 #' test python installation
+#' @noRd
 test_python <- function() {
   python_test <- try(reticulate::py_available(initialize = T), silent = T)
   if (!python_test) {
@@ -117,6 +103,7 @@ test_python <- function() {
 }
 
 #' test virtual environment installation
+#' @noRd
 test_virtual_env <- function() {
   virtual_test <- try(reticulate::virtualenv_list(), silent = T)
   if (class(virtual_test) == "try-error") {
@@ -133,6 +120,7 @@ test_virtual_env <- function() {
 
 
 #' test python and virtual environment installation for gdal workaround
+#' @noRd
 test_for_gdal_workaround <- function() {
   # test python installation and virtual environment
   test_python()
@@ -145,6 +133,7 @@ test_for_gdal_workaround <- function() {
 
 
 #' test import of gdal and ee for virtual env
+#' @noRd
 test_import_ee_gdal_virtual <- function() {
   try({
     reticulate::use_virtualenv("earthEngineGrabR", required = T)
@@ -162,6 +151,7 @@ test_import_ee_gdal_virtual <- function() {
 
 
 #' test import of gdal and ee for conda
+#' @noRd
 test_import_ee_gdal_conda <- function() {
   try({
     reticulate::use_condaenv("earthEngineGrabR", required = T)
@@ -180,6 +170,7 @@ test_import_ee_gdal_conda <- function() {
 
 
 #' clean virtual and conda environments
+#' @noRd
 clean_environments <- function(env_name = "earthEngineGrabR") {
   try(reticulate::conda_remove(env_name))
   #try(reticulate::virtualenv_remove(env_name))

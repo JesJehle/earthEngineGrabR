@@ -1,5 +1,6 @@
 
 #' Runs google drive authorisation via googledrive::drive_auth() and saves credentials
+#' @noRd
 run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
   credential_path <- get_credential_root()
   gd_credential_path <- file.path(credential_path, credential_name)
@@ -14,6 +15,7 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
 }
 
 #' Run ee authentication
+#' @noRd
 run_ee_oauth <- function() {
   #  library(reticulate)
   #  use_condaenv("earthEngineGrabR", required = T)
@@ -38,6 +40,7 @@ run_ee_oauth <- function() {
 }
 
 #' Run ft authentication
+#' @noRd
 run_ft_oauth <- function() {
 
   # source python functions
@@ -58,6 +61,7 @@ run_ft_oauth <- function() {
 
 #' runs earh engine, fusion table and google drive authentication
 #' @param clean_credentials logical weather to delete existing credentials, default = T
+#' @noRd
 run_oauth_all <- function(clean_credentials = T) {
   activate_environments()
   credential_path <- get_credential_root()
@@ -77,6 +81,7 @@ run_oauth_all <- function(clean_credentials = T) {
 
 
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
+#' @noRd
 gd_auth <- function(credential_name = "gd-credentials.rds") {
   credential_path <- file.path(get_credential_root(), credential_name)
   googledrive::drive_auth(credential_path)
@@ -85,6 +90,7 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 
 
 #' activate environment
+#' @noRd
 activate_environments <- function(env_name = "earthEngineGrabR") {
   earthEngineGrabR:::test_credentials()
   library(reticulate)
@@ -96,24 +102,11 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
 }
 
 
-#' activate environment
-activate_environments_old <- function(env_name = "earthEngineGrabR") {
-  earthEngineGrabR:::test_credentials()
-  #library(reticulate)
-  conda_test <- try(use_condaenv(env_name, required = T), silent = T)
-  virtual_test <- try(use_virtualenv(env_name, required = T), silent = T)
-  if (class(conda_test) == "try-error" & class(virtual_test) == "try-error") {
-    stop("Could not find a valid conda or virtual environment. \nPlease run ee_grab_install() to install a valid environment.", call. = F)
-  }
-  try(gd_auth(), silent = T)
-}
-
-
-
 
 
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
+#' @noRd
 test_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), silent_match = F, with_error = F) {
   credentials_match <-
     try(match.arg(
@@ -136,6 +129,7 @@ test_credentials <- function(credentials = c("gd-credentials.rds", "credentials"
 
 
 #' deletes credentials to re initialize
+#' @noRd
 delete_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
   credential_path <- get_credential_root()
   credentials_match <-
@@ -155,6 +149,7 @@ delete_credentials <- function(credentials = c("gd-credentials.rds", "credential
 
 #' Find path to specified credentials folder
 #' @return  path to credentials folder
+#' @noRd
 get_credential_root <- function() {
   # define values
   path2credentials <- "~/.config/earthengine"

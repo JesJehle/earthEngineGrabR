@@ -6,6 +6,7 @@
 #' calls get_data_image or get_data_collections, dependent on the info object
 #' @param info Data frame information generated gy ee_grab()
 #' @param data_type either ImageCollection of Image,
+#' @noRd
 get_data <- function(info, test = F) {
   activate_environments("earthEngineGrabR")
   ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
@@ -55,6 +56,7 @@ get_data <- function(info, test = F) {
 #' get_data_info
 #' retreves info with a given product ID over earthEngine
 #' @param datasetID String that speciefies the data in ee
+#' @noRd
 get_data_info <- function(datasetID) {
   activate_environments("earthEngineGrabR")
   ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
