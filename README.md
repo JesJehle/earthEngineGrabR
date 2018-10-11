@@ -1,57 +1,102 @@
+
+  
 # earthEngineGrabR
 
 
-The earthEngineGrabR simplifies the acquisition of remote sensing data by building an interface between R and the Google Earth Engine. 
-
-The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user. 
-
-Any acquiring and processing of the remote sensing data is entirely outsourced to EE with only the derived datasets, being exported and imported into R. 
-
+The `earthEngineGrabR` simplifies the acquisition of remote sensing data by building an interface between R and the [Google Earth Engine](https://earthengine.google.com/). The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) according to a target area and a user-defined aggregation process. Any acquiring and processing of the data are entirely outsourced to EE with only the derived datasets, in an analysis-ready format being imported into R. 
 This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.
 
 
-# Dependencies of the earthEngineGrabR
+### Usage
 
-The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run sucessfully:
+The example shows how to grab the yearly precipitation sum from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset for elephant territories in Africa.
+To extract data from the EE Data Catalog the `earthEngineGrabR` uses `ee_grab()`.
+The `ee_grab()` function grabs data from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset according to the target area defined by the feature geometries of the territories shapefile and an aggregation process defined by `ee_data_collection()`.
 
-## required Accounts
+The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a [`scale`](https://developers.google.com/earth-engine/scale) of 200 meters per pixel.
 
-* [you need a Google Account](https://accounts.google.com/SignUp?hl=de)
-* [sign up for Earth Engine access](https://signup.earthengine.google.com/#!/)
+After a short processing time of approximately 1 -2 minutes, `ee_grab()` returns the data.
 
-## required dependencies
+```r
+library(earthEngineGrabR)
 
-* install [Anaconda](https://www.anaconda.com/download/)
+chirps_data <- ee_grab(data = ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY",
+                                                 spatialReducer = "mean",
+                                                 temporalReducer = "sum", 
+                                                 timeStart = "2016-01-01",
+                                                 timeEnd = "2016-12-31", 
+                                                 scale = 200
+                                                 ),
+                       targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
+                      )
 
-* install [sf](https://github.com/r-spatial/sf)
+chirps_data
 
+Simple feature collection with 53 features and 3 fields
+geometry type:  MULTIPOLYGON
+dimension:      XY
+bbox:           xmin: -13.71389 ymin: -25.52952 xmax: 43.10118 ymax: 16.63924
+epsg (SRID):    4326
+proj4string:    +proj=longlat +datum=WGS84 +no_defs
+First 10 features:
+   id area_sqkm precipitation_s.mean_t.sum_2016.01.01_to_2016.12.31                       geometry
+1  40     32356                                            500.2795 MULTIPOLYGON (((37.76223 0....
+2  29     42612                                            914.9900 MULTIPOLYGON (((36.58819 -1...
+3  12     47000                                           1321.1984 MULTIPOLYGON (((37.10833 -7...
+4   9     19624                                            572.1886 MULTIPOLYGON (((31.87845 -2...
+```
 
-Next, you can install the developmenet version of the earthEngineGrabR with:
+## Requirements
+
+The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run successfully:
+
+### Required accounts
+
+* You need a [Google Account](https://accounts.google.com/SignUp?hl=de).
+* You need to sign up for [Earth Engine access](https://signup.earthengine.google.com/#!/).
+
+### Required dependencies
+
+* You have to install [Anaconda](https://www.anaconda.com/download/) (Python => 2.7)
+* You need to install [sf](https://github.com/r-spatial/sf)
+
+Next, you can install the development version of the `earthEngineGrabR` with:
 
 ```r
 library(devtools)
 install_github("JesJehle/earthEngineGrabR")
 library(earthEngineGrabR)
 ```
+## Installation
 
-# install and authentication of the earthEngineGrabR
+The package has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.
 
-The earthEngineGrabR has additional Python dependencies and connects to several API’s, which each require an individual, user-specific, authentication procedure.
+To simplify the installation and authentication process, the earthEngineGrabR includes a function `ee_grab_install()` that installs Python dependencies and furthermore guides the user through the different authentications. 
 
-To simplify the installation and authentication process, the earthEngineGrabR includes a function `ee_grab_install()` that installs Python dependencies and furthermore guides the user through the different authentications. Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
+Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
 
 ```r
 ee_grab_install()
 ```
-After the succesfull installation the user has to log in to his Google account and allow the API to access data on googles servers on the user's behalf. 
-To simplify this procedure, the `ee_grab_install()`  function successively opens a browser window to log into the Google account.
 
+### Authentication
+
+The earthEngineGrabR connects to 3 Google API's: 
+
+ *[Google Fusion Table](https://www.gdal.org/drv_gft.html) API for uploading data. 
+ *[Google Earth Engine](https://developers.google.com/earth-engine/) API for data aquisition and processing.
+ *[Google Drive}](https://github.com/tidyverse/googledrive) API for data download. 
+ 
+ To authenticate to the API's the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. 
+To simplify this procedure the `ee_grab_install()` function successively opens a browser window to log into the Google account.
 If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
+This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
 
+Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
 
-## Test 
+### Test installation 
 
-To test the earthEngineGrabR run:
+To test the installation run:
 ```r
 srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                                           spatialReducer = "mean", 
@@ -63,8 +108,18 @@ srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4",
 
 ```
 
+## earthEngineGrabR Workflow
 
+* **Search** for dataset in Earth Engine [Data Catalog](https://developers.google.com/earth-engine/datasets/) .
 
+* **Grab** data according to a user defines data reuquest.
 
+### Search for data
+
+Use Earth Engine's [Data Catalog](https://developers.google.com/earth-engine/datasets/) to browse and find datasets you want to grab using the earthEngineGrabR. Once you have found a dataset, use the snippet section to obtain the **dataset ID** and whether the dataset is an **image** or a **collection of images**. The snippet section consists of one line of code (don't open the link) and shows how Earth Engine loads the dataset. If it is an image, the `ee.Image(dataset-ID)` constructor is used. if it is a collection the `ee.ImageCollection(dataset-id)` constructor is used instead.
+
+### Grab data
+
+`ee_grab()` requests and imports data from Earth Engine to R. `ee_grab()` takes two arguments, `data` and `targetArea`. `data` takes a single or a list of `ee_data_image()` and `ee_data_collection()` functions, which define the requested data to `ee_grab()`. If the requested data is an image use `ee_data_image()`, if it's a collection use `ee_data_collection()`. `targetArea` takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.
 
 

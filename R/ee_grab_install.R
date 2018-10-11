@@ -15,11 +15,11 @@
 #' To encapsulate the dependencies from the users system, and at the same time simplify the installation the \code{earthEngineGrabR}, uses a conda environment.
 #' By running \code{ee_grab_install()} first the conda envritonemt "earthEngineGrabR" is created. 
 #' Further all dependencies are installed inside the "earthEngineGrabR" envrironment.
-#' To activate the envrironment a manual restart of R is neccessary and \code{ee_grab_install()} will stop with an call to restart R and rerun \code{ee_grab_install()} to proceed with the installtion process.
+#' 
 
 #' @section Authentication of API's:
 #' 
-#' The earthEngineGrabR connets to 3 Google API's: 
+#' The earthEngineGrabR connects to 3 Google API's: 
 #' 
 #'   \href{https://www.gdal.org/drv_gft.html}{Google Fusion Table} API for uploading data. 
 #'   

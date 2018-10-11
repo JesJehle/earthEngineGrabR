@@ -1,25 +1,36 @@
-# dependencies
+# today
 
-* sf needs gdal to be installed for the own installation, putting sf in the description file, requires gdal to be installed on the system
-* reticulate bug - To use a spedific virtual or conda environment, the environment has to be acrivated as first reticulate function. A later change is not possible ans requires a manual restart of R. 
+finish readme
+ * one introduction sentence
+ * good example
+ * how to install, authenticate
+ * describe workflow.
+
+check spelling in documentation and readme
+
 
 # to Do
 
 + try to use permanent tokens for the httr package
 + implement parameters checks for ee_grab and create_product
-+ catch error from ee servers - no images found example
-* dokumentation
++ catch error from ee servers - no images found an example
+* documentation
 * website
-* vigniettes
+* vignettes
 + implement tests
 * clean up python files
 
-* implement info option in ee_grab to extreact formated info about the dataproduct of needed. -- not important
+* implement info option in ee_grab to extract formatted info about the data product if needed. -- not important
 
 * implement export projection control
-* add extensibility functionality by seperating ee data manipulation and allow the embadding of external scripts
-* implement manual use escape in authorisation process, like in httr package
-* test with list of product IDs
+* add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts
+* implement manual use escape in the authorisation process, like in the httr package
+* test with a list of product IDs
+* catch error no sf library
+* pass error in tryCatch installation test failed.
+* installation test on windows
+* build and test on Travis ??
+
 
 # rename functions
 
@@ -36,4 +47,18 @@
   * requested data is defiend by list of ee_data_* functions.
   * targetArea is defiend by a path to a local geo-file
   
+
+
+
+
+# rest
+
+
+The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user. 
+
+
+
+
+
+
 
