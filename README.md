@@ -3,15 +3,15 @@
 # earthEngineGrabR
 
 
-The `earthEngineGrabR` simplifies the acquisition of remote sensing data by building an interface between R and the [Google Earth Engine](https://earthengine.google.com/). The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) according to a target area and a user-defined aggregation process. Any acquiring and processing of the data are entirely outsourced to EE with only the derived datasets, in an analysis-ready format being imported into R. 
-This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.
+The `earthEngineGrabR` is an interface between R and the [Google Earth Engine](https://earthengine.google.com/), which simplifies the acquisition of remote sensing data. The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) in a user-defined target area and a user-defined aggregation process. All extractions and manipulations of the data are entirely outsourced to EE. The user obtains an analysis-ready dataset, locally saved and directly imported into R. 
+As such, the package makes the massive public data catalog available to R-users with minimal techincal and computational effort.
 
 ---------------------------------------------------------------------------------------------------------------------
 
 
 #### Usage
 
-The example shows how to grab the yearly precipitation sum from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset for elephant territories in Africa.
+The example shows how to grab the yearly precipitation sum from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset for a shapefile of spatial polygons, in this case some ecosystems in Africa.
 To extract data from the EE Data Catalog the `earthEngineGrabR` uses `ee_grab()`.
 The `ee_grab()` function grabs data from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset according to the target area defined by the feature geometries of the territories shapefile and an aggregation process defined by `ee_data_collection()`.
 ```r
