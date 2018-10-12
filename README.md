@@ -52,7 +52,7 @@ After a short processing time of approximately 1 -2 minutes, `ee_grab()` returns
 
 ## Requirements
 
-The earthEngineGrabR R package has a few dependencies requirements, which need to be satisfied before the installation can run successfully:
+The earthEngineGrabR R package has a few dependencies and requirements, which need to be satisfied before the installation can run successfully:
 
 #### Required accounts
 
