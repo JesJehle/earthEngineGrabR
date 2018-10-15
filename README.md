@@ -57,7 +57,7 @@ The earthEngineGrabR R package has a few dependencies and requirements, which ne
 #### Required accounts
 
 * [Google Account](https://accounts.google.com/SignUp?hl=de).
-* sign up for [Earth Engine access](https://signup.earthengine.google.com/#!/).
+* [Earth Engine access](https://signup.earthengine.google.com/#!/).
 
 #### Required dependencies
 
