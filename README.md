@@ -2,16 +2,18 @@
   
 # earthEngineGrabR
 
+The Google Earth Engine ([GEE](https://earthengine.google.com/)) is a cloud computing platform, which offers a multi-petabyte catalog of satellite images and manipulated geospatial data products. It also provides extensive computational resources &mdash;	 available for scientists and developers.
 
-The `earthEngineGrabR` simplifies the acquisition of remote sensing data by building an interface between R and the [Google Earth Engine](https://earthengine.google.com/). The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) according to a target area and a user-defined aggregation process. Any acquiring and processing of the data are entirely outsourced to EE with only the derived datasets, in an analysis-ready format being imported into R. 
-This way, the package uses both, the massive public Data Catalog of available data and the processing resources supplied by EE, to request data in a strongly user-specified approach.
+The `earthEngineGrabR` is an interface between R and the [GEE](https://earthengine.google.com/), which simplifies the acquisition of remote sensing data. The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) in a user-defined target area and a user-defined aggregation process. All extractions and manipulations of the data are entirely outsourced to EE. The user obtains an analysis-ready dataset, locally saved and directly imported into R. 
+As such, the package makes the massive public data catalog available to R-users with minimal techincal and computational effort.
+
 
 ---------------------------------------------------------------------------------------------------------------------
 
 
 #### Usage
 
-The example shows how to grab the yearly precipitation sum from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset for elephant territories in Africa.
+The example shows how to grab the yearly precipitation sum from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset for a shapefile of spatial polygons, in this case some ecosystems in Africa.
 To extract data from the EE Data Catalog the `earthEngineGrabR` uses `ee_grab()`.
 The `ee_grab()` function grabs data from the [CHIRPS Daily](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) dataset according to the target area defined by the feature geometries of the territories shapefile and an aggregation process defined by `ee_data_collection()`.
 ```r
@@ -50,19 +52,19 @@ After a short processing time of approximately 1 -2 minutes, `ee_grab()` returns
 
 ## Requirements
 
-The earthEngineGrabR R package has some dependencies that need to be satisfied before the installation can run successfully:
+The earthEngineGrabR R package has a few dependencies and requirements, which need to be satisfied before the installation can run successfully:
 
 #### Required accounts
 
-* You need a [Google Account](https://accounts.google.com/SignUp?hl=de).
-* You need to sign up for [Earth Engine access](https://signup.earthengine.google.com/#!/).
+* [Google Account](https://accounts.google.com/SignUp?hl=de).
+* [Earth Engine access](https://signup.earthengine.google.com/#!/).
 
 #### Required dependencies
 
-* You have to install [Anaconda](https://www.anaconda.com/download/) (Python => 2.7)
-* You need to install [sf](https://github.com/r-spatial/sf)
+* install [Anaconda](https://www.anaconda.com/download/) (Python => 2.7)
+* install [sf](https://github.com/r-spatial/sf)
 
-Next, you can install the development version of the `earthEngineGrabR` with:
+Install the development version of the `earthEngineGrabR`:
 
 ```r
 library(devtools)
@@ -77,7 +79,7 @@ The package has additional Python dependencies and connects to several API’s, 
 
 To simplify the installation and authentication process, the earthEngineGrabR includes a function `ee_grab_install()` that installs Python dependencies and furthermore guides the user through the different authentications. 
 
-Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
+Before using the earthEngineGrabR for the first time, run `ee_grab_install()` (**you only have to do this once**)
 
 ```r
 ee_grab_install()
@@ -87,16 +89,14 @@ ee_grab_install()
 
 The earthEngineGrabR connects to 3 Google API's: 
 
-* [Google Fusion Table](https://www.gdal.org/drv_gft.html) API for uploading data. 
+* [Google Fusion Table](https://www.gdal.org/drv_gft.html) API to upload data. 
 * [Google Earth Engine](https://developers.google.com/earth-engine/) API for data aquisition and processing.
-* [Google Drive}](https://github.com/tidyverse/googledrive) API for data download. 
+* [Google Drive}](https://github.com/tidyverse/googledrive) API to download data. 
  
- To authenticate to the API's the user has to log in with his google account and allow the API to access data on googles servers on the user's behalf. 
+ To authenticate the APIs, log in to your google account and allow the API to access data on googles servers. 
 To simplify this procedure the `ee_grab_install()` function successively opens a browser window to log into the Google account.
-If the Google account is verified and the permission is granted, the user is directed to an authentification token. This token is manually copied and pasted into the R console, which creates persistent credentials. 
-This process is repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there should be no need for further authentification.
-
-Before using the earthEngineGrabR, the user has to call `ee_grab_install()`
+If the Google account is verified and the permission is granted, you will be directed to an authentification token. Copy this token and paste it into the R console. 
+This process will be repeated for each API. If the function runs successfully, all needed credentials are stored for further sessions and there will be no need for any further authentification.
 
 To test the installation run:
 
