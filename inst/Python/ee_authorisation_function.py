@@ -18,7 +18,7 @@ def request_ee_code():
 def request_ee_token(auth_code):
     token = ee.oauth.request_token(auth_code)
     ee.oauth.write_token(token)
-    print('\nSuccessfully saved ee authorization token.')
+
 
 
 def request_ft_code():
@@ -35,13 +35,10 @@ def request_ft_token(auth_code):
     with open(ft_credentials_path, 'w') as outfile:
         json.dump(ft_credentials, outfile)#
 
-    print('\nSuccessfully saved ft authorization token.')
 
 
 
-# test
-#request_ee_code()
-#code = raw_input("Enter Code here: ")
-#request_ee_token(code)
+
+
 
 

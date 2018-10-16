@@ -85,7 +85,7 @@ import_data <- function(product_list, verbose = T, temp_path) {
       data <- sf::st_read(file.path(temp_path, downloads_clean[i]), quiet = TRUE)
       file.path(temp_path, downloads_clean[i])
       data_no_geom <- sf::st_set_geometry(data, NULL)
-      join <- suppressMessages(dplyr::left_join(join, data_no_geom))
+      join <- merge(join, data_no_geom)
     }
   }
   return(join)

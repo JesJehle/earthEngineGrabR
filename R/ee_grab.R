@@ -5,7 +5,7 @@
 #' Request and import data from Earth Engine
 #' 
 #' 
-#' The \code{ee_grab()} function Request and import data from Earth Engine according to a user defined data request.
+#' The \code{ee_grab()} function Request and imports data from Earth Engine according to a user defined data request.
 #' 
 #' To define the data request:
 #'  
@@ -44,9 +44,9 @@
 #' 
 #'   4. Import - The data is imported to R and merged.
 
-#' @param data A \code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.
-#' @param targetArea A \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.
-#' @param verbose A \code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.
+#' @param data \code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.
+#' @param targetArea \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.
+#' @param verbose \code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.
 #' @return Object of class \code{sf}. \code{ee_grab()} returns the targetArea file with the bands of the requested data added as columns.
 #'@examples
 #' \dontrun{

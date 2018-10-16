@@ -4,17 +4,17 @@
 
 #' Install dependencies and run authentications
 #' 
-#' @param clean_credentials \code{logical}, if \code{True} already present credential are deleted recreated by a reauthenticate. Default is set to \code{True}. This argument is used for development and not meant to be changed by the user.
-#' @param clean_environment \code{logical}, if \code{True} already installed environments are deleted to be reinstalled again. Default is set to \code{False}. This argument is used for development and not meant to be changed by the user.
+#' @param clean_credentials \code{logical}, if \code{True} already present credential are deleted recreated by a reauthenticate. Default is set to \code{True}.
+#' @param clean_environment \code{logical}, if \code{True} already installed environments are deleted to be reinstalled again. Default is set to \code{False}.
 #' @description \code{ee_grab_install()} installs the required dependencies and guides the user through the authentication processes to activate the different API's.
 #' @export
 #' 
 #' 
 #' @section Installation of Dependencies:
 #' 
-#' To encapsulate the dependencies from the users system, and at the same time simplify the installation the \code{earthEngineGrabR}, uses a conda environment.
-#' By running \code{ee_grab_install()} first the conda envritonemt "earthEngineGrabR" is created. 
-#' Further all dependencies are installed inside the "earthEngineGrabR" envrironment.
+#' To encapsulate the dependencies from the user's system and simplify the installation,  the \code{earthEngineGrabR} uses a conda environment.
+#' By running \code{ee_grab_install()} first a conda environemt "earthEngineGrabR" is created. 
+#' All Further all dependencies are installed inside the "earthEngineGrabR" environment.
 #' 
 
 #' @section Authentication of API's:
@@ -39,27 +39,39 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   if(class(try(library(sf), silent = T)) == "try-error") stop("Library sf could not be loaded \nPlease install sf to use earthEngineGrabR", call. = F)
 
   library(reticulate)
-  # initialize or clean environments --------------------------------------------------------------------------------------
-  if (clean_environment) clean_environments()
-
-  # install dependencies via an anaconda environment if it's no yet installed
+  # install dependencies -----------------------------------------------------------------------------------------
+  
+  # initialize environments 
   conda_env_name <- "earthEngineGrabR"
   
-  conda_create(conda_env_name, packages = c("Python = 2.7", "gdal==2.1.0", "geos=3.5.0"))
+  # if clean_environment is set to true already an existing environment is deleted
+  if (clean_environment) clean_environments(conda_env_name)
   
-  conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
+  # test if environment for dependeicies already exists
+  env_test <- grepl(conda_env_name, conda_list()$name)
   
-  use_condaenv("earthEngineGrabR")
+  # install dependencies via an anaconda environment if test is not treu
+  if (!sum(env_test) > 0) {
+    tryCatch({
+      conda_create(conda_env_name,
+                   packages = c("Python = 2.7", "gdal=2.1.0", "geos=3.5.0"))
+    },
+    error = function(err) stop(paste("Installation problem\n", err), call. = F)
+    )
+    
+    conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
+  }
+  
+  use_condaenv(conda_env_name)
 
   # test import of all modules.
-  
   tryCatch({
-    
-  test_ee <- try(import("ee"))
-  test_gdal <- try(import("gdal"))
+  test_ee <- py_module_available("ee")
+  test_gdal <- py_module_available("gdal")
   
-  if (class(test_ee)[1] == "try-error") stop("Module ee could not be imported", call. = F)
-  if (class(test_gdal)[1] == "try-error") stop("Module gdal could not be imported", call. = F)
+  if (!test_ee) stop("Module ee could not be imported", call. = F)
+  if (!test_gdal) stop("Module gdal could not be imported", call. = F)
+  
   }, error = function(err) {
     test_python()
     test_anaconda()
@@ -67,8 +79,19 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   })
   
   # run authentication ---------------------------------------------------------------
-  run_oauth_all(clean_credentials)
-}
+  
+  # if no credential are found run authentication
+  if (!test_credentials(with_error = F)) {
+    run_oauth_all()
+  } else {
+    # if credential are found but clean_credentials is set to  true, credentials are deleted and recreated during a new authentication
+    if (clean_credentials) {
+      delete_credentials()
+      run_oauth_all()
+      }
+  }
+cat("\n \nThe required dependencies are installed and all API's are authenticated for further sessions.\nThere should be no need to run ee_grab_install() again.")
+  }
 
 
 

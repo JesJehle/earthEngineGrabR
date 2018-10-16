@@ -1,10 +1,10 @@
 
 
 #' Defines request for image data
-#' @param datasetID A \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.
-#' @param spatialReducer A \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}
-#' @param scale A \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.
-#' @param bandSelection A \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.
+#' @param datasetID \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.
+#' @param spatialReducer \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}
+#' @param scale \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple scales, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest scale less than or equal to the scale specified by your scale argument and resamples (using nearest neighbour by default) as necessary.
+#' @param bandSelection \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.
 #' @description \code{ee_data_image()} and \code{ee_data_collection()} are used to define the requested earth enigne data for the \code{ee_grab()} function.   
 #' @return object of class \code{list} that defines the data request for \code{ee_grab()}.
 #' @export
@@ -50,13 +50,13 @@ ee_data_image <- function(datasetID = "CGIAR/SRTM90_V4",
 
 
 #' Defines request for collection data
-#' @param datasetID A \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.
-#' @param spatialReducer A \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}
-#' @param temporalReducer A \code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}
-#' @param timeStart A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
-#' @param timeEnd A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
-#' @param scale A \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.
-#' @param bandSelection A \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.
+#' @param datasetID \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.
+#' @param spatialReducer \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}
+#' @param temporalReducer \code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}
+#' @param timeStart \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
+#' @param timeEnd \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
+#' @param scale scale \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple scales, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest scale less than or equal to the scale specified by your scale argument and resamples (using nearest neighbour by default) as necessary.
+#' @param bandSelection \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.
 #' @description \code{ee_data_image()} and \code{ee_data_collection()} are used to define the requested earth enigne data for the \code{ee_grab()} function.   
 #' @return object of class \code{list} that defines request for collection data in \code{ee_grab()}.
 #' @export
