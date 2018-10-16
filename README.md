@@ -4,7 +4,7 @@
 
 The Google Earth Engine ([GEE](https://earthengine.google.com/)) is a cloud computing platform, which offers a multi-petabyte catalog of satellite images and manipulated geospatial data products. It also provides extensive computational resources &mdash;	 available for scientists and developers.
 
-The `earthEngineGrabR` is an interface between R and the [GEE](https://earthengine.google.com/), which simplifies the acquisition of remote sensing data. The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) in a user-defined target area and a user-defined aggregation process. All extractions and manipulations of the data are entirely outsourced to EE. The user obtains an analysis-ready dataset, locally saved and directly imported into R. 
+The `earthEngineGrabR` is an interface between R and the [GEE](https://earthengine.google.com/), which simplifies the acquisition of remote sensing data. The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) in a user-defined target area and a user-defined aggregation process. All extractions and manipulations of the data are entirely outsourced to EE. The user obtains an analysis-ready dataset, directly imported into R. 
 As such, the package makes the massive public data catalog available to R-users with minimal techincal and computational effort.
 
 
@@ -91,7 +91,7 @@ The earthEngineGrabR connects to 3 Google API's:
 
 * [Google Fusion Table](https://www.gdal.org/drv_gft.html) API to upload data. 
 * [Google Earth Engine](https://developers.google.com/earth-engine/) API for data aquisition and processing.
-* [Google Drive}](https://github.com/tidyverse/googledrive) API to download data. 
+* [Google Drive](https://github.com/tidyverse/googledrive) API to download data. 
  
  To authenticate the APIs, log in to your google account and allow the API to access data on googles servers. 
 To simplify this procedure the `ee_grab_install()` function successively opens a browser window to log into the Google account.
