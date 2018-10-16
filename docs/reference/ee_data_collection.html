@@ -114,31 +114,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>datasetID</th>
-      <td><p>A <code>string</code> that specifies the dataset in Earth Engine. The dataset ID can be found in the <a href='link to tutorial '>snippet section</a> of the dataset in the Earth Engine <a href='https://developers.google.com/earth-engine/datasets/'>Data Catalog</a>.</p></td>
+      <td><p><code>string</code> that specifies the dataset in Earth Engine. The dataset ID can be found in the <a href='link to tutorial '>snippet section</a> of the dataset in the Earth Engine <a href='https://developers.google.com/earth-engine/datasets/'>Data Catalog</a>.</p></td>
     </tr>
     <tr>
       <th>spatialReducer</th>
-      <td><p>A <code>string</code> that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of <code>"mean", "median", "min", "max", "mode"</code></p></td>
+      <td><p><code>string</code> that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of <code>"mean", "median", "min", "max", "mode"</code></p></td>
     </tr>
     <tr>
       <th>temporalReducer</th>
-      <td><p>A <code>string</code> that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of <code>"mean", "median", "min", "max", "mode", "sum"</code></p></td>
+      <td><p><code>string</code> that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of <code>"mean", "median", "min", "max", "mode", "sum"</code></p></td>
     </tr>
     <tr>
       <th>timeStart</th>
-      <td><p>A <code>string</code> with the date format of yyyy-mm-dd, to filter the image collection.</p></td>
+      <td><p><code>string</code> with the date format of yyyy-mm-dd, to filter the image collection.</p></td>
     </tr>
     <tr>
       <th>timeEnd</th>
-      <td><p>A <code>string</code> with the date format of yyyy-mm-dd, to filter the image collection.</p></td>
+      <td><p><code>string</code> with the date format of yyyy-mm-dd, to filter the image collection.</p></td>
     </tr>
     <tr>
       <th>scale</th>
-      <td><p>A <code>integer</code> that controls the <a href='https://developers.google.com/earth-engine/scale'>scale of analysis</a> in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.</p></td>
+      <td><p>scale <code>integer</code> that controls the <a href='https://developers.google.com/earth-engine/scale'>scale of analysis</a> in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple scales, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest scale less than or equal to the scale specified by your scale argument and resamples (using nearest neighbour by default) as necessary.</p></td>
     </tr>
     <tr>
       <th>bandSelection</th>
-      <td><p>A <code>string</code> or a <code>vector</code> of <code>strings</code> of bands names to select from the requested dataset. By default bandSelection is set to <code>NULL</code> and all bands of the dataset are used.</p></td>
+      <td><p><code>string</code> or a <code>vector</code> of <code>strings</code> of bands names to select from the requested dataset. By default bandSelection is set to <code>NULL</code> and all bands of the dataset are used.</p></td>
     </tr>
     </table>
     

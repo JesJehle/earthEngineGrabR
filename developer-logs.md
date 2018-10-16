@@ -33,19 +33,19 @@ check spelling in documentation and readme
 * build and test on Travis ??
 
 + refactore ee_grab_install
-* adit readme, locally saved
-* host package site on githup
-* supress warning refresh credentials google drive package
-* change dplyr::join to merge, to loose dplyr dependency
++ adit readme, locally saved
++ host package site on githup
++ supress warning refresh credentials google drive package
++ change dplyr::join to merge, to loose dplyr dependency
 
 
 # rename functions
 
-* rename create_image_product-> ee_data_image, 
-* rename create_collection_product -> ee_data_collection .
-* rename productID -> datasetID
-* rename products -> data
-* rename target -> targetArea
++ rename create_image_product-> ee_data_image, 
++ rename create_collection_product -> ee_data_collection .
++ rename productID -> datasetID
++ rename products -> data
++ rename target -> targetArea
 
 # workflow
 

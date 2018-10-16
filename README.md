@@ -110,7 +110,8 @@ srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4",
                     )
 
 ```
---------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------
+
 ### The earthEngineGrabR Workflow
 
 * **Search** for dataset in Earth Engine [Data Catalog](https://developers.google.com/earth-engine/datasets/) .
@@ -124,5 +125,10 @@ Use Earth Engine's [Data Catalog](https://developers.google.com/earth-engine/dat
 #### Grab data
 
 `ee_grab()` requests and imports data from Earth Engine to R. `ee_grab()` takes two arguments, `data` and `targetArea`. `data` takes a single or a list of `ee_data_image()` and `ee_data_collection()` functions, which define the requested data to `ee_grab()`. If the requested data is an image use `ee_data_image()`, if it's a collection use `ee_data_collection()`. `targetArea` takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.
+
+
+
+
+
 
 
