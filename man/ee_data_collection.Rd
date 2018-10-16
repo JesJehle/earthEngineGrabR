@@ -10,19 +10,19 @@ ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY",
   bandSelection = NULL)
 }
 \arguments{
-\item{datasetID}{A \code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.}
+\item{datasetID}{\code{string} that specifies the dataset in Earth Engine. The dataset ID can be found in the \href{link to tutorial }{snippet section} of the dataset in the Earth Engine \href{https://developers.google.com/earth-engine/datasets/}{Data Catalog}.}
 
-\item{spatialReducer}{A \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}}
+\item{spatialReducer}{\code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}}
 
-\item{temporalReducer}{A \code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}}
+\item{temporalReducer}{\code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}}
 
-\item{timeStart}{A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
+\item{timeStart}{\code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
 
-\item{timeEnd}{A \code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
+\item{timeEnd}{\code{string} with the date format of yyyy-mm-dd, to filter the image collection.}
 
-\item{scale}{A \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. A value different, then the native resolution results in Earth Engine, resampling the data to the given resolution using nearest neighbour resampling.}
+\item{scale}{scale \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple scales, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest scale less than or equal to the scale specified by your scale argument and resamples (using nearest neighbour by default) as necessary.}
 
-\item{bandSelection}{A \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.}
+\item{bandSelection}{\code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.}
 }
 \value{
 object of class \code{list} that defines request for collection data in \code{ee_grab()}.

@@ -7,17 +7,17 @@
 ee_grab(data = NULL, targetArea = NULL, verbose = T)
 }
 \arguments{
-\item{data}{A \code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.}
+\item{data}{\code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.}
 
-\item{targetArea}{A \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.}
+\item{targetArea}{\code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.}
 
-\item{verbose}{A \code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.}
+\item{verbose}{\code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.}
 }
 \value{
 Object of class \code{sf}. \code{ee_grab()} returns the targetArea file with the bands of the requested data added as columns.
 }
 \description{
-The \code{ee_grab()} function Request and import data from Earth Engine according to a user defined data request.
+The \code{ee_grab()} function Request and imports data from Earth Engine according to a user defined data request.
 }
 \details{
 To define the data request:
