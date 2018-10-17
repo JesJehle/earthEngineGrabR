@@ -116,4 +116,41 @@ test_that("test that request_data return anly the valid exports and gives waring
 })
 
 
+test_that("test that check_processing raises warning if task failed", {
+  
+  earthEngineGrabR:::activate_environments()
+  df <- list(ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                           spatialReducer = "mean", 
+                           scale = 0, 
+                           bandSelection = NULL),
+             ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                           spatialReducer = "mode", 
+                           scale = 3000, 
+                           bandSelection = NULL)
+  )
+  
+  ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+  
+  ee_respones <- expect_warning(request_data(df, ft_id))
+  
+})
+
+test_that("test that check_processing raises error if task failed and no valid requests left", {
+  
+  earthEngineGrabR:::activate_environments()
+  df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                      spatialReducer = "mean", 
+                      scale = 0, 
+                      bandSelection = NULL)
+  
+  ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+  
+  ee_respones <- expect_error(expect_warning(earthEngineGrabR:::request_data(df, ft_id)))
+  
+})
+
+
+
+
+
 googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
