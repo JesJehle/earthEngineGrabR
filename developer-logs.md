@@ -1,51 +1,38 @@
 # today
 
-finish readme
- * one introduction sentence
- * good example
- * how to install, authenticate
- * describe workflow.
-
-check spelling in documentation and readme
-
 
 # to Do
 
-+ try to use permanent tokens for the httr package
-+ implement parameters checks for ee_grab and create_product
-+ catch error from ee servers - no images found an example
-+ documentation
-* website
-* vignettes
-+ implement tests
-* clean up python files
-
-* implement info option in ee_grab to extract formatted info about the data product if needed. -- not important
+## Features
 
 * implement export projection control
+
+* implement info option in ee_grab to extract formatted info about the data product if needed. -- not important
 * add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts
 * implement manual use escape in the authorisation process, like in the httr package
-* test with a list of product IDs
 
-+ catch error no sf library
-+ pass error in tryCatch installation test failed.
+## stabilise 
+
+* implement status request for large tasks
+* clean up python files
+* test with a list of product IDs
 * installation test on windows
 * build and test on Travis ??
 
-+ refactore ee_grab_install
-+ adit readme, locally saved
-+ host package site on githup
-+ supress warning refresh credentials google drive package
-+ change dplyr::join to merge, to loose dplyr dependency
+## docs
+
+* add new example data
+* website
+* vignettes/ tutorials
+* getting started section
+* explain naming
 
 
-# rename functions
+# bugs
 
-+ rename create_image_product-> ee_data_image, 
-+ rename create_collection_product -> ee_data_collection .
-+ rename productID -> datasetID
-+ rename products -> data
-+ rename target -> targetArea
+if earthEngineGrabR is already installed and the conda environment is created an instllation of sf crashes
+
+
 
 # workflow
 

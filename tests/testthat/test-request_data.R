@@ -5,7 +5,7 @@ context("Test EE request functionality")
 
 test_that("test that get_data processes data on earth engine and exports it to drive while returning status of process", {
   skip_test_if_not_possible()
-  activate_environments()
+  earthEngineGrabR:::activate_environments()
 
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                              spatialReducer = "mean", 
@@ -13,10 +13,10 @@ test_that("test that get_data processes data on earth engine and exports it to d
                              bandSelection = NULL
   )
 
-  df$ftID <- get_ft_id_gd("test-data")
-  delete_on_drive(df$productNameFull)
+  df$ftID <- earthEngineGrabR:::get_ft_id_gd("test-data")
+  earthEngineGrabR:::delete_on_drive(df$productNameFull)
 
-  status <- get_data(df)
+  status <- earthEngineGrabR:::get_data(df)
   expect_named(status, c("creation_timestamp_ms", "state", "task_type", "description", "id", "update_timestamp_ms"))
   test <- wait_for_file_on_drive(df$productNameFull, verbose = F)
   expect_true(test)
@@ -111,9 +111,133 @@ test_that("test that request_data return anly the valid exports and gives waring
 
   status <- expect_warning(request_data(df, ft_id))
 
-  expect_true(sum(is.na(status)) == 0)
-  expect_length(status, 2)
+  expect_true(sum(is.na(status$ee_response_names)) == 0)
+  expect_length(status$ee_response_names, 2)
 })
 
 
+
+test_that("test that request_data return anly the valid ids and Names", {
+  skip_test_if_not_possible()
+  activate_environments()
+  df <- list(
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                  spatialReducer = "mean", 
+                  scale = 3000, 
+                  bandSelection = NULL),
+    
+    ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
+                       timeStart = "1950-01-01",
+                       timeEnd = "1955-01-01",
+                       spatialReducer = "mean", 
+                       temporalReducer = "mean",
+                       scale = 4000
+    ),
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                  spatialReducer = "mode", 
+                  scale = 3000, 
+                  bandSelection = NULL)
+  )
+  
+  ft_id <- get_ft_id_gd("test-data")
+  
+  status <- expect_warning(request_data(df, ft_id))
+  
+  expect_true(length(status$ee_response_names) == length(status$ee_response_ids))
+  
+})
+
+test_that("test that check_processing works as expacted", {
+  skip_test_if_not_possible()
+  earthEngineGrabR:::activate_environments()
+  df <- list(
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                  spatialReducer = "mean", 
+                  scale = 3000, 
+                  bandSelection = NULL),
+
+    ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                  spatialReducer = "mode", 
+                  scale = 3000, 
+                  bandSelection = NULL)
+  )
+  
+  ft_id <- get_ft_id_gd("test-data")
+  
+  status <- earthEngineGrabR:::request_data(df, ft_id)
+  test_1 <- wait_for_file_on_drive(status$ee_response_names[1], verbose = F)
+  test_2 <- wait_for_file_on_drive(status$ee_response_names[2], verbose = F)
+  
+  expect_true(test_1 & test_2)
+  
+  ee_response_checked <- check_processing(status, F)
+  expect_length(ee_response_checked, length(status$ee_response_names))
+})
+
+
+test_that("test that check_processing raises warning if task failed", {
+
+earthEngineGrabR:::activate_environments()
+df <- list(ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                    spatialReducer = "mean", 
+                    scale = 0, 
+                    bandSelection = NULL),
+           ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                         spatialReducer = "mode", 
+                         scale = 3000, 
+                         bandSelection = NULL)
+)
+           
+ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+
+status <- earthEngineGrabR:::request_data(df, ft_id)
+
+ee_respones <- expect_warning(earthEngineGrabR:::check_processing(status, T))
+
+})
+
+
+test_that("test that check_processing raises error if task failed and no valid requests left", {
+  
+  earthEngineGrabR:::activate_environments()
+  df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                           spatialReducer = "mean", 
+                           scale = 0, 
+                           bandSelection = NULL)
+  
+  ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+  
+  status <- earthEngineGrabR:::request_data(df, ft_id)
+  
+  ee_respones <- expect_error(expect_warning(earthEngineGrabR:::check_processing(status, T)))
+  
+})
+
+# 
+earthEngineGrabR:::activate_environments()
+
+df <- ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY",
+                   spatialReducer = "mean",
+                   temporalReducer = "mean",
+                   timeStart = "2017-01-01",
+                   timeEnd = "2017-02-01",
+                   scale = 3000,
+                   bandSelection = NULL)
+
+
+ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+
+status <- earthEngineGrabR:::request_data(df, ft_id)
+
+ee_respones <- earthEngineGrabR:::check_processing(status, T)
+
+temp_path <- earthEngineGrabR:::get_temp_path()
+
+download <- earthEngineGrabR:::download_data(ee_response = ee_respones, verbose = verbose, temp_path = temp_path)
+
+# import data to R
+product_data <- earthEngineGrabR:::import_data(ee_respones, verbose = verbose, temp_path = temp_path)
+
+
 googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+

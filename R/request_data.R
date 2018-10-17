@@ -82,6 +82,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   source_python(file = ee_helpers)
 
   ee_responses <- c()
+  ee_taskIDs <- c()
 
   # loop over data
 
@@ -97,6 +98,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
       if (status$state == "READY") {
         if (verbose) cat("\nrequest:", product_info[[i]]$productName, "\n")
         ee_responses[i] <- p$productNameFull
+        ee_taskIDs[i] <- status$id
       } else {
         if (verbose) {
           warning(
@@ -112,5 +114,76 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   }
   
   if (length(ee_responses) == 0) stop("With the given product argument no valid data could be requested.", call. = F)
-  return(na.omit(ee_responses))
+  
+  ee_responses_df <- list("ee_response_names" = as.character(na.omit(ee_responses)), "ee_response_ids" = as.character(na.omit(ee_taskIDs)))
+  
+  return(ee_responses_df)
 }
+
+
+
+# check status of all active tasks
+
+check_processing <- function(status, verbose) {
+check <- c()
+  for (i in seq_along(status$ee_response_ids)) {
+    check[i] <-
+      check_status(status$ee_response_ids[i],
+                   status$ee_response_names[i],
+                   verbose)
+  }
+  
+  ee_responses_checked <-
+    status$ee_response_names[check == "COMPLETED"]
+  if (length(ee_responses_checked) == 0)
+    stop("With the given ee_data function no valid data could be requested.",
+         call. = F)
+  return(as.character(ee_responses_checked))
+}
+
+
+# check status of ee task
+check_status <- function(taskID, taskName, verbose) {
+  ee <- import("ee")
+  status <- ee$data$getTaskStatus(taskID)
+  status_state <- status[[1]]$state
+  counter <- 1
+  while (!status_state == "COMPLETED") {
+    counter <- counter + 1
+    Sys.sleep(4)
+    # cat("\nWaiting for earth engine")
+    status <- ee$data$getTaskStatus(taskID)
+    status_state <- status[[1]]$state
+    if (counter > 4) {
+      if (counter == 5) {
+      cat(paste(
+        "\nWaiting for long running task: ",
+        taskName, "\n"))
+      } else {
+      cat(".")
+      }
+    }
+    
+    if (status_state == "FAILED") {
+      if (verbose) {
+        warning(
+          paste(
+            "Error on Earth Engine servers for data product :",
+            taskName,
+            "\nCould not export the data"
+          ),
+          call. = F
+        )
+      }
+      break()
+    }
+  }
+  
+  return(status_state)
+}
+
+
+
+
+
+

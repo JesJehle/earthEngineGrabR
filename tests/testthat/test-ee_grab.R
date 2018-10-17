@@ -69,7 +69,7 @@ test_that("Test that ee_grab() raises an error if targetArea is not specified", 
 test_that("Test that band selection and naming behaves like expected", {
   
   skip_test_if_not_possible()
-  earthEngineGrabR:::activate_environments()
+  activate_environments()
   
   # test band selection and naming 
   product_image <- ee_data_image(datasetID = "ESA/GLOBCOVER_L4_200901_200912_V2_3",

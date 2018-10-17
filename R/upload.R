@@ -6,7 +6,7 @@
 #' @noRd
 delete_if_exist <- function(path) {
   file_name <- get_name_from_path(path)
-  test <- try(nrow(googledrive::drive_find(file_name, verbose = F)), silent = T)
+  test <- try(googledrive::drive_find(file_name, verbose = F), silent = T)
   if (!(class(test) == "try-error")) {
     googledrive::drive_rm(file_name, verbose = F)
   }
@@ -16,7 +16,7 @@ delete_if_exist <- function(path) {
 #' @param ft_name Name of fusion table in google drive
 #' @noRd
 get_ft_id_gd <- function(ft_name) {
-  info <- googledrive::drive_find(ft_name, verbose = F)
+  info <- try(googledrive::drive_find(ft_name, verbose = F), silent = T)
   if (nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name), call. = F)
   if (nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name), call. = F)
   ft_id <- paste0("ft:", info$id)
@@ -50,9 +50,6 @@ upload_as_ft <- function(file_path, fileName) {
 #' @return Fusion table ID
 #' @noRd
 upload_data <- function(targetArea, verbose = T) {
-
-  # delete if exists
-  googledrive::drive_rm("GEE2R_temp", verbose = F)
 
   target_name <- get_name_from_path(targetArea)
   # test if file is already uploaded

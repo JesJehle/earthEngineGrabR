@@ -3,15 +3,16 @@
 #' @param filename name of the file to scan drive for
 #' @noRd
 wait_for_file_on_drive <- function(filename, verbose = T) {
-  test <- googledrive::drive_find(filename, verbose = F)
+  test <- try(googledrive::drive_find(filename, verbose = F), silent = T)
 
   while (nrow(test) < 1) {
     Sys.sleep(1)
     if (verbose) cat(".")
-    test <- googledrive::drive_find(filename, verbose = F)
+    test <- try(googledrive::drive_find(filename, verbose = F), silent = T)
   }
   return(T)
 }
+
 
 
 #' download_data

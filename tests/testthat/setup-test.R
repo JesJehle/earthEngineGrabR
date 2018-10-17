@@ -1,8 +1,9 @@
 library(earthEngineGrabR)
 
 context("Set up test environment")
-earthEngineGrabR:::activate_environments()
 
+earthEngineGrabR:::activate_environments()
+try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
 test_that("Test that required credentials exist", {
   credentials_test <- try(earthEngineGrabR:::test_credentials(), silent = T)
   expect_true(credentials_test)
