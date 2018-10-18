@@ -18,7 +18,7 @@ addons:
 before_install:
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
- - R -q -e 'install.packages("sf")'
+
 
  - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
  - bash anaconda.sh -b -p $HOME/anaconda
@@ -32,6 +32,7 @@ before_install:
 
 
 before_script:
+ - R -q -e 'install.packages("sf")'
  - R CMD INSTALL .
  - R -q -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
