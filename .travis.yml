@@ -3,10 +3,9 @@ cache: packages
 sudo: required
 dist: trusty
 
-r_packages:
- - reticulate
- - googledrive
 
+env:
+  - R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/3.5
 
 
 addons:
@@ -27,15 +26,22 @@ before_install:
  - hash -r
  - conda config --set always_yes yes --set changeps1 no
 
- - mkdir /home/.config
- - mkdir /home/.config/earthengine
- - mv -v tests/testthat/test-tokens/* /home/.config/earthengine
+ - mkdir ~/.config/earthengine
+ - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
+
+ - mkdir -p $R_LIBS_USER
 
 install:
  - Rscript -e 'install.packages("sf")'
  - Rscript -e 'install.packages("googledrive")'
  - Rscript -e 'install.packages("reticulate")'
  - Rscript -e 'install.packages("testthat")'
+
+
+
+
+
+
 
 before_script:
  - R CMD INSTALL .
