@@ -27,6 +27,7 @@ before_install:
  - hash -r
  - conda config --set always_yes yes --set changeps1 no
 
+ - mkdir /home/.config
  - mkdir /home/.config/earthengine
  - mv -v tests/testthat/test-tokens/* /home/.config/earthengine
 
