@@ -26,10 +26,14 @@ before_install:
  - hash -r
  - conda config --set always_yes yes --set changeps1 no
 
+ - mkdir ~/.config/earthengine
+ - mv -v tests/testthat/test-tokens/* ~/.config/earthengine
+
+
 
 before_script:
  - R CMD INSTALL .
- - R -q -e 'earthEngineGrabR::ee_grab_install()'
+ - R -q -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
 
 
