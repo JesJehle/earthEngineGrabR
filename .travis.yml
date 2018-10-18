@@ -6,7 +6,7 @@ dist: trusty
 r_packages:
  - reticulate
  - googledrive
- - sf
+
 
 
 addons:
@@ -30,12 +30,13 @@ before_install:
  - mkdir ~/.config/earthengine
  - mv -v tests/testthat/test-tokens/* ~/.config/earthengine
 
+install:
+ - Rscript -e 'install.packages("sf")'
 
 
 before_script:
  - R CMD INSTALL .
- - R -q -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
- - R -q -e 'devtools::test('earthEngineGrabR')'
-
+ - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
+ - R -e 'library(sf)'
 
 
