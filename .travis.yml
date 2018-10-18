@@ -27,8 +27,8 @@ before_install:
  - hash -r
  - conda config --set always_yes yes --set changeps1 no
 
- - mkdir ~/.config/earthengine
- - mv -v tests/testthat/test-tokens/* ~/.config/earthengine
+ - mkdir /home/.config/earthengine
+ - mv -v tests/testthat/test-tokens/* /home/.config/earthengine
 
 install:
  - Rscript -e 'install.packages("sf")'
