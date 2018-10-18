@@ -35,6 +35,7 @@ before_install:
 before_script:
  - R CMD INSTALL .
  - R -q -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
+ - R -q -e 'devtools::test('earthEngineGrabR')'
 
 
 
