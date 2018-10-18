@@ -34,6 +34,7 @@ install:
  - Rscript -e 'install.packages("sf")'
  - Rscript -e 'install.packages("googledrive")'
  - Rscript -e 'install.packages("reticulate")'
+ - Rscript -e 'install.packages("testthat")'
 
 before_script:
  - R CMD INSTALL .
