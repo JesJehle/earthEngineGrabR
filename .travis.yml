@@ -26,7 +26,10 @@ before_install:
  - hash -r
  - conda config --set always_yes yes --set changeps1 no
 
-after_success:
 
-- R -q -e 'earthEngineGrabR::ee_grab_install()'
+before_script:
+ - R CMD INSTALL .
+ - R -q -e 'earthEngineGrabR::ee_grab_install()'
+
+
 
