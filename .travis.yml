@@ -37,7 +37,7 @@ install:
  - Rscript -e 'install.packages("reticulate")'
  - Rscript -e 'install.packages("testthat")'
  - Rscript -e 'install.packages("devtools")'
-
+ - Rscript -e 'install.packages("roxygen2")'
 
 
 before_script:
