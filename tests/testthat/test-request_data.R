@@ -111,8 +111,8 @@ test_that("test that request_data return anly the valid exports and gives waring
 
   status <- expect_warning(request_data(df, ft_id))
 
-  expect_true(sum(is.na(status$ee_response_names)) == 0)
-  expect_length(status$ee_response_names, 2)
+  expect_true(sum(is.na(status)) == 0)
+  expect_length(status, 2)
 })
 
 

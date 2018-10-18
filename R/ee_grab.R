@@ -97,12 +97,11 @@ ee_grab <- function(data = NULL,
 
   # request data data form google earth engine servers
   ee_response <- request_data(data, targetArea_id)
-  ee_respones_checked <- check_processing(ee_response, verbose)
-  
+
   # create temp dir
   temp_path <- get_temp_path()
   # download data data form google drive
-  download_data(ee_response = ee_respones_checked, verbose = verbose, temp_path = temp_path)
+  download_data(ee_response = ee_response, verbose = verbose, temp_path = temp_path)
   # import data to R
   product_data <- import_data(ee_response, verbose = verbose, temp_path = temp_path)
 
