@@ -2,11 +2,14 @@ language: r
 cache: packages
 sudo: required
 dist: trusty
-
+warnings_are_errors: false
 
 env:
+ global:
+  - _R_CHECK_CRAN_INCOMING_USE_ASPELL_="TRUE"
+  - _R_CHECK_CRAN_INCOMING_="FALSE"
+  - _R_CHECK_FORCE_SUGGESTS_="FALSE"
   - R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/3.5
-
 
 addons:
   apt:
