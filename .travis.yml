@@ -32,7 +32,7 @@ before_install:
 
 
 before_script:
- - R -q -e 'install.packages("sf")'
+ - R -q -e 'devtools::install_github("r-spatial/sf")'
  - R CMD INSTALL .
  - R -q -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
