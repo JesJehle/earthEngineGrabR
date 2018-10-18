@@ -83,7 +83,7 @@ run_oauth_all <- function() {
 #' @noRd
 gd_auth <- function(credential_name = "gd-credentials.rds") {
   credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
-  googledrive::drive_auth("~/.config/earthengine/gd-credentials.rds")
+  googledrive::drive_auth(credential_path)
 }
 
 
