@@ -29,7 +29,7 @@ test_that("test that ee_grab() works with images by returning the final sf objec
 
   product_image <- ee_data_image(
     datasetID = "CGIAR/SRTM90_V4", 
-    spatialReducer = "mean", 
+    spatialReducer = "max", 
     scale = 3000
   )
 

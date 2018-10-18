@@ -66,6 +66,7 @@ get_data_info <- function(datasetID) {
 }
 
 
+
 #' request_data
 #' @description Starts processing on earth engine retrieves info from data product
 #' @param product_info list object created by ee_product functions
@@ -76,20 +77,20 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   if (class(product_info[[1]]) != "list") {
     product_info <- list(product_info)
   }
-
+  
   activate_environments("earthEngineGrabR")
   ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
   source_python(file = ee_helpers)
-
+  
   ee_responses <- c()
   ee_taskIDs <- c()
 
   # loop over data
-
+  
   for (i in seq_along(product_info)) {
     p <- product_info[[i]]
     p$ftID <- target_id
-
+    
     # get data
     status <- get_data(p, test = test)
     if (class(status) == "character") {
@@ -117,7 +118,9 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   
   ee_responses_df <- list("ee_response_names" = as.character(na.omit(ee_responses)), "ee_response_ids" = as.character(na.omit(ee_taskIDs)))
   
-  return(ee_responses_df)
+  ee_response <- check_processing(ee_responses_df, verbose)
+  
+  return(ee_response)
 }
 
 
@@ -125,7 +128,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
 # check status of all active tasks
 
 check_processing <- function(status, verbose) {
-check <- c()
+  check <- c()
   for (i in seq_along(status$ee_response_ids)) {
     check[i] <-
       check_status(status$ee_response_ids[i],
@@ -141,7 +144,6 @@ check <- c()
   return(as.character(ee_responses_checked))
 }
 
-
 # check status of ee task
 check_status <- function(taskID, taskName, verbose) {
   ee <- import("ee")
@@ -151,16 +153,16 @@ check_status <- function(taskID, taskName, verbose) {
   while (!status_state == "COMPLETED") {
     counter <- counter + 1
     Sys.sleep(4)
-    # cat("\nWaiting for earth engine")
+
     status <- ee$data$getTaskStatus(taskID)
     status_state <- status[[1]]$state
     if (counter > 4) {
       if (counter == 5) {
-      cat(paste(
-        "\nWaiting for long running task: ",
-        taskName, "\n"))
+        cat(paste(
+          "\nWaiting for long running task: ",
+          taskName, "\n"))
       } else {
-      cat(".")
+        cat(".")
       }
     }
     
@@ -181,9 +183,6 @@ check_status <- function(taskID, taskName, verbose) {
   
   return(status_state)
 }
-
-
-
 
 
 

@@ -3,7 +3,7 @@ library(earthEngineGrabR)
 context("Download functionalities")
 
 
-try(gd_auth(), silent = T)
+try(earthEngineGrabR:::gd_auth(), silent = T)
 test <- googledrive::drive_find("CGIAR-SRTM90_V4_s-mean.geojson", verbose = F)
 environment_test <- try(nrow(test) == 1, silent = T)
 if (!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
@@ -11,7 +11,7 @@ if (!environment_test) skip(paste("Testing is not possible. \n", "files on googl
 
 test_file <- "CGIAR-SRTM90_V4_s-mean.geojson"
 # test_file <- "test_SRTM.geojson"
-temp_dir <- get_temp_path()
+temp_dir <- earthEngineGrabR:::get_temp_path()
 
 
 # googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T)
@@ -19,11 +19,11 @@ temp_dir <- get_temp_path()
 
 test_that("Test that download_data downloads test file from google drive", {
   skip_test_if_not_possible()
-  activate_environments()
+  earthEngineGrabR:::activate_environments()
 
   # googledrive::drive_find(test_file, verbose = F)
 
-  download_data(test_file,
+  earthEngineGrabR:::download_data(test_file,
     clear = F,
     temp_path = temp_dir
   )
@@ -35,10 +35,10 @@ test_that("Test that download_data downloads test file from google drive", {
 
 
 test_that("Test that import_data import data to R", {
-  skip_test_if_not_possible()
-  activate_environments()
+  earthEngineGrabR:::skip_test_if_not_possible()
+  earthEngineGrabR:::activate_environments()
 
-  data <- import_data(
+  data <- earthEngineGrabR:::import_data(
     product_list = test_file,
     temp_path = temp_dir
   )
@@ -47,6 +47,10 @@ test_that("Test that import_data import data to R", {
   # googledrive::drive_find(test_file, verbose = F)
   # unlink(test_dir, recursive = T)
 })
+
+
+
+
 
 
 
