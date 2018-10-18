@@ -7,8 +7,15 @@ r_packages:
  - reticulate
  - googledrive
 
+
+addons:
+  apt:
+    sources:
+     - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+
+
+
 before_install:
- - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
  - R -q -e 'install.packages("sf")'
