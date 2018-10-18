@@ -1,51 +1,37 @@
 # today
 
-finish readme
- * one introduction sentence
- * good example
- * how to install, authenticate
- * describe workflow.
-
-check spelling in documentation and readme
 
 
-# to Do
 
-+ try to use permanent tokens for the httr package
-+ implement parameters checks for ee_grab and create_product
-+ catch error from ee servers - no images found an example
-+ documentation
-* website
-* vignettes
-+ implement tests
-* clean up python files
+# implement features
 
 * implement info option in ee_grab to extract formatted info about the data product if needed. -- not important
-
 * implement export projection control
 * add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts
 * implement manual use escape in the authorisation process, like in the httr package
-* test with a list of product IDs
+* implement byYear and byMonth feature
 
-+ catch error no sf library
-+ pass error in tryCatch installation test failed.
-* installation test on windows
+
+# stabalise
+
 * build and test on Travis ??
+* test with a list of product IDs
+* clean up python files
+* installation test on windows
+* refactore request data
 
-+ refactore ee_grab_install
-+ adit readme, locally saved
-+ host package site on githup
-+ supress warning refresh credentials google drive package
-+ change dplyr::join to merge, to loose dplyr dependency
+# bugs to fix
+
+* refresh credentials message
+
+# documentation
+
+* explain naming
+* website with getting started section
+* vignettes/tutorials
+* polish project - licence, sticker, DOI
 
 
-# rename functions
-
-+ rename create_image_product-> ee_data_image, 
-+ rename create_collection_product -> ee_data_collection .
-+ rename productID -> datasetID
-+ rename products -> data
-+ rename target -> targetArea
 
 # workflow
 
@@ -56,11 +42,16 @@ check spelling in documentation and readme
   
 
 
+# issues
+
+* If earthEngineGrabR is installed before sf, sf will use the dependencies from the conda environment and crash.
+* sf::st_read() error unable to load shared object '/home/jesjehle/R/x86_64-pc-linux-gnu-library/3.4/sf/libs/sf.so':
+
+
+
 
 
 # rest
-
-
 The interface enables the use of Earth Engine (EE) as a backend-service to request datasets from the EE Data Catalog, while providing extensive control over temporal and spatial resolution. The package not only allows to extract specific aspects of the data, like in a regular databank but enables to generate new data by an aggregation process, controlled by the user. 
 
 

@@ -118,7 +118,9 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   
   ee_responses_df <- list("ee_response_names" = as.character(na.omit(ee_responses)), "ee_response_ids" = as.character(na.omit(ee_taskIDs)))
   
+  
   ee_response <- check_processing(ee_responses_df, verbose)
+  
   return(ee_response)
 }
 
@@ -151,7 +153,6 @@ check_status <- function(taskID, taskName, verbose) {
   while (!status_state == "COMPLETED") {
     counter <- counter + 1
     Sys.sleep(4)
-    # cat("\nWaiting for earth engine")
     status <- ee$data$getTaskStatus(taskID)
     status_state <- status[[1]]$state
     if (counter > 4) {

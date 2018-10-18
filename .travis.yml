@@ -1,0 +1,25 @@
+language: r
+cache: packages
+sudo: required
+dist: trusty
+
+r_packages:
+ - reticulate
+ - googledrive
+
+before_install:
+ - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+ - sudo apt-get update
+ - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
+ - R -q -e 'install.packages("sf")'
+
+ - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
+ - bash anaconda.sh -b -p $HOME/anaconda
+ - export PATH="$HOME/anaconda/bin:$PATH"
+ - hash -r
+ - conda config --set always_yes yes --set changeps1 no
+
+after_success:
+
+- R -q -e 'earthEngineGrabR::ee_grab_install()'
+
