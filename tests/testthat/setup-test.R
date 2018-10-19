@@ -1,24 +1,32 @@
 library(earthEngineGrabR)
 
 context("Set up test environment")
+# Sys.setenv("NOT_CRAN" = "false")
 
-earthEngineGrabR:::activate_environments()
-googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+test_that("activate test environment",{
+  skip_on_cran()
+  # skip_if_not_installed("sf")
+  activate_environments()
+  googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+})
 
-try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
 test_that("Test that required credentials exist", {
   credentials_test <- try(earthEngineGrabR:::test_credentials(), silent = T)
   expect_true(credentials_test)
 })
 
 test_that("Test that required python modules can be loaded", {
-  module_test_conda <- test_import_ee_gdal_conda()
-  module_test_virtual <- test_import_ee_gdal_virtual()
-  module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
-  expect_true(module_test)
+  skip_on_cran()
+  
+  module_test_ee <- reticulate::py_module_available("ee")
+  module_test_gdal <- reticulate::py_module_available("gdal")
+  expect_true(module_test_ee)
+  expect_true(module_test_gdal)
+  
 })
 
 test_that("Test that required testing files on google drive exist", {
+  skip_on_cran()
 
   # if test-download data not on google drive upload it.
   if (nrow(googledrive::drive_find("test-data", verbose = F)) == 0) {
@@ -29,6 +37,9 @@ test_that("Test that required testing files on google drive exist", {
   expect_true(environment_test)
 })
 
+test_that("upload files", {
+  skip_on_cran()
+  
 # build environment
 # remove upload files if still present
 googledrive::drive_rm("test-upload", verbose = F)
@@ -50,3 +61,7 @@ if (nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
 # if tmp dir exists delete it
 temp_path <- get_temp_path(F)
 if (dir.exists(temp_path)) unlink(temp_path, recursive = T)
+})
+
+
+

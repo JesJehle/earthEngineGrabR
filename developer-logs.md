@@ -1,6 +1,10 @@
 # today
 
 
+* succeed to run test on travis with --as-cran flag with scipt_test_on_cran in all tests an run test manually
+* implement approach with devtools:check() testing.
+
+
 # implement features
 
 * implement export projection control

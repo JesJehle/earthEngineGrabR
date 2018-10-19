@@ -2,6 +2,7 @@
 #' skips test in testthat evaluation if requirement are not met. The function tests for credentials python modules and test files on google drive
 #' @noRd
 skip_test_if_not_possible <- function() {
+  skip_on_cran()
   credentials_test <- try(test_credentials(), silent = T)
   if (!credentials_test) skip(paste("Testing is not possible. \n", "credentials: ", credentials_test))
   # test the installation of required python modules

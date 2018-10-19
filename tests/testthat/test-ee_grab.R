@@ -8,6 +8,7 @@ verbose <- F
 
 targetArea <- system.file("data/test-data.shp", package = "earthEngineGrabR")
 test_that("Test that get_data_info retrieves info of given Product ID", {
+  
   skip_test_if_not_possible()
 
   # test images

@@ -5,11 +5,7 @@ dist: trusty
 warnings_are_errors: false
 
 env:
- global:
-  - _R_CHECK_CRAN_INCOMING_USE_ASPELL_="TRUE"
-  - _R_CHECK_CRAN_INCOMING_="FALSE"
-  - _R_CHECK_FORCE_SUGGESTS_="FALSE"
-  - R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/3.5
+ - R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/3.5
 
 addons:
   apt:
@@ -48,5 +44,6 @@ before_script:
  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
  - R -e 'library(sf)'
  - R -e 'devtools::test()'
+ - R -e 'Sys.setenv("NOT_CRAN" = "false")'
 
 
