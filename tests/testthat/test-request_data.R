@@ -2,10 +2,11 @@ library(earthEngineGrabR)
 
 context("Test EE request functionality")
 
+earthEngineGrabR:::activate_environments()
+
 
 test_that("test that get_data processes data on earth engine and exports it to drive while returning status of process", {
   skip_test_if_not_possible()
-  earthEngineGrabR:::activate_environments()
 
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                              spatialReducer = "mean", 
@@ -18,14 +19,13 @@ test_that("test that get_data processes data on earth engine and exports it to d
 
   status <- earthEngineGrabR:::get_data(df)
   expect_named(status, c("creation_timestamp_ms", "state", "task_type", "description", "id", "update_timestamp_ms"))
-  test <- wait_for_file_on_drive(df$productNameFull, verbose = F)
+  test <- earthEngineGrabR:::wait_for_file_on_drive(df$productNameFull, verbose = F)
   expect_true(test)
 })
 
 
 test_that("test that reguest_data processes multiple data on earth engine and exports it to drive while returning status of process", {
   skip_test_if_not_possible()
-  activate_environments()
 
   df <- list(
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
@@ -42,11 +42,11 @@ test_that("test that reguest_data processes multiple data on earth engine and ex
                               )
   )
 
-  ft_id <- get_ft_id_gd("test-data")
+  ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
 
   delete_on_drive(df[[1]]$productNameFull)
   delete_on_drive(df[[2]]$productNameFull)
-  status <- request_data(df, ft_id)
+  status <- earthEngineGrabR:::request_data(df, ft_id)
 
   test_1 <- wait_for_file_on_drive(df[[1]]$productNameFull, verbose = F)
   test_2 <- wait_for_file_on_drive(df[[2]]$productNameFull, verbose = F)
@@ -56,9 +56,38 @@ test_that("test that reguest_data processes multiple data on earth engine and ex
 })
 
 
+
+test_that("test that bug: OverflowError: Python int too large to convert to C long, is fixed", {
+  
+  skip_test_if_not_possible()
+
+  df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
+                      spatialReducer = "mean", 
+                      scale = 3000, 
+                      bandSelection = NULL
+                      )
+  
+  target_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+  
+  status <- earthEngineGrabR:::request_data(df, target_id)
+  expect_is(status, "character")
+  
+  new_df <- df
+  new_df$ftID <- target_id
+  
+  status <- earthEngineGrabR:::get_data(new_df)
+
+  expect_match(status$state, "READY")
+
+  
+})
+
+
+
+
+
 test_that("test that get_data raises a meaninfull message whitout crashing", {
   skip_test_if_not_possible()
-  activate_environments()
 
   # wrong product ID
   df <- ee_data_image(datasetID = "CGIAR/wrong")
@@ -87,7 +116,6 @@ test_that("test that get_data raises a meaninfull message whitout crashing", {
 
 test_that("test that request_data return anly the valid exports and gives warings no errors with wrong input", {
   skip_test_if_not_possible()
-  activate_environments()
   df <- list(
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                          spatialReducer = "mean", 
@@ -118,7 +146,6 @@ test_that("test that request_data return anly the valid exports and gives waring
 
 test_that("test that check_processing raises warning if task failed", {
   
-  earthEngineGrabR:::activate_environments()
   df <- list(ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                            spatialReducer = "mean", 
                            scale = 0, 
@@ -137,7 +164,6 @@ test_that("test that check_processing raises warning if task failed", {
 
 test_that("test that check_processing raises error if task failed and no valid requests left", {
   
-  earthEngineGrabR:::activate_environments()
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                       spatialReducer = "mean", 
                       scale = 0, 

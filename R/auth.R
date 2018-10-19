@@ -104,7 +104,7 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
   }
   test_credentials(with_error = T)
   library(reticulate)
-  conda_test <- try(reticulate::use_condaenv(env_name, required = T), silent = T)
+  conda_test <- try(use_condaenv(env_name, required = T), silent = T)
   if (class(conda_test)[1] == "try-error") {
     stop("Could not find a valid conda environment. \nPlease run ee_grab_install(clean_environment = T) to install a valid environment.", call. = F)
   }

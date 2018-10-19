@@ -4,19 +4,14 @@ sudo: required
 dist: trusty
 warnings_are_errors: false
 
-env:
- - R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/3.5
-
 addons:
   apt:
     sources:
      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
-
 before_install:
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
-
 
  - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
  - bash anaconda.sh -b -p $HOME/anaconda
@@ -26,8 +21,6 @@ before_install:
 
  - mkdir ~/.config/earthengine
  - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
-
- - mkdir -p $R_LIBS_USER
 
 install:
  - Rscript -e 'install.packages("sf")'
@@ -41,7 +34,6 @@ install:
 before_script:
  - R CMD INSTALL .
  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
- - R -e 'library(sf)'
  - R -e 'devtools::test()'
  - export NOT_CRAN="false"
 

@@ -1,4 +1,21 @@
 
+# load get data, repeat if error
+load_get_data <- function() {
+  ee_helpers <-
+    system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  
+  load_test <- try(source_python(file = ee_helpers), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = ee_helpers), silent = T)
+    count <- count + 1
+  }
+  
+}
+
+
+load_get_data()
+
 
 
 
@@ -8,10 +25,8 @@
 #' @param data_type either ImageCollection of Image,
 #' @noRd
 get_data <- function(info, test = F) {
-  activate_environments("earthEngineGrabR")
-  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
-  source_python(file = ee_helpers)
-
+  #activate_environments("earthEngineGrabR")
+  load_get_data()
   if (info$data_type == "ImageCollection") {
     status <- tryCatch({
       get_data_collection(
@@ -59,8 +74,7 @@ get_data <- function(info, test = F) {
 #' @noRd
 get_data_info <- function(datasetID) {
   activate_environments("earthEngineGrabR")
-  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
-  source_python(file = ee_helpers)
+  load_get_data()
   product_info <- get_info(datasetID)
   return(product_info)
 }
@@ -78,10 +92,8 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
     product_info <- list(product_info)
   }
   
-  activate_environments("earthEngineGrabR")
-  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
-  source_python(file = ee_helpers)
-  
+  #activate_environments("earthEngineGrabR")
+
   ee_responses <- c()
   ee_taskIDs <- c()
 
@@ -92,7 +104,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
     p$ftID <- target_id
     
     # get data
-    status <- get_data(p, test = test)
+    status <- earthEngineGrabR:::get_data(p, test = test)
     if (class(status) == "character") {
       if (verbose) warning(status, call. = F)
     } else {
@@ -118,7 +130,7 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
   
   ee_responses_df <- list("ee_response_names" = as.character(na.omit(ee_responses)), "ee_response_ids" = as.character(na.omit(ee_taskIDs)))
   
-  ee_response <- check_processing(ee_responses_df, verbose)
+  ee_response <- earthEngineGrabR:::check_processing(ee_responses_df, verbose)
   
   return(ee_response)
 }
@@ -146,7 +158,7 @@ check_processing <- function(status, verbose) {
 
 # check status of ee task
 check_status <- function(taskID, taskName, verbose) {
-  ee <- import("ee")
+  ee <- import("ee", delay_load = T)
   status <- ee$data$getTaskStatus(taskID)
   status_state <- status[[1]]$state
   counter <- 1

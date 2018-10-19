@@ -56,7 +56,7 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
       if (Sys.info()[["sysname"]] == "Windows") {
         conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
         
-        conda_install(conda_env_name, packages = c("earthengine-api"))
+        conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
         
       } else {
         

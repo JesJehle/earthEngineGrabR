@@ -26,7 +26,7 @@ test_that("Test that get_data_info retrieves info of given Product ID", {
 
 test_that("test that ee_grab() works with images by returning the final sf object", {
   skip_test_if_not_possible()
-  activate_environments()
+  earthEngineGrabR:::activate_environments()
 
   product_image <- ee_data_image(
     datasetID = "CGIAR/SRTM90_V4", 

@@ -1,12 +1,12 @@
 library(earthEngineGrabR)
-
+library(testthat)
 context("Set up test environment")
 # Sys.setenv("NOT_CRAN" = "false")
+earthEngineGrabR:::activate_environments()
 
 test_that("activate test environment",{
-  skip_on_cran()
+  #skip_on_cran()
   # skip_if_not_installed("sf")
-  activate_environments()
   googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 })
 
@@ -15,11 +15,13 @@ test_that("Test that required credentials exist", {
   expect_true(credentials_test)
 })
 
+
 test_that("Test that required python modules can be loaded", {
-  skip_on_cran()
+  #skip_on_cran()
+  earthEngineGrabR:::activate_environments()
   
-  module_test_ee <- reticulate::py_module_available("ee")
-  module_test_gdal <- reticulate::py_module_available("gdal")
+  module_test_ee <- py_module_available("ee")
+  module_test_gdal <- py_module_available("gdal")
   expect_true(module_test_ee)
   expect_true(module_test_gdal)
   
