@@ -53,15 +53,23 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   # install dependencies via an anaconda environment if test is not treu
   if (!sum(env_test) > 0) {
     tryCatch({
-      conda_create(conda_env_name,
-                   packages = c("Python = 2.7", "gdal=2.1.0", "geos=3.5.0"))
-    },
-    error = function(err) stop(paste("Installation problem\n", err), call. = F)
+      if (Sys.info()[["sysname"]] == "Windows") {
+        conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
+        
+        conda_install(conda_env_name, packages = c("earthengine-api"))
+        
+      } else {
+        
+        conda_create(conda_env_name,
+                     packages = c("Python = 2.7", "gdal=2.1.0", "geos=3.5.0"))
+        conda_install(conda_env_name,
+                      packages = c("earthengine-api", "shapely"))
+      }},
+      error = function(err)
+        stop(paste("Installation problem\n", err), call. = F)
+      
     )
-    
-    conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
   }
-  
   use_condaenv(conda_env_name)
 
   # test import of all modules.

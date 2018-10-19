@@ -13,7 +13,6 @@ addons:
      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
 
-
 before_install:
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
@@ -44,6 +43,6 @@ before_script:
  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
  - R -e 'library(sf)'
  - R -e 'devtools::test()'
- - R -e 'Sys.setenv("NOT_CRAN" = "false")'
+ - export NOT_CRAN="false"
 
 
