@@ -3,6 +3,8 @@ context("Test ee_data_image and ee_data_collection")
 
 
 test_that("Test that ee_data_image and ee_data_collection return correct output if input is valid", {
+  skip_test_if_not_possible()
+  
   output_image <- ee_data_image(datasetID = "Test_xyz", spatialReducer = "mean", scale = 200)
   expect_named(output_image, c("datasetID", "productName", "spatialReducer", "scale", "productNameFull", "data_type", "outputFormat", "bandSelection"))
 
@@ -16,6 +18,8 @@ test_that("Test that ee_data_image and ee_data_collection return correct output 
 
 
 test_that("Test that ee_data_image and ee_data_collection raise appropriate errors if input is not valid", {
+  skip_test_if_not_possible()
+  
   expect_error(ee_data_image(datasetID = "Test_xyz", spatialReducer = "wrong"))
   expect_error(ee_data_image(datasetID = NULL))
   expect_error(ee_data_image(datasetID = 2345))

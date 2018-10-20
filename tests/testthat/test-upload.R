@@ -51,3 +51,5 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   expect_is(test_id, "character")
   googledrive::drive_rm("test-upload")
 })
+
+

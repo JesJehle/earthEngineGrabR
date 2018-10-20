@@ -1,20 +1,6 @@
 
+
 # load get data, repeat if error
-load_get_data <- function() {
-  ee_helpers <-
-    system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
-  
-  load_test <- try(source_python(file = ee_helpers), silent = T)
-  count <- 1
-  while (class(load_test) == "try-error" & count < 5) {
-    load_test <- try(source_python(file = ee_helpers), silent = T)
-    count <- count + 1
-  }
-  
-}
-
-
-load_get_data()
 
 
 
@@ -26,7 +12,16 @@ load_get_data()
 #' @noRd
 get_data <- function(info, test = F) {
   #activate_environments("earthEngineGrabR")
-  load_get_data()
+  
+  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  load_test <- try(source_python(file = ee_helpers), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = ee_helpers), silent = T)
+    count <- count + 1
+  }
+  
+  
   if (info$data_type == "ImageCollection") {
     status <- tryCatch({
       get_data_collection(
@@ -74,7 +69,16 @@ get_data <- function(info, test = F) {
 #' @noRd
 get_data_info <- function(datasetID) {
   activate_environments("earthEngineGrabR")
-  load_get_data()
+  
+  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  load_test <- try(source_python(file = ee_helpers), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = ee_helpers), silent = T)
+    count <- count + 1
+  }
+  
+  
   product_info <- get_info(datasetID)
   return(product_info)
 }

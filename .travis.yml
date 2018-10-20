@@ -13,28 +13,28 @@ before_install:
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
 
- - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
- - bash anaconda.sh -b -p $HOME/anaconda
- - export PATH="$HOME/anaconda/bin:$PATH"
- - hash -r
- - conda config --set always_yes yes --set changeps1 no
+# - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
+# - bash anaconda.sh -b -p $HOME/anaconda
+# - export PATH="$HOME/anaconda/bin:$PATH"
+# - hash -r
+# - conda config --set always_yes yes --set changeps1 no
 
  - mkdir ~/.config/earthengine
  - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
 
-install:
- - Rscript -e 'install.packages("sf")'
- - Rscript -e 'install.packages("googledrive")'
- - Rscript -e 'install.packages("reticulate")'
- - Rscript -e 'install.packages("testthat")'
- - Rscript -e 'install.packages("devtools")'
- - Rscript -e 'install.packages("roxygen2")'
-
+#install:
+# - Rscript -e 'install.packages("sf")'
+# - Rscript -e 'install.packages("googledrive")'
+# - Rscript -e 'install.packages("reticulate")'
+# - Rscript -e 'install.packages("testthat")'
+# - Rscript -e 'install.packages("devtools")'
+# - Rscript -e 'install.packages("roxygen2")'
+ 
 
 before_script:
  - R CMD INSTALL .
- - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
- - R -e 'devtools::test()'
+# - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
+# - R -e 'devtools::test()'
  - export NOT_CRAN="false"
 
 

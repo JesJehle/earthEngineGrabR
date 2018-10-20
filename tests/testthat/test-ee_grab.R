@@ -2,7 +2,7 @@
 #   This test tests the entire function evaluation with all dependencies. It can be used as a final test for full functionality.
 
 context("test full ee_grab() function evaluation")
-library(earthEngineGrabR)
+
 
 verbose <- F
 

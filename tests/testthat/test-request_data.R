@@ -145,6 +145,7 @@ test_that("test that request_data return anly the valid exports and gives waring
 
 
 test_that("test that check_processing raises warning if task failed", {
+  skip_test_if_not_possible()
   
   df <- list(ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                            spatialReducer = "mean", 
@@ -163,6 +164,7 @@ test_that("test that check_processing raises warning if task failed", {
 })
 
 test_that("test that check_processing raises error if task failed and no valid requests left", {
+  skip_test_if_not_possible()
   
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                       spatialReducer = "mean", 
