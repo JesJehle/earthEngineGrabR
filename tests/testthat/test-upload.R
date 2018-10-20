@@ -16,8 +16,11 @@ test_that("test that get_ft_id raise error with wrong ft_name argument", {
 
 test_that("test that upload_as_ft uploads test data to google drive as fusion table", {
   skip_test_if_not_possible()
-  activate_environments()
-  upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), "test-upload")
+  
+  try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
+  
+  earthEngineGrabR:::activate_environments()
+  earthEngineGrabR:::upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), "test-upload")
   test_upload <- googledrive::drive_find("test-upload", verbose = F)
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
@@ -38,9 +41,9 @@ test_that("test that upload_as_ft throws error with non valid file", {
 
 test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {
   skip_test_if_not_possible()
-  activate_environments()
+  earthEngineGrabR:::activate_environments()
   googledrive::drive_mv("test-data", verbose = F)
-  test_id <- upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
+  test_id <- earthEngineGrabR:::upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
 
   # test if file is uploaded
   test_upload <- googledrive::drive_find("test-data", verbose = F)
