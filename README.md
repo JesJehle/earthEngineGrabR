@@ -2,6 +2,9 @@
   
 # earthEngineGrabR
 
+[![Build Status](https://travis-ci.org/JesJehle/earthEngineGrabR.svg?branch=master)](https://travis-ci.org/JesJehle/earthEngineGrabR)
+
+
 The Google Earth Engine ([GEE](https://earthengine.google.com/)) is a cloud computing platform, which offers a multi-petabyte catalog of satellite images and manipulated geospatial data products. It also provides extensive computational resources &mdash;	 available for scientists and developers.
 
 The `earthEngineGrabR` is an interface between R and the [GEE](https://earthengine.google.com/), which simplifies the acquisition of remote sensing data. The R package extracts data from the [Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/) in a user-defined target area and a user-defined aggregation process. All extractions and manipulations of the data are entirely outsourced to EE. The user obtains an analysis-ready dataset, directly imported into R. 
