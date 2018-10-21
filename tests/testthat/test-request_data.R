@@ -1,9 +1,10 @@
 library(earthEngineGrabR)
 
 context("Test EE request functionality")
-
-earthEngineGrabR:::activate_environments()
-
+if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
+  
+activate_environments()
+}
 
 test_that("test that get_data processes data on earth engine and exports it to drive while returning status of process", {
   skip_test_if_not_possible()
@@ -177,6 +178,7 @@ test_that("test that check_processing raises error if task failed and no valid r
   
 })
 
-
+if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
+  
 googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
-
+}

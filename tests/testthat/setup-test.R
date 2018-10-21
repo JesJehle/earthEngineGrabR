@@ -1,8 +1,8 @@
 
+# Sys.setenv("NOT_CRAN" = "false")
 if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
 
 context("Set up test environment")
-# Sys.setenv("NOT_CRAN" = "false")
 
 earthEngineGrabR:::activate_environments()
 googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)

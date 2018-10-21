@@ -21,9 +21,13 @@ run_ee_oauth <- function() {
   #  library(reticulate)
   #  use_condaenv("earthEngineGrabR", required = T)
   # source python functions
-
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  source_python(oauth_func_path)
+  load_test <- try(source_python(file = oauth_func_path), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = oauth_func_path), silent = T)
+    count <- count + 1
+  }
 
   request_ee_code()
 
@@ -46,7 +50,13 @@ run_ft_oauth <- function() {
 
   # source python functions
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  source_python(oauth_func_path)
+  load_test <- try(source_python(file = oauth_func_path), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = oauth_func_path), silent = T)
+    count <- count + 1
+  }
+
   request_ft_code()
   code <- readline("Enter authorisation code for Fusion Table API here: ")
   test <- try(request_ft_token(code), silent = T)

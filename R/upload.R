@@ -29,10 +29,18 @@ get_ft_id_gd <- function(ft_name) {
 #' @param fileName Name of fusion table in google drive
 #' @noRd
 upload_as_ft <- function(file_path, fileName) {
+  
   ogr_to_ft_path <- clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
+  load_test <- try(source_python(file = ogr_to_ft_path), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = ee_helpers), silent = T)
+    count <- count + 1
+  }
+  # ource_python(file = ogr_to_ft_path)
+  
 
   # make functions available
-  source_python(file = ogr_to_ft_path)
 
   tryCatch({
     convert(file_path, fileName)
