@@ -2,7 +2,7 @@ library(earthEngineGrabR)
 
 context("Download functionalities")
 
-if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
+#if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
   
 try(earthEngineGrabR:::gd_auth(), silent = T)
 test <- googledrive::drive_find("CGIAR-SRTM90_V4_s-mean.geojson", verbose = F)
@@ -14,7 +14,7 @@ test_file <- "CGIAR-SRTM90_V4_s-mean.geojson"
 # test_file <- "test_SRTM.geojson"
 temp_dir <- earthEngineGrabR:::get_temp_path()
 
-}
+# }
 # googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T)
 
 

@@ -1,10 +1,10 @@
 
 # Sys.setenv("NOT_CRAN" = "false")
-if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
+# if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
 
 context("Set up test environment")
 
-earthEngineGrabR:::activate_environments()
+activate_environments()
 googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 # test_that("activate test environment",{
@@ -73,4 +73,4 @@ if (nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
 temp_path <- get_temp_path(F)
 if (dir.exists(temp_path)) unlink(temp_path, recursive = T)
 
-}
+#}

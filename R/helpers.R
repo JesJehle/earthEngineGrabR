@@ -2,16 +2,17 @@
 #' skips test in testthat evaluation if requirement are not met. The function tests for credentials python modules and test files on google drive
 #' @noRd
 skip_test_if_not_possible <- function() {
-  skip_on_cran()
+  
+  # skip_on_cran()
   credentials_test <- try(test_credentials(), silent = T)
   if (!credentials_test) skip(paste("Testing is not possible. \n", "credentials: ", credentials_test))
   # test the installation of required python modules
 
-  module_test_conda <- test_import_ee_gdal_conda()
-  module_test_virtual <- test_import_ee_gdal_virtual()
-  module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
+  #module_test_ee <- test_import_ee_gdal_conda()
 
-  if (!module_test) skip(paste("Testing is not possible. \n", "modules: ", module_test))
+  #module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
+
+  #if (!module_test) skip(paste("Testing is not possible. \n", "modules: ", module_test))
 
   # test environment
   ## check test data on google drive and upload if neccessary

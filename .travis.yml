@@ -9,6 +9,12 @@ addons:
     sources:
      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
+
+#r_packages:
+#  - covr
+#  - devtools
+
+
 before_install:
  - sudo apt-get update
  - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
@@ -22,19 +28,23 @@ before_install:
  - mkdir ~/.config/earthengine
  - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
 
-install:
- - Rscript -e 'install.packages("sf")'
- - Rscript -e 'install.packages("googledrive")'
- - Rscript -e 'install.packages("reticulate")'
- - Rscript -e 'install.packages("testthat")'
- - Rscript -e 'install.packages("devtools")'
- - Rscript -e 'install.packages("roxygen2")'
+#install:
+# - Rscript -e 'install.packages("sf")'
+# - Rscript -e 'install.packages("googledrive")'
+# - Rscript -e 'install.packages("reticulate")'
+# - Rscript -e 'install.packages("testthat")'
+# - Rscript -e 'install.packages("devtools")'
+# - Rscript -e 'install.packages("roxygen2")'
  
 
 before_script:
  - R CMD INSTALL .
  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
- - R -e 'devtools::test()'
- - export NOT_CRAN="false"
+# - R -e 'devtools::test()'
+# - export NOT_CRAN="false"
+
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
 
 

@@ -101,19 +101,18 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 #' activate environment
 #' @noRd
 activate_environments <- function(env_name = "earthEngineGrabR") {
-  tryCatch({
-    library(sf)
-    },
-    error = function(err) {
-      stop(paste(err, "\n\n", "Library sf could not be loaded. \nPlease install a valid version of the sf library\nNote: To correctly install sf it might be necessary to first manually delete the earthEngineGrabR conda environment in ~/Anaconda/env/earthEngineGrabR. After sf is installed and linked to the correct version of GDAL and GEOS run ee_grab_install() to install the earthEngineGrabR dependencies."), call. = F)
-    })
+  
+  sf_test <- require(sf, quietly = T)
+  if (!sf_test) stop(paste(path_home,  path_lib, path_user_lib, "\n\nLibrary sf could not be loaded. \nPlease install a valid version of the sf library\nNote: To correctly install sf it might be necessary to first manually delete the earthEngineGrabR conda environment in ~/Anaconda/env/earthEngineGrabR. After sf is installed and linked to the correct version of GDAL and GEOS run ee_grab_install() to install the earthEngineGrabR dependencies.", collapse = " "), call. = F)
+  # if (!sf_test) stop(paste("path home: ", path_home,  "\npath lib: " ,path_lib, "\npath_user_lib :", path_user_lib), call. = F)
+  
 
   gd_test <- try(earthEngineGrabR:::gd_auth(), silent = T)
   if (class(gd_test)[1] == "try-error") {
     stop("Could not find valid credentials for google drive API. \nPlease run ee_grab_install() to request credentials again.", call. = F)
   }
   test_credentials(with_error = T)
-  library(reticulate)
+  require(reticulate)
   conda_test <- try(use_condaenv(env_name, required = T), silent = T)
   if (class(conda_test)[1] == "try-error") {
     stop("Could not find a valid conda environment. \nPlease run ee_grab_install(clean_environment = T) to install a valid environment.", call. = F)
