@@ -51,7 +51,7 @@ before_script:
 # - export NOT_CRAN="false"
 
 
-after_success:
-  - Rscript -e 'library(covr); codecov()'
+#after_success:
+#  - Rscript -e 'library(covr); codecov()'
 
 
