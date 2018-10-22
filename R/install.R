@@ -1,63 +1,6 @@
 
-# installations -----------------------------------------------------------------------------------------------------------------------------------------------
-
-#' The function installs python dependencies
-#' @noRd
-install_ee_dependencies <- function(conda_env_name) {
-  # virtual_exists <-
-  #   try(conda_env_name %in% reticulate::virtualenv_list(), silent = T)
-  # if (class(virtual_exists) == "try-error") {
-  if (!(conda_env_name %in% reticulate::conda_list()$name)) {
-    reticulate::conda_create(conda_env_name, packages = c("Python = 2.7", "gdal==2.1.0"))
-    reticulate::conda_install(
-      packages = c("earthengine-api", "shapely"),
-      envname = conda_env_name
-    )
-    # Reticulate-bug, to activate the environment the r manual restart of R is necessary
-  }
-}
-
-
-# test installation by import modules
-#' @noRd
-test_import <- function() {
-  test_ee <- try(import("ee"))
-  test_gdal <- try(import("gdal"))
-  
-  if (class(test_ee)[1] == "try-error") stop("ee import no possible", call. = F)
-  if (class(test_gdal)[1] == "try-error") stop("gdal import no possible", call. = F)
-  
-}
-
-
-
-#' The function installs python dependencies
-#' @noRd
-install_ee_dependencies_workaround <- function(conda_env_name) {
-  if (!(conda_env_name %in% reticulate::virtualenv_list())) {
-    reticulate::virtualenv_create(conda_env_name)
-    reticulate::py_install("google-api-python-client", conda_env_name)
-    reticulate::py_install("pyCrypto", conda_env_name)
-    reticulate::py_install("earthengine-api", conda_env_name)
-    reticulate::py_install("google-auth-oauthlib", conda_env_name)
-
-    warning(paste("Problems with loading modules", "Further a workaround via the use of virtual environments is used."))
-    stop("To activate the newly installed virtual environment a manual restart of R is necessary. \nPlease restart R now and run ee_grab_install(conda=F) to use the workaround via the virtual environment.")
-  }
-}
-
 
 # tests ---------------------------------------------------------------------------------------------------------------------------------------
-
-
-#' test python and anaconda installation
-#' @noRd
-test_dependencies <- function() {
-  # test python and anaconda installation installation
-  test_python()
-  # test anaconda installation
-  test_anaconda()
-}
 
 
 #' test anaconda installation
@@ -70,27 +13,6 @@ test_anaconda <- function() {
 }
 
 
-#' test local gdal installation for vir-env workaround
-#' @noRd
-test_gdal_installation <- function() {
-  # 1. look for local installation of GDAL in the default usr/lib
-  info <- reticulate::py_discover_config("gdal")
-
-  if (!is.null(info$required_module_path)) {
-    cat(paste("For the default python interpreter in", info$python), "following gdal installations are found: ", info$required_module_path)
-  } else {
-    cat(paste("No installation of GDAL is found. \n"))
-    cat(paste("To install GDAL and it's python-GDAL copy paste following commands in a terminal of your choice: \n"))
-    cat("########################\n")
-    cat("sudo add-apt-repository ppa:ubuntugis/ppa \n")
-    cat("sudo apt-get update \n")
-    cat("sudo apt-get install gdal-bin \n")
-    cat("sudo apt-get -y install python-gdal \n")
-    cat("########################\n")
-    stop("Without a working installation of GDAL the earthEngineGrabR Library is not able to work properly. \nPlease first install GDAL and run ee_grab_install() afterwards.", call. = FALSE)
-  }
-}
-
 #' test python installation
 #' @noRd
 test_python <- function() {
@@ -100,72 +22,7 @@ test_python <- function() {
   }
 }
 
-#' test virtual environment installation
-#' @noRd
-test_virtual_env <- function() {
-  virtual_test <- try(reticulate::virtualenv_list(), silent = T)
-  if (class(virtual_test) == "try-error") {
-    cat("NO virtual environment installation found.\n")
-    cat("To install virtual environments copy paste following command in a terminal of your choice: \n")
-    cat("########################\n")
-    cat("sudo apt-get install virtualenv\n")
-    cat("sudo apt-get install python-virtualenv\n")
-    cat("########################\n")
-    stop("Because of a reticulate bug a workaround is neccessary.
-         \nThis Workaround requires a virtual environemt, therefore please install it and run ee_grab_install again.")
-  }
-}
-
-
-#' test python and virtual environment installation for gdal workaround
-#' @noRd
-test_for_gdal_workaround <- function() {
-  # test python installation and virtual environment
-  test_python()
-  # test vor virtual environment
-  test_virtual_env()
-  # test gdal installation
-  test_gdal_installation()
-}
-
-
-
-#' test import of gdal and ee for virtual env
-#' @noRd
-test_import_ee_gdal_virtual <- function() {
-  try({
-    reticulate::use_virtualenv("earthEngineGrabR", required = T)
-    ee_path <- reticulate::py_discover_config("ee")
-    gdal_path <- reticulate::py_discover_config("gdal")
-  }, silent = T)
-
-  ee_test <- try(reticulate::import_from_path("ee", path = ee_path$required_module_path), silent = T)
-  gdal_test <- try(reticulate::import_from_path("gdal", path = gdal_path$required_module_path), silent = T)
-
-  if (class(ee_test)[1] == "try-error") return(list(F, ee_test[1]))
-  if (class(gdal_test)[1] == "try-error") return(list(F, gdal_test[1])) else return(T)
-}
-
-
-
-#' test import of gdal and ee for conda
-#' @noRd
-test_import_ee_gdal_conda <- function() {
-  try({
-    reticulate::use_condaenv("earthEngineGrabR", required = T)
-    ee_path <- reticulate::py_discover_config("ee")
-    gdal_path <- reticulate::py_discover_config("gdal")
-  }, silent = T)
-
-  ee_test <- try(reticulate::import_from_path("ee", path = ee_path$required_module_path), silent = T)
-  gdal_test <- try(reticulate::import_from_path("gdal", path = gdal_path$required_module_path), silent = T)
-
-  if (class(ee_test)[1] == "try-error") return(list(F, ee_test[1]))
-  if (class(gdal_test)[1] == "try-error") return(list(F, gdal_test[1])) else return(T)
-}
-
 # activations ------------------------------------------------------------------------------------------------------------------------------------
-
 
 #' clean virtual and conda environments
 #' @noRd
