@@ -14,9 +14,11 @@ test_that("Test that required python modules can be loaded", {
   skip_test_if_not_possible()
   activate_environments()
   
-  module_test_conda <- test_import_ee_gdal_conda()
-  module_test_virtual <- test_import_ee_gdal_virtual()
-  module_test <- module_test_conda[[1]] | module_test_virtual[[1]]
+  test_ee <- py_module_available("ee")
+  test_gdal <- py_module_available("gdal")
+  
+  
+  module_test <- test_ee & test_gdal 
   expect_true(module_test)
 })
 
