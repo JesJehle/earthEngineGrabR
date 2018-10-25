@@ -4,54 +4,70 @@ sudo: required
 dist: trusty
 warnings_are_errors: false
 
-addons:
-  apt:
-    sources:
-     - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-
-
 r_packages:
  - covr
 
+matrix:
+  include:
 
-before_install:
- - sudo apt-get update
- - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
- - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
- - bash anaconda.sh -b -p $HOME/anaconda
- - export PATH="$HOME/anaconda/bin:$PATH"
- - hash -r
- - conda config --set always_yes yes --set changeps1 no
+    before_install:
+      # install sf dependencies
+      - sudo apt-get update
+      - sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev 
+      # install anaconda
+      - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
+      - bash anaconda.sh -b -p $HOME/anaconda
+      - export PATH="$HOME/anaconda/bin:$PATH"
+      - hash -r
+      - conda config --set always_yes yes --set changeps1 no
+      # move credentials
+      - mkdir ~/.config/earthengine
+      - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
+      - Rscript -e 'install.packages("sf", lib="/home/travis/R-bin/lib/R/library/")'
+      - Rscript -e 'install.packages("reticulate", lib="/home/travis/R-bin/lib/R/library/")'
+      - Rscript -e 'install.packages("googledrive", lib="/home/travis/R-bin/lib/R/library/")'
 
- - mkdir ~/.config/earthengine
- - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
- - Rscript -e 'install.packages("sf", lib="/home/travis/R-bin/lib/R/library/")'
- - Rscript -e 'install.packages("reticulate", lib="/home/travis/R-bin/lib/R/library/")'
- - Rscript -e 'install.packages("googledrive", lib="/home/travis/R-bin/lib/R/library/")'
-
-
-#install:
-# - Rscript -e 'install.packages("sf")'
-# - Rscript -e 'install.packages("googledrive")'
-# - Rscript -e 'install.packages("reticulate")'
-# - Rscript -e 'install.packages("covr")'
-# - Rscript -e 'install.packages("devtools")'
-
-# - Rscript -e 'install.packages("testthat")'
-# - Rscript -e 'install.packages("devtools")'
-# - Rscript -e 'install.packages("roxygen2")'
- 
+    before_script:
+      - R CMD INSTALL .
+      - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
 
-before_script:
- - R CMD INSTALL .
- - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
-# - R -e 'devtools::test()'
+matrix:
+  include:
+
+  - os: osx
+    before_install:
+      # install sf dependencies
+      - brew unlink gdal
+      - brew tap osgeo/osgeo4mac && brew tap --repair
+      - brew install proj
+      - brew install geos
+      - brew install udunits
+      - brew install gdal2 --with-armadillo --with-complete --with-libkml --with-unsupported
+      - brew link --force gdal2
+      # install anaconda
+      - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
+      - bash anaconda.sh -b -p $HOME/anaconda
+      - export PATH="$HOME/anaconda/bin:$PATH"
+      - hash -r
+      - conda config --set always_yes yes --set changeps1 no
+      # move credentials
+      - mkdir ~/.config/earthengine
+      - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/
+    before_script:
+      - R CMD INSTALL .
+      - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
+
 # - export NOT_CRAN="false"
 
 
-#after_success:
-#  - Rscript -e 'library(covr); codecov()'
+after_success:
+  - Rscript -e 'library(covr); codecov()'
 
 
