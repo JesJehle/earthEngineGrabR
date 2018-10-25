@@ -23,7 +23,7 @@ cache:
 
 build_script:
   - R CMD INSTALL .
-  - R -e print(earthEngineGrabR:::get_credential_root())
+  - R print(earthEngineGrabR:::get_credential_root())
   - travis-tool.sh install_deps
   - travis-tool.sh install_r sf
 
