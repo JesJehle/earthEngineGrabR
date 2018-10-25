@@ -39,10 +39,6 @@ matrix:
       - R CMD INSTALL .
       - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
-
-matrix:
-  include:
-
   - os: osx
     before_install:
 
