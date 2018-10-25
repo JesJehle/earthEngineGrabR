@@ -45,14 +45,7 @@ matrix:
 
   - os: osx
     before_install:
-      # install sf dependencies
-      #- brew unlink gdal
-      #- brew tap osgeo/osgeo4mac && brew tap --repair
-      #- brew install proj
-      #- brew install geos
-      #- brew install udunits
-      #- brew install gdal2 --with-armadillo --with-complete --with-libkml --with-unsupported
-      #- brew link --force gdal2
+
       - brew install gdal --HEAD
       # install anaconda
       - wget https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O anaconda.sh
