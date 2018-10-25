@@ -23,6 +23,8 @@ cache:
 
 build_script:
   - travis-tool.sh install_deps
+  - R CMD INSTALL .
+  - R -e earthEngineGrabR::ee_grab_install(clean_credentials = F)
 
 test_script:
   - travis-tool.sh run_tests
