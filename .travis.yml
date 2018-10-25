@@ -3,6 +3,8 @@ cache: packages
 sudo: required
 dist: trusty
 warnings_are_errors: false
+latex: false
+fortran: false
 
 r_packages:
  - covr
