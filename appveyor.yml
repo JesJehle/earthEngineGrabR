@@ -29,7 +29,7 @@ build_script:
   - mkdir C:\Users\appveyor\Documents\.config\earthengine
   - move tests\testthat\test-tokens\* C:\Users\appveyor\Documents\.config\earthengine
   - R CMD INSTALL .
-  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
+  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials=F)'
 
 test_script:
   - travis-tool.sh run_tests
