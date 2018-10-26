@@ -18,6 +18,9 @@ install:
 cache:
   - C:\R\Library
 
+environment:
+  R_LIBS_USER: C:\R\Library
+
 # Adapt as necessary starting from here
 
 
