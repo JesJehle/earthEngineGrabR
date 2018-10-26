@@ -3,8 +3,7 @@ cache: packages
 sudo: required
 dist: trusty
 warnings_are_errors: false
-latex: false
-fortran: false
+
 
 r_packages:
  - covr
@@ -40,14 +39,18 @@ matrix:
       - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
   - os: osx
+    latex: false
+    fortran: false
     before_install:
-
       # install anaconda
-      - wget https://repo.continuum.io/anaconda/Anaconda3-latest-MacOSX-x86_64.sh -O ~/anaconda.sh
-      - bash ~/anaconda.sh -b -p $HOME/anaconda
-      - export PATH="$HOME/anaconda/bin:$PATH"
+      - wget https://repo.continuum.io/archive/Anaconda3-5.3.0-MacOSX-x86_64.sh -o anaconda3.sh
+      - bash anaconda3.sh -b -p ~/anaconda3
+      - rm anaconda3.sh
+      - echo 'export PATH="~/anaconda3/bin:$PATH"' >> ~/.bash_profile 
+      - source .bash_profile
       - hash -r
       - conda config --set always_yes yes --set changeps1 no
+
       # move credentials
       - mkdir ~/.config/earthengine
       - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/

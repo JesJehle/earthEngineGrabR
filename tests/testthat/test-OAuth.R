@@ -17,8 +17,19 @@ test_that("test that test_credentials work as expacted", {
 })
 
 
-test_that("test that activate_environment raises error if no environment can be found", {
+test_that("test that activate_environment behaves like expacted", {
   skip_test_if_not_possible()
-  
   expect_error(activate_environments("wrong_name"))
+  
+  skip_test_if_not_possible()
+  expect_silent(activate_environments("earthEngineGrabR"))
+  
+})
+
+test_that("test that get_credentials_root behaves like expected", {
+  skip_test_if_not_possible()
+
+  path <- get_credential_root()
+  expect_true(dir.exists(path))
+  
 })

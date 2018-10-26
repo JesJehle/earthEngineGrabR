@@ -18,9 +18,7 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
 #' Run ee authentication
 #' @noRd
 run_ee_oauth <- function() {
-  #  library(reticulate)
-  #  use_condaenv("earthEngineGrabR", required = T)
-  # source python functions
+
   oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
   load_test <- try(source_python(file = oauth_func_path), silent = T)
   count <- 1
