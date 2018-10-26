@@ -42,7 +42,7 @@ matrix:
     latex: false
     fortran: false
     before_install:
-      - wget https://repo.continuum.io/archive/Anaconda3-5.3.0-MacOSX-x86_64.sh -o anaconda3.sh
+      - curl https://repo.continuum.io/archive/Anaconda3-5.1.0-MacOSX-x86_64.sh -o anaconda3.sh
       - bash anaconda3.sh -b
       - export PATH="$HOME/anaconda3/bin:$PATH"
       - hash -r
