@@ -43,8 +43,8 @@ matrix:
     before_install:
 
       # install anaconda
-      - wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-MacOSX-x86_64.pkg -O anaconda.sh
-      - bash anaconda.sh -b -p $HOME/anaconda
+      - wget https://repo.continuum.io/anaconda/Anaconda3-latest-MacOSX-x86_64.sh -O ~/anaconda.sh
+      - bash ~/anaconda.sh -b -p $HOME/anaconda
       - export PATH="$HOME/anaconda/bin:$PATH"
       - hash -r
       - conda config --set always_yes yes --set changeps1 no

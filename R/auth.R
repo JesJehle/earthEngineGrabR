@@ -102,8 +102,12 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
 #' @noRd
 activate_environments <- function(env_name = "earthEngineGrabR") {
   
+  credentials_path <- earthEngineGrabR:::get_credential_root()
+  
   sf_test <- require(sf, quietly = T)
-  if (!sf_test) stop("\n\nLibrary sf could not be loaded. \nPlease install a valid version of the sf library\nNote: To correctly install sf it might be necessary to first manually delete the earthEngineGrabR conda environment in ~/Anaconda/env/earthEngineGrabR. After sf is installed and linked to the correct version of GDAL and GEOS run ee_grab_install() to install the earthEngineGrabR dependencies.", call. = F)
+  if (!sf_test) stop(
+    credentials_path, "\n",
+    "\n\nLibrary sf could not be loaded. \nPlease install a valid version of the sf library\nNote: To correctly install sf it might be necessary to first manually delete the earthEngineGrabR conda environment in ~/Anaconda/env/earthEngineGrabR. After sf is installed and linked to the correct version of GDAL and GEOS run ee_grab_install() to install the earthEngineGrabR dependencies.", call. = F)
 
 
   gd_test <- try(earthEngineGrabR:::gd_auth(), silent = T)
