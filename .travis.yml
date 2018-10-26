@@ -42,13 +42,7 @@ matrix:
     latex: false
     fortran: false
     before_install:
-      # install anaconda
-      - wget https://repo.continuum.io/archive/Anaconda3-5.3.0-MacOSX-x86_64.sh -o anaconda3.sh
-      - bash anaconda3.sh -b -p $HOME/anaconda3
-      - export PATH="$HOME/anaconda3/bin:$PATH"
-      - hash -r
-      - conda config --set always_yes yes --set changeps1 no
-
+ 
       # move credentials
       - mkdir ~/.config/earthengine
       - mv -v tests/testthat/test-tokens/* ~/.config/earthengine/

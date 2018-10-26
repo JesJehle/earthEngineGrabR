@@ -26,8 +26,8 @@ build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_r sf
 
-  - mkdir C:\Users\appveyor\Documents/.config/earthengine
-  - move tests/testthat/test-tokens/* C:\Users\appveyor\Documents/.config/earthengine
+  - mkdir C:\Users\appveyor\Documents\.config\earthengine
+  - move tests\testthat\test-tokens\* C:\Users\appveyor\Documents\.config\earthengine
   - R CMD INSTALL .
   - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials = F)'
 
