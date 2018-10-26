@@ -23,8 +23,9 @@ cache:
 
 build_script:
   - R CMD INSTALL .
+  - travis-tool.sh install_github hadley/devtools
   - travis-tool.sh install_deps
-  - travis-tool.sh install_r sf
+#  - travis-tool.sh install_r sf
 
   - mkdir C:\Users\appveyor\Documents\.config\earthengine
   - move tests\testthat\test-tokens\* C:\Users\appveyor\Documents\.config\earthengine

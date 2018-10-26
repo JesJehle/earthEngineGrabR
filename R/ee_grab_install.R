@@ -36,7 +36,7 @@
 ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   
   # test installation of sf
-  if(class(try(library(sf), silent = T)) == "try-error") stop("Library sf could not be loaded \nPlease install sf to use earthEngineGrabR", call. = F)
+  # if(class(try(library(sf), silent = T)) == "try-error") stop("Library sf could not be loaded \nPlease install sf to use earthEngineGrabR", call. = F)
 
   library(reticulate)
   # install dependencies -----------------------------------------------------------------------------------------
