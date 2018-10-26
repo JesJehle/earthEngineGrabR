@@ -32,6 +32,9 @@ build_script:
 
   - mkdir C:\Users\appveyor\Documents\.config\earthengine
   - move tests\testthat\test-tokens\* C:\Users\appveyor\Documents\.config\earthengine
+  - Rscript -e 'install.packages("sf", lib="c:/R/library/")'
+  - Rscript -e 'install.packages("reticulate", lib="c:/R/library/")'
+  - Rscript -e 'install.packages("googledrive", lib="c:/R/library/")'
   - R CMD INSTALL .
   - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials=F)'
 
