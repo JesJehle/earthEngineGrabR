@@ -43,7 +43,7 @@ matrix:
     fortran: false
     before_install:
       - wget https://repo.continuum.io/archive/Anaconda3-5.3.0-MacOSX-x86_64.sh -o anaconda3.sh
-      - bash anaconda3.sh -b -p 
+      - bash anaconda3.sh -b
       - export PATH="$HOME/anaconda3/bin:$PATH"
       - hash -r
       - conda config --set always_yes yes --set changeps1 no
