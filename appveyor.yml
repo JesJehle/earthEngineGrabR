@@ -4,6 +4,7 @@ image: Visual Studio 2015
 environment:
   NOT_CRAN: true
   USE_RTOOLS: true
+  R_LIBS_USER: C:\R\Library
 
 # Download script file from GitHub
 init:
@@ -18,8 +19,8 @@ install:
 cache:
   - C:\R\Library
 
-environment:
-  R_LIBS_USER: C:\R\Library
+
+
 
 # Adapt as necessary starting from here
 
