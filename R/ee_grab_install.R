@@ -81,11 +81,8 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   if (!test_gdal) stop("Module gdal could not be imported", call. = F)
   
   }, error = function(err) {
-    #test_python()
-    #test_anaconda()
-    #reticulate::py_discover_config("ee")
-
-    
+    test_python()
+    test_anaconda()
     #stop(paste("Installation problem\n", err), call. = F)
   },
   warning = function(w) {
