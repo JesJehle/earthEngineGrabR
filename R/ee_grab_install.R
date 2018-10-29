@@ -76,6 +76,8 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   tryCatch({
   test_ee <- py_module_available("ee")
   test_gdal <- py_module_available("gdal")
+  import("ee")
+  import("gdal")
   
   if (!test_ee) stop("Module ee could not be imported", call. = F)
   if (!test_gdal) stop("Module gdal could not be imported", call. = F)
@@ -86,7 +88,7 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
     stop(paste("Installation problem\n", err), call. = F)
   },
   warning = function(w) {
-    warning(w, call. = F)
+    warning(w)
   })
   
   # run authentication ---------------------------------------------------------------

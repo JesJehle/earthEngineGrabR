@@ -4,6 +4,7 @@ image: Visual Studio 2015
 environment:
   NOT_CRAN: true
   USE_RTOOLS: true
+  CONDA_VERSION: "3"
 
 
 # Download script file from GitHub
