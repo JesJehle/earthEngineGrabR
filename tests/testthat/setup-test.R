@@ -5,7 +5,7 @@
 context("Set up test environment")
 
 activate_environments()
-#googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 # test_that("activate test environment",{
 #   skip_on_cran()
