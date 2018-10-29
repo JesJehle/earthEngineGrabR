@@ -16,27 +16,23 @@ init:
 install:
   ps: Bootstrap
 
-
-
-
-
-
 # Adapt as necessary starting from here
 
+cache:
+  - C:\RLibrary
 
 build_script:
-  - R CMD INSTALL .
-  - travis-tool.sh install_github hadley/devtools
+
+  - R -e "install.packages('googledrive',lib='c:/R/library',repos='http://cran.us.r-project.org')"
+  - R -e "install.packages('sf',lib='c:/R/library',repos='http://cran.us.r-project.org')"  
+  - R -e "install.packages('reticulate',lib='c:/R/library',repos='http://cran.us.r-project.org')"
   - travis-tool.sh install_deps
-#  - travis-tool.sh install_r sf
 
   - mkdir C:\Users\appveyor\Documents\.config\earthengine
   - move tests\testthat\test-tokens\* C:\Users\appveyor\Documents\.config\earthengine
-  - Rscript -e 'install.packages("sf", lib="c:/R/library/")'
-  - Rscript -e 'install.packages("reticulate", lib="c:/R/library/")'
-  - Rscript -e 'install.packages("googledrive", lib="c:/R/library/")'
+
   - R CMD INSTALL .
-  - R -e 'earthEngineGrabR::ee_grab_install(clean_credentials=F)'
+  - R -e "earthEngineGrabR::ee_grab_install(clean_credentials=F)"
 
 test_script:
   - travis-tool.sh run_tests

@@ -107,14 +107,12 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
   reticulate_test <- require(reticulate, quietly = T)
   
   
-  if (!sf_test) stop(
+  if (!sf_test | !gd_test | !reticulate_test) stop(
     paste(" sf_test: ", sf_test,
     " gd_test: ", gd_test,
     " reticulate_test: ", reticulate_test, "\n",
-    find.package("sf"), find.package("googledrive"), find.package("reticulate")
-    ),
-    paste(.libPaths(), collapse = " "),
-    credentials_path,
+    paste(.libPaths(), collapse = "\n"), "\n",
+    "credentials_path: ", credentials_path),
     
     call. = F
 #    "\n\nLibrary sf could not be loaded. \nPlease install a valid version of the sf library\nNote: To correctly install sf it might be necessary to first manually delete the earthEngineGrabR conda environment in ~/Anaconda/env/earthEngineGrabR. After sf is installed and linked to the correct version of GDAL and GEOS run ee_grab_install() to install the earthEngineGrabR dependencies.", 
