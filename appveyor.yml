@@ -4,10 +4,10 @@ image: Visual Studio 2015
 environment:
   NOT_CRAN: true
   USE_RTOOLS: true
-  CONDA_VERSION: "3"
-  matrix:
-    - PYTHON_VERSION: 3.4
-      MINICONDA: C:\Miniconda3
+#  CONDA_VERSION: "3"
+#  matrix:
+#    - PYTHON_VERSION: 3.4
+#      MINICONDA: C:\Miniconda3
 
 # Download script file from GitHub
 init:
@@ -26,10 +26,14 @@ cache:
   - C:\RLibrary
 
 build_script:
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
+#  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+#  - conda config --set always_yes yes --set changeps1 no
+#  - conda update -q conda
+#  - conda info -a
+
+  - wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Windows-x86_64.exe -O anaconda.exe
+  - start /wait "" anaconda.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Anaconda3
+
 
   - R -e "install.packages('googledrive',lib='c:/R/library',repos='http://cran.us.r-project.org')"
   - R -e "install.packages('sf',lib='c:/R/library',repos='http://cran.us.r-project.org')"  

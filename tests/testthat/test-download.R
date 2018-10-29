@@ -7,7 +7,7 @@ context("Download functionalities")
 try(earthEngineGrabR:::gd_auth(), silent = T)
 test <- googledrive::drive_find("CGIAR-SRTM90_V4_s-mean.geojson", verbose = F)
 environment_test <- try(nrow(test) == 1, silent = T)
-if (!environment_test) skip(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
+if (!environment_test) stop(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
 
 
 test_file <- "CGIAR-SRTM90_V4_s-mean.geojson"

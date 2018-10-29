@@ -5,7 +5,7 @@
 context("Set up test environment")
 
 activate_environments()
-googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+#googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 # test_that("activate test environment",{
 #   skip_on_cran()
@@ -32,7 +32,7 @@ googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 #test_that("Test that required testing files on google drive exist", {
   #skip_on_cran()
-  earthEngineGrabR:::activate_environments()
+  #earthEngineGrabR:::activate_environments()
   
   # if test-download data not on google drive upload it.
   if (nrow(googledrive::drive_find("test-data", verbose = F)) == 0) {
@@ -47,11 +47,11 @@ googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 #test_that("upload files", {
   #skip_on_cran()
-  earthEngineGrabR:::activate_environments()
+  #earthEngineGrabR:::activate_environments()
   
 # build environment
 # remove upload files if still present
-googledrive::drive_rm("test-upload", verbose = F)
+#googledrive::drive_rm("test-upload", verbose = F)
 
 # upload test data for download test
 
