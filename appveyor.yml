@@ -5,10 +5,13 @@ environment:
   NOT_CRAN: true
   USE_RTOOLS: true
   CONDA_VERSION: "3"
-
+  - PYTHON_VERSION: 3.4
+    MINICONDA: C:\Miniconda3
 
 # Download script file from GitHub
 init:
+  - "ECHO %PYTHON_VERSION% %MINICONDA%"
+
   ps: |
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
@@ -17,12 +20,17 @@ init:
 install:
   ps: Bootstrap
 
+
 # Adapt as necessary starting from here
 
 cache:
   - C:\RLibrary
 
 build_script:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
 
   - R -e "install.packages('googledrive',lib='c:/R/library',repos='http://cran.us.r-project.org')"
   - R -e "install.packages('sf',lib='c:/R/library',repos='http://cran.us.r-project.org')"  
