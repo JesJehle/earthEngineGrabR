@@ -7,7 +7,7 @@ environment:
   CONDA_VERSION: "3"
   matrix:
     - PYTHON_VERSION: 3.4
-    MINICONDA: C:\Miniconda3
+      MINICONDA: C:\Miniconda3
 
 # Download script file from GitHub
 init:
