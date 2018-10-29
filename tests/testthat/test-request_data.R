@@ -10,7 +10,7 @@ test_that("test that get_data processes data on earth engine and exports it to d
   skip_test_if_not_possible()
 
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                             spatialReducer = "mean", 
+                             spatialReducer = "min", 
                              scale = 3000, 
                              bandSelection = NULL
   )
@@ -30,12 +30,12 @@ test_that("test that reguest_data processes multiple data on earth engine and ex
 
   df <- list(
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                         spatialReducer = "mean", 
+                         spatialReducer = "mode", 
                          scale = 3000, 
                          bandSelection = NULL
     ),
     ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DAILY", 
-                              spatialReducer = "mean", 
+                              spatialReducer = "max", 
                               temporalReducer = "mean",
                               timeStart = "2017-01-01",
                               timeEnd = "2017-01-20", 
@@ -63,7 +63,7 @@ test_that("test that bug: OverflowError: Python int too large to convert to C lo
   skip_test_if_not_possible()
 
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                      spatialReducer = "mean", 
+                      spatialReducer = "max", 
                       scale = 3000, 
                       bandSelection = NULL
                       )
@@ -119,7 +119,7 @@ test_that("test that request_data return anly the valid exports and gives waring
   skip_test_if_not_possible()
   df <- list(
     ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                         spatialReducer = "mean", 
+                         spatialReducer = "min", 
                          scale = 3000, 
                          bandSelection = NULL),
     
@@ -149,7 +149,7 @@ test_that("test that check_processing raises warning if task failed", {
   skip_test_if_not_possible()
   
   df <- list(ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                           spatialReducer = "mean", 
+                           spatialReducer = "max", 
                            scale = 0, 
                            bandSelection = NULL),
              ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
@@ -168,7 +168,7 @@ test_that("test that check_processing raises error if task failed and no valid r
   skip_test_if_not_possible()
   
   df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
-                      spatialReducer = "mean", 
+                      spatialReducer = "mode", 
                       scale = 0, 
                       bandSelection = NULL)
   

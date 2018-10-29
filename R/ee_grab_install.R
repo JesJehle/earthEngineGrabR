@@ -83,7 +83,7 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   }, error = function(err) {
     test_python()
     test_anaconda()
-    #stop(paste("Installation problem\n", err), call. = F)
+    stop(paste("Installation problem\n", err), call. = F)
   },
   warning = function(w) {
     warning(w)

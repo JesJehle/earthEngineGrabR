@@ -46,6 +46,8 @@ upload_as_ft <- function(file_path, fileName) {
     convert(file_path, fileName)
   },
   error = function(err) {
+    ogr_to_ft_path <- clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
+    source_python(file = ogr_to_ft_path)
     stop(paste("could not upload targetArea file", file_path, "\n", err), call. = F)
   }
   )
