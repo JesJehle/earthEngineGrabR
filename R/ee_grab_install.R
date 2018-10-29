@@ -84,6 +84,9 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
     test_python()
     test_anaconda()
     stop(paste("Installation problem\n", err), call. = F)
+  },
+  warning = function(w) {
+    warning(w, call. = F)
   })
   
   # run authentication ---------------------------------------------------------------

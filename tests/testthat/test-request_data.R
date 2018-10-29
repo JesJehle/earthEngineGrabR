@@ -180,5 +180,6 @@ test_that("test that check_processing raises error if task failed and no valid r
 
 #if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
   
-googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+#googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
+
 #}
