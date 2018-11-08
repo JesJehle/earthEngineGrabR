@@ -1,9 +1,7 @@
 # today
 
-
-* succeed to run test on travis with --as-cran flag with scipt_test_on_cran in all tests an run test manually
-* implement approach with devtools:check() testing.
-
+* use testing only on travis for linux
+* change cat to message
 
 # implement features
 
@@ -16,10 +14,10 @@
 
 # stabalise
 
-* build and test on Travis ??
+* get test on Travis for osx and appveyor for windows to run.
+* make tmp folder on google drive independent with unique naming - to enable parallel test runs with matrix builds
 * test with a list of product IDs
 * clean up python files
-* installation test on windows
 * refactore request data
 
 # bugs to fix
@@ -33,7 +31,6 @@
 * vignettes/tutorials
 * polish project - licence, sticker, DOI
 
-
 # workflow
 
 * search for data - with earth engine data catalog
@@ -42,13 +39,13 @@
   * targetArea is defiend by a path to a local geo-file
   
 
-
 # issues
 
 * If earthEngineGrabR is installed before sf, sf will use the dependencies from the conda environment and crash.
 * sf::st_read() error unable to load shared object '/home/jesjehle/R/x86_64-pc-linux-gnu-library/3.4/sf/libs/sf.so':
+* Jussi bug report : my working directory in a local temporary drive "\\\\ATKK/home/j/juzmakin/Documents", Anaconda does not find the compiler information: Error: Could not find a valid conda environment. 
 
-
+* Error in py_run_file_impl(file, local, convert) : OverflowError: Python int too large to convert to C long
 
 # rest
 

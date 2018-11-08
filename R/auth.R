@@ -7,7 +7,10 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
   gd_credential_path <- file.path(credential_path, credential_name)
   if (file.exists(gd_credential_path)) file.remove(gd_credential_path)
 
-  saveRDS(googledrive::drive_auth(reset = T, cache = F, verbose = F), gd_credential_path)
+  saveRDS(
+    googledrive::drive_auth(reset = T, cache = F, verbose = F), 
+    gd_credential_path
+    )
 
   while (!(file.exists(gd_credential_path))) {
     Sys.sleep(1)
