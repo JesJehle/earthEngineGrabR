@@ -27,7 +27,7 @@ test_that("test that upload_as_ft uploads shapefile test data to google drive as
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
   on.exit({
-    googledrive::drive_rm("test-upload", verbose = F)
+    try(googledrive::drive_rm("test-upload", verbose = F), silent = T)
     })
 })
 
@@ -44,7 +44,7 @@ test_that("test that upload_as_ft uploads big shapefile data to google drive as 
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
   on.exit({
-    googledrive::drive_rm(name, verbose = F)
+    try(googledrive::drive_rm(name, verbose = F), silent = T)
   })
 })
 
@@ -58,7 +58,7 @@ test_that("test that upload_as_ft uploads geosjon test data to google drive as f
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
   on.exit({
-    googledrive::drive_rm(name, verbose = F)
+    try(googledrive::drive_rm(name, verbose = F), silent = T)
   })
 })
 
@@ -73,7 +73,7 @@ test_that("test that upload_as_ft uploads geosjon test data to google drive as f
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
   on.exit({
-    googledrive::drive_rm(name, verbose = F)
+    try(googledrive::drive_rm(name, verbose = F), silent = T)
   })
 })
 
@@ -87,7 +87,7 @@ test_that("test that upload_as_ft throws error with non valid file", {
 test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {
   skip_test_if_not_possible()
   earthEngineGrabR:::activate_environments()
-  googledrive::drive_mv("test-data", verbose = F)
+  try(googledrive::drive_mv("test-data", verbose = F), silent = T)
   test_id <- earthEngineGrabR:::upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
 
   # test if file is uploaded
@@ -98,7 +98,7 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   # test if id is returned
   expect_is(test_id, "character")
   on.exit({
-    googledrive::drive_rm("test-data", verbose = F)
+    try(googledrive::drive_rm("test-data", verbose = F), silent = T)
   })
 })
 
