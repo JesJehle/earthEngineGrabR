@@ -21,7 +21,7 @@ class OAuth2(object):
 
 def copy_features(src_layer, dst_layer, fix_geometry, simplify_geometry, start_index, total):
     index = 0
-    batch_size = 1000
+    batch_size = 100
     index_batch = 0
     for feat in src_layer:
         if index < start_index:

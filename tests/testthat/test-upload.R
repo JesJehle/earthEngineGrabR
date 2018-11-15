@@ -14,18 +14,67 @@ test_that("test that get_ft_id raise error with wrong ft_name argument", {
   expect_error(get_ft_id_gd(wrong_ft_name))
 })
 
-test_that("test that upload_as_ft uploads test data to google drive as fusion table", {
+
+test_that("test that upload_as_ft uploads shapefile test data to google drive as fusion table", {
   skip_test_if_not_possible()
   # Issue - upload files on travis with os-osx fails, unresolved.
-  skip_on_os("mac")
+  #skip_on_os("mac")
   try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
-  name <- paste0("test-upload-", as.character(sample(1:20, 1)))
+  name <- paste0("test-upload-", as.character(sample(1:200, 1)))
   earthEngineGrabR:::activate_environments()
   earthEngineGrabR:::upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), name)
   test_upload <- googledrive::drive_find(name, verbose = F)
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
-  googledrive::drive_rm(name, verbose = F)
+  on.exit({
+    googledrive::drive_rm("test-upload", verbose = F)
+    })
+})
+
+
+test_that("test that upload_as_ft uploads big shapefile data to google drive as fusion table", {
+  skip_test_if_not_possible()
+  # Issue - upload files on travis with os-osx fails, unresolved.
+  #skip_on_os("mac")
+  #try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
+  name <- paste0("test-upload-", as.character(sample(1:200, 1)))
+  earthEngineGrabR:::activate_environments()
+  expect_warning(earthEngineGrabR:::upload_as_ft(system.file("data/VG250_KRS.shp", package = "earthEngineGrabR"), name))
+  test_upload <- googledrive::drive_find(name, verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  on.exit({
+    googledrive::drive_rm(name, verbose = F)
+  })
+})
+
+test_that("test that upload_as_ft uploads geosjon test data to google drive as fusion table", {
+  skip_test_if_not_possible()
+  # Issue - upload files on travis with os-osx fails, unresolved.
+  name <- paste0("test-upload-", as.character(sample(1:200, 1)))
+  earthEngineGrabR:::activate_environments()
+  earthEngineGrabR:::upload_as_ft(system.file("data/map.geojson", package = "earthEngineGrabR"), name)
+  test_upload <- googledrive::drive_find(name, verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  on.exit({
+    googledrive::drive_rm(name, verbose = F)
+  })
+})
+
+
+test_that("test that upload_as_ft uploads geosjon test data to google drive as fusion table", {
+  earthEngineGrabR:::skip_test_if_not_possible()
+  # Issue - upload files on travis with os-osx fails, unresolved.
+  name <- paste0("test-upload-", as.character(sample(1:200, 1)))
+  earthEngineGrabR:::activate_environments()
+  expect_warning(earthEngineGrabR:::upload_as_ft(system.file("data/map.kml", package = "earthEngineGrabR"), name))
+  test_upload <- googledrive::drive_find(name, verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  on.exit({
+    googledrive::drive_rm(name, verbose = F)
+  })
 })
 
 test_that("test that upload_as_ft throws error with non valid file", {
@@ -33,11 +82,6 @@ test_that("test that upload_as_ft throws error with non valid file", {
   activate_environments()
   expect_error(upload_as_ft(system.file("data/not-valid.shp", package = "earthEngineGrabR"), "test-upload"))
 })
-
-
-
-
-
 
 
 test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {
@@ -53,7 +97,9 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
 
   # test if id is returned
   expect_is(test_id, "character")
-  googledrive::drive_rm("test-upload")
+  on.exit({
+    googledrive::drive_rm("test-data", verbose = F)
+  })
 })
 
 
