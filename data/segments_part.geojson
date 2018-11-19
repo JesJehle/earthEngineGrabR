@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "id": 0, "properties": { "ID": "ts1p1", "SC": "AGO_Lui", "CC": "AGO" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 21.0424, -16.855 ], [ 21.0424, -16.8785 ], [ 21.041, -16.8785 ], [ 21.041, -16.855 ], [ 21.0424, -16.855 ] ] ], [ [ [ 21.0444, -16.855 ], [ 21.0458, -16.855 ], [ 21.0458, -16.8785 ], [ 21.0444, -16.8785 ], [ 21.0444, -16.855 ] ] ] ] } }
+]
+}

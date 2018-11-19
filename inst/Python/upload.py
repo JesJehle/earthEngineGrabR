@@ -21,7 +21,7 @@ class OAuth2(object):
 
 def copy_features(src_layer, dst_layer, fix_geometry, simplify_geometry, start_index, total):
     index = 0
-    batch_size = 100
+    batch_size = 200
     index_batch = 0
     for feat in src_layer:
         if index < start_index:
@@ -63,7 +63,7 @@ def copy_features(src_layer, dst_layer, fix_geometry, simplify_geometry, start_i
         if index_batch >= batch_size or index == total - 1:
             dst_layer.CommitTransaction()
             count = dst_layer.GetFeatureCount()  # update number of inserted features
-            print('Inserted {0} of {1} features ({2:.2f}%)'.format(count, total, 100. * float(count) / total))
+            print('Inserted {0} of {1} features ({2:.2f}%)'.format(index + 1, total, 100. * float(index + 1) / total))
 
             index_batch = 0
 
@@ -122,7 +122,7 @@ def convert(input_file, output_fusion_table, add_missing=False):
 
     # copy features, retry during crashes
     fix_geometry = True
-    simplify_geometry = False
+    simplify_geometry = True
 
     # re-open source layer, otherwise src_layer.GetFeature(1) seems to ifluence iterator in copy_features ?!?
     src_ds.Destroy()
@@ -163,5 +163,8 @@ def convert(input_file, output_fusion_table, add_missing=False):
 #    args = parser.parse_args()
 #
 #    convert(args.input_file, args.output_fusion_table, args.add_missing)
+
+
+# convert("/home/jesjehle/Documents/Ms_Arbeit/earthEngineGrabR/data/poly.shp", 'test-6')
 
 

@@ -19,7 +19,6 @@ test_that("test that upload_as_ft uploads shapefile test data to google drive as
   skip_test_if_not_possible()
   # Issue - upload files on travis with os-osx fails, unresolved.
   #skip_on_os("mac")
-  try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
   name <- paste0("test-upload-", as.character(sample(1:200, 1)))
   earthEngineGrabR:::activate_environments()
   earthEngineGrabR:::upload_as_ft(system.file("data/test-data.shp", package = "earthEngineGrabR"), name)
@@ -27,13 +26,13 @@ test_that("test that upload_as_ft uploads shapefile test data to google drive as
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
   on.exit({
-    try(googledrive::drive_rm("test-upload", verbose = F), silent = T)
+    try(googledrive::drive_rm(name, verbose = F), silent = T)
     })
 })
 
 
 test_that("test that upload_as_ft uploads big shapefile data to google drive as fusion table", {
-  skip_test_if_not_possible()
+  earthEngineGrabR:::skip_test_if_not_possible()
   # Issue - upload files on travis with os-osx fails, unresolved.
   #skip_on_os("mac")
   #try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
@@ -47,6 +46,30 @@ test_that("test that upload_as_ft uploads big shapefile data to google drive as 
     try(googledrive::drive_rm(name, verbose = F), silent = T)
   })
 })
+
+
+# test_that("test that upload_as_ft uploads huge shapefile data to google drive as fusion table", {
+# 
+#   file_path_huge <- system.file("data/poly.shp", package = "earthEngineGrabR")
+#   if (file.exists(file_path_huge)) {
+#     
+#   skip_test_if_not_possible()
+#   # Issue - upload files on travis with os-osx fails, unresolved.
+#   #skip_on_os("mac")
+#   #try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
+#   name <- paste0("test-upload-", as.character(sample(1:200, 1)))
+#   earthEngineGrabR:::activate_environments()
+#   earthEngineGrabR:::upload_as_ft(file_path_huge, name)
+#   test_upload <- googledrive::drive_find(name, verbose = F)
+#   test <- try(nrow(test_upload) == 1, silent = T)
+#   expect_true(test)
+#   on.exit({
+#     try(googledrive::drive_rm(name, verbose = F), silent = T)
+#   })
+#   } else {
+#     skip('File for big shapefile upload test not present')
+#   }
+# })
 
 test_that("test that upload_as_ft uploads geosjon test data to google drive as fusion table", {
   skip_test_if_not_possible()
@@ -76,6 +99,34 @@ test_that("test that upload_as_ft uploads geosjon test data to google drive as f
     try(googledrive::drive_rm(name, verbose = F), silent = T)
   })
 })
+
+
+test_that("test that upload_as_ft uploads with ~ in path", {
+  earthEngineGrabR:::skip_test_if_not_possible()
+  # Issue - upload files on travis with os-osx fails, unresolved.
+  file_path_tilde <- "~/R/x86_64-pc-linux-gnu-library/3.4/earthEngineGrabR/data/segments_part.geojson"
+  if (file.exists(file_path_tilde)) {
+    
+  skip_on_os("windows")
+  skip_on_os("mac")
+  
+  name <- paste0("test-upload-", as.character(sample(1:200, 1)))
+  earthEngineGrabR:::activate_environments()
+  earthEngineGrabR:::upload_as_ft(file_path_tilde, name)
+  test_upload <- googledrive::drive_find(name, verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  on.exit({
+    try(googledrive::drive_rm(name, verbose = F), silent = T)
+  })
+  
+  }
+  else {
+    skip('File for test was not found')
+  }
+})
+
+
 
 test_that("test that upload_as_ft throws error with non valid file", {
   skip_test_if_not_possible()

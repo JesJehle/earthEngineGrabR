@@ -30,6 +30,9 @@ get_ft_id_gd <- function(ft_name) {
 #' @noRd
 upload_as_ft <- function(file_path, fileName) {
   
+  file_path_clean <- path.expand(file_path)
+  
+  # make functions available
   ogr_to_ft_path <- clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
   load_test <- try(source_python(file = ogr_to_ft_path), silent = T)
   count <- 1
@@ -37,13 +40,8 @@ upload_as_ft <- function(file_path, fileName) {
     load_test <- try(source_python(file = ee_helpers), silent = T)
     count <- count + 1
   }
-  # ource_python(file = ogr_to_ft_path)
-  
-
-  # make functions available
-
   tryCatch({
-    convert(file_path, fileName)
+    convert(file_path_clean, fileName)
   },
   error = function(err) {
     ogr_to_ft_path <- clean_spaces(system.file("Python/upload.py", package = "earthEngineGrabR"))
