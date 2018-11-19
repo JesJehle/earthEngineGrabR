@@ -18,7 +18,8 @@ Depends:
 imports: 
     googledrive, 
     reticulate, 
-    sf
+    sf,
+    tools
 Suggests: 
     testthat,
     roxygen2,

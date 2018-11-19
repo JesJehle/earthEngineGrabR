@@ -77,3 +77,4 @@ upload_data <- function(targetArea, verbose = T) {
 
   return(table_id)
 }
+

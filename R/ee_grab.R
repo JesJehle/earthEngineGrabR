@@ -92,7 +92,7 @@ ee_grab <- function(data = NULL,
   activate_environments("earthEngineGrabR")
   try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
 
-  # upload vector data is fusion table --------------------
+  # upload vector data as fusion table --------------------
   targetArea_id <- upload_data(targetArea = targetArea, verbose = verbose)
 
   # request data data form google earth engine servers

@@ -60,9 +60,10 @@ is_type <- function(param, type) {
 #' @return basename without extension
 #' @noRd
 get_name_from_path <- function(path) {
-  name <- sub("\\..*$", "", basename(path))
+  name <- tools::file_path_sans_ext(basename(path))
   return(name)
 }
+
 
 
 #' Add quotes to paths with spaces
