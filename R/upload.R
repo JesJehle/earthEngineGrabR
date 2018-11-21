@@ -16,9 +16,7 @@ delete_if_exist <- function(path) {
 #' @param ft_name Name of fusion table in google drive
 #' @noRd
 get_ft_id_gd <- function(ft_name) {
-  info <- try(googledrive::drive_find(ft_name, verbose = F), silent = T)
-  if (nrow(info) < 1) stop(paste("No file found with given fusion table name", ft_name), call. = F)
-  if (nrow(info) > 1) stop(paste("Ambiguous filename: ", ft_name, "Found multiple files with the same name: ", info$name), call. = F)
+  info <- find_ft_on_drive(ft_name)
   ft_id <- paste0("ft:", info$id)
   return(ft_id)
 }
@@ -51,6 +49,21 @@ upload_as_ft <- function(file_path, fileName) {
   )
 }
 
+#' find fusion table file on drive 
+#' @param ft_name Name
+#' @noRd
+find_ft_on_drive <- function(ft_name){
+  found <- googledrive::drive_find(ft_name, verbose = F, type = "fusiontable")
+  if (nrow(found) == 0) {
+    return(NULL)
+  } else {
+    found_unique <- found[found$name == ft_name,]
+    if (nrow(found_unique) > 1) stop('No unique fusiontable name.\nFound multiple fustiontables on google drive with name: ', ft_name, 
+                                     '\nPlease rename target file, or rename files on google drive', call. = F)
+    return(found_unique)
+  }
+}
+
 
 #' upload vector data and return fusion table ID
 #' @param verbose specifies weather information is about the process is printed to the console
@@ -59,10 +72,11 @@ upload_as_ft <- function(file_path, fileName) {
 #' @noRd
 upload_data <- function(targetArea, verbose = T) {
 
-  target_name <- get_name_from_path(targetArea)
+  target_name <- earthEngineGrabR:::get_name_from_path(targetArea)
   # test if file is already uploaded
-  test <- try(nrow(googledrive::drive_find(target_name, verbose = F)) == 1, silent = T)
-  if (!test) {
+  test <- find_ft_on_drive(target_name)
+  
+  if (is.null(test)) {
     if (verbose == T) {
       cat("\nupload:", target_name, "\n")
     }

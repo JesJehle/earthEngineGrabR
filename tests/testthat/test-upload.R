@@ -8,11 +8,13 @@ test_that("test that get_ft_id extracts the id of test-data on google drive", {
   expect_is(test, "character")
 })
 
-wrong_ft_name <- "test-data-error"
-test_that("test that get_ft_id raise error with wrong ft_name argument", {
-  skip_test_if_not_possible()
-  expect_error(get_ft_id_gd(wrong_ft_name))
-})
+# multiple files with same name test To-Do
+
+#wrong_ft_name <- "test-data-error"
+#test_that("test that get_ft_id raise error with wrong ft_name argument", {
+#  skip_test_if_not_possible()
+#  expect_error(get_ft_id_gd(wrong_ft_name))
+#})
 
 
 test_that("test that upload_as_ft uploads shapefile test data to google drive as fusion table", {
