@@ -39,6 +39,7 @@ test_that("Test that ee_data_image and ee_data_collection raise appropriate erro
   expect_error(ee_data_collection(timeStart = 1234))
   expect_error(ee_data_collection(timeEnd = as.Date(1234)))
   expect_error(ee_data_collection(timeStart = "12/02/01", timeEnd = "12/03/31"))
+  expect_error(ee_data_collection(timeStart = "2015-01-01", timeEnd = "2015-01-01"))
   expect_error(ee_data_collection(timeEnd = "dfg-ff-12"))
   expect_error(ee_data_collection(bandSelection = list("string", 1)))
   expect_error(ee_data_collection(bandSelection = 1))

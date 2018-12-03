@@ -54,8 +54,7 @@ ee_data_image <- function(datasetID = "CGIAR/SRTM90_V4",
 #' @param spatialReducer \code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}
 #' @param temporalReducer \code{string} that specifies the temporal aggregation of the filtered image collection. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode", "sum"}
 #' @param timeStart \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
-#' @param timeEnd \code{string} with the date format of yyyy-mm-dd, to filter the image collection.
-#' @param scale scale \code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple scales, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest scale less than or equal to the scale specified by your scale argument and resamples (using nearest neighbour by default) as necessary.
+#' @param timeEnd \code{string} with the date format of yyyy-mm-dd, to filter the image collection. The date selection is inclusive for the dateStart date and exclusive for the timeEnd date. Therefore, to select a single day use the date of the day as time start and the day after as timeEnd date.
 #' @param bandSelection \code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.
 #' @description \code{ee_data_image()} and \code{ee_data_collection()} are used to define the requested earth enigne data for the \code{ee_grab()} function.   
 #' @return object of class \code{list} that defines request for collection data in \code{ee_grab()}.
@@ -87,8 +86,6 @@ ee_data_collection <- function(datasetID = "UCSB-CHG/CHIRPS/DAILY",
   if (!is.null(bandSelection)) is_type(bandSelection, "character")
   if (length(bandSelection) > 1 & !is.vector(bandSelection)) stop("bandSelection is not a vector. \nIf you want to select multiple bands, pass them inside a vector.", call. = F)
   
-  
-  
   match.arg(spatialReducer, choices = c("mean", "median", "min", "max", "mode"))
   match.arg(temporalReducer, choices = c("mean", "median", "min", "max", "mode", "sum"))
 
@@ -97,6 +94,16 @@ ee_data_collection <- function(datasetID = "UCSB-CHG/CHIRPS/DAILY",
 
   if (is.na(timeStart)) stop(paste(timeStart, "is not a valid Date"), call. = F)
   if (is.na(timeEnd)) stop(paste(timeEnd, "is not a valid Date"), call. = F)
+  
+  if (identical(timeStart, timeEnd)) stop(
+    "timeStart and timeEnd have the identical date: ", 
+    timeStart, 
+    "\nTo select only the single day ",
+    timeStart,  
+    " use the date range of timeStart: ", timeStart,  " and timeEnd: ", timeEnd + 1, 
+  ".\nThe date selection is inclusive for the dateStart date and exclusive for the timeEnd date. 
+  Therefore, to select a single day use the date of the day as time start and the day after as timeEnd date."
+  , call. = FALSE)
 
   timeStart <- as.character(timeStart)
   timeEnd <- as.character(timeEnd)

@@ -1,5 +1,6 @@
 import ee
 
+
 def select_reducer_with_outputName(reducer, product_name):
     if reducer == 'mean':
         reducer = ee.Reducer.mean().setOutputs(product_name)
@@ -17,7 +18,6 @@ def select_reducer_with_outputName(reducer, product_name):
         print 'Parameter should be mean, median, mode or sum'
         sys.exit()
     return reducer
-
 
 
 def select_reducer(reducer):
@@ -46,9 +46,8 @@ def reduceOverRegions(image, extractionPolygon, scale, reducer, name):
     return bandsPerFeature
 
 
-
 # active
-def exportTableToDrive(featureCollection, format, name, export, test = False):
+def exportTableToDrive(featureCollection, format, name, export, test=False):
 
     if test:
         folder = "earthEngineGrabR-test"
@@ -59,8 +58,8 @@ def exportTableToDrive(featureCollection, format, name, export, test = False):
     task = ee.batch.Export.table.toDrive(
         collection=featureCollection,
         description=str(name),
-        fileFormat = str(format),
-        folder = folder
+        fileFormat=str(format),
+        folder=folder
     )
 
     if str(export) == str('TRUE'):
@@ -70,7 +69,6 @@ def exportTableToDrive(featureCollection, format, name, export, test = False):
         status = task
 
     return status
-
 
 
 def get_info(productID):
@@ -87,7 +85,6 @@ def get_info(productID):
         info_output['bands'] = product.bandNames().getInfo()
         info_output['epsg'] = info['bands'][0]['crs']
         info_output['tile'] = product.get('title').getInfo()
-
 
     except Exception:
         pass
@@ -119,8 +116,6 @@ def get_info(productID):
     return info_output
 
 
-
-
 def get_data_image(
         productID,
         productName,
@@ -128,8 +123,8 @@ def get_data_image(
         ft_id,
         outputFormat,
         resolution,
-        bandSelection = None,
-        test = False):
+        bandSelection=None,
+        test=False):
 
     ee.Initialize()
 
@@ -157,8 +152,6 @@ def get_data_image(
     return status
 
 
-
-
 def get_data_collection(
         productID,
         productName,
@@ -166,11 +159,11 @@ def get_data_collection(
         ft_id,
         outputFormat,
         resolution,
-        temporalReducer = 'mean',
-        timeStart = '2000-3-20',
-        timeEnd = '2005-2-20',
-        bandSelection = None,
-        test = False):
+        temporalReducer='mean',
+        timeStart='2000-3-20',
+        timeEnd='2005-2-20',
+        bandSelection=None,
+        test=False):
 
     ee.Initialize()
     polygon = ee.FeatureCollection(ft_id)
@@ -183,14 +176,16 @@ def get_data_collection(
     product_filtered = product_collection.filterDate(timeStart, timeEnd)
 
     if product_filtered.size().getInfo() == 0:
-        raise ValueError("No images found with the given daterange of " + timeStart + " to " + timeEnd + ".")
+        raise ValueError("No images found with the given daterange of " +
+                         timeStart + " to " + timeEnd + ".")
 
     reduce_time = select_reducer(temporalReducer)
 
     product_reduced_time = product_filtered.reduce(reduce_time)
     band_names = ee.Image(product_collection.first()).bandNames().getInfo()
 
-    product_name = [n + "_s-"+ spatialReducer + "_t-" + temporalReducer + "_" + timeStart + "_to_" + timeEnd for n in band_names]
+    product_name = [n + "_s-" + spatialReducer + "_t-" + temporalReducer +
+                    "_" + timeStart + "_to_" + timeEnd for n in band_names]
     product_reduced_time_renamed = product_reduced_time.rename(product_name)
 
     product_reduced = reduceOverRegions(image=product_reduced_time_renamed,
@@ -202,5 +197,3 @@ def get_data_collection(
     # export feature collection to drive
     status = exportTableToDrive(product_reduced, outputFormat, productName, "TRUE", test=test)
     return status
-
-
