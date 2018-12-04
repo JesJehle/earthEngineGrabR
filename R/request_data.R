@@ -1,14 +1,10 @@
 
 
-# load get data, repeat if error
-
-
-
-
 #' get_data
 #' calls get_data_image or get_data_collections, dependent on the info object
 #' @param info Data frame information generated gy ee_grab()
 #' @param data_type either ImageCollection of Image,
+#' @export
 #' @noRd
 get_data <- function(info, test = F) {
   #activate_environments("earthEngineGrabR")
@@ -30,7 +26,7 @@ get_data <- function(info, test = F) {
         info$spatialReducer,
         info$ftID,
         info$outputFormat,
-        info$scale,
+        info$resolution,
         info$temporalReducer,
         info$timeStart,
         info$timeEnd,
@@ -50,7 +46,7 @@ get_data <- function(info, test = F) {
         info$spatialReducer,
         info$ftID,
         info$outputFormat,
-        info$scale,
+        info$resolution,
         info$bandSelection,
         test
       )
@@ -59,6 +55,72 @@ get_data <- function(info, test = F) {
     })
   }
   return(status)
+}
+
+
+#' set_resolution
+#' set resolution of requested data if not set
+#' @param datasetID String that speciefies the data in ee
+#' @noRd
+#' @export
+set_resolution <- function(products) {
+  # check if data is a list of lists, if not creat one.
+  if (class(products[[1]]) != "list") {
+    products <- list(products)
+  }
+
+  if (class(products[[1]]) != "list") {
+    products <- list(products)
+  }
+  for (i in seq_along(products)) {
+    if (is.null(products[[i]]$resolution)) {
+      res <- earthEngineGrabR:::check_scale(products[[i]]$datasetID)
+      products[[i]]$resolution <- res
+    }
+  }
+  return(products)
+}
+  
+  
+
+
+
+
+
+#' check_scale
+#' checks for equality in native resolutions among the Bands of a dataset.
+#' @param datasetID String that speciefies the data in ee
+#' @noRd
+#' @export
+check_scale <- function(datasetID) {
+  earthEngineGrabR:::activate_environments("earthEngineGrabR")
+  
+  ee_helpers <- system.file("Python/ee_get_data.py", package = "earthEngineGrabR")
+  load_test <- try(source_python(file = ee_helpers), silent = T)
+  count <- 1
+  while (class(load_test) == "try-error" & count < 5) {
+    load_test <- try(source_python(file = ee_helpers), silent = T)
+    count <- count + 1
+  }
+  
+  product_scale <- get_scales(datasetID)
+  
+  if (length(product_scale) > 1) {
+    
+  scales_df <- data.frame('Bands' = names(product_scale), 'Resolution' = unlist(product_scale))
+  rownames(scales_df) <- NULL
+  
+   stop(
+      "Bands in ",
+      datasetID,
+      " have different native resolutions:\n",
+      paste(capture.output(print(scales_df)), collapse = "\n"), 
+      "\n\n",
+      "Apply a resolution to all bands by setting the resolution argument or choose only Bands with an equal resolution by selecting bands using the bandSelection argument.",
+      call. = F
+    ) 
+  }
+  return(product_scale)
 }
 
 
@@ -90,8 +152,10 @@ get_data_info <- function(datasetID) {
 #' @param product_info list object created by ee_product functions
 #' @param target_id String of fusion table id created by upload_data()
 #' @return ee_responses for each correctly exported data product
+#' @export
 request_data <- function(product_info, target_id, verbose = T, test = F) {
   # check if data is a list of lists, if not creat one.
+
   if (class(product_info[[1]]) != "list") {
     product_info <- list(product_info)
   }
@@ -141,8 +205,10 @@ request_data <- function(product_info, target_id, verbose = T, test = F) {
 
 
 
-# check status of all active tasks
-
+# check_processing for all active tasks on earth engine
+#' @param status Output of get_data function loop
+#' @noRd
+#' @export
 check_processing <- function(status, verbose) {
   check <- c()
   for (i in seq_along(status$ee_response_ids)) {
@@ -160,7 +226,11 @@ check_processing <- function(status, verbose) {
   return(as.character(ee_responses_checked))
 }
 
-# check status of ee task
+# check status of a running task on earth engine
+#' @param taskID Task ID returned by get_data function.
+#' @param taskName Task name returned by get_data function.
+#' @noRd
+#' @export
 check_status <- function(taskID, taskName, verbose) {
   ee <- import("ee", delay_load = T)
   status <- ee$data$getTaskStatus(taskID)

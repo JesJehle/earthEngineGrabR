@@ -91,7 +91,9 @@ ee_grab <- function(data = NULL,
   
   activate_environments("earthEngineGrabR")
   try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
-
+  
+  # check for equal resolutions of Bands and get native resolution if resolution argument is NULL
+  data <- set_resolution(data)
   # upload vector data as fusion table --------------------
   targetArea_id <- upload_data(targetArea = targetArea, verbose = verbose)
 

@@ -1,4 +1,5 @@
 import ee
+from ee import EEException
 
 
 def select_reducer_with_outputName(reducer, product_name):
@@ -69,6 +70,60 @@ def exportTableToDrive(featureCollection, format, name, export, test=False):
         status = task
 
     return status
+
+
+def get_ee_object(id):
+    """ checks if id points to an image or collection and return ee object """
+    ee.Initialize()
+
+    test = None
+    # check if id is an image
+    try:
+        object_image = ee.Image(id)
+        test = object_image.getInfo()
+        return object_image
+    except EEException as e:
+        pass
+    # check if id is a collection
+    try:
+        object_all = ee.ImageCollection(id)
+        object_collection = ee.Image(object_all.first())
+        test = object_collection.getInfo()
+        return object_collection
+    except EEException as e:
+        pass
+    # if it is neither an image or collection it's not a valid id
+    if test is None:
+        raise ValueError(e)
+    # else:
+    #    return object
+
+
+def get_scales(id):
+
+    ee.Initialize()
+    """ Function to request native resolution of an ee asset.
+    If bands have different resolutions, it return a dictionary
+    with bands names as keys and native resolutions as values. """
+
+    object = get_ee_object(id)
+    object.getInfo()
+    # try to get native scale for
+    try:
+        scale = object.projection().nominalScale().getInfo()
+        scale_int = int(scale)
+        return scale_int
+    except EEException:
+        band_names = object.bandNames().getInfo()
+        scales = {}
+        for name in band_names:
+            scale = object.select(name) \
+                .projection() \
+                .nominalScale() \
+                .getInfo()
+            scales[str(name)] = int(scale)
+
+        return scales
 
 
 def get_info(productID):
@@ -168,7 +223,7 @@ def get_data_collection(
     ee.Initialize()
     polygon = ee.FeatureCollection(ft_id)
 
-    if bandSelection == None:
+    if bandSelection is None:
         product_collection = ee.ImageCollection(productID)
     else:
         product_collection = ee.ImageCollection(productID).select(bandSelection)

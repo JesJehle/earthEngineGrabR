@@ -57,7 +57,7 @@ googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 
 df <- ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                            spatialReducer = "mean", 
-                           scale = 3000)
+                           resolution = 3000)
 
 if (nrow(googledrive::drive_find(df$productNameFull, verbose = F)) == 0) {
   df$ftID <- earthEngineGrabR:::get_ft_id_gd("test-data")

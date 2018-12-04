@@ -49,10 +49,19 @@ get_temp_path <- function(create = T) {
 #' @param param the parameter to test
 #' @param type the required type of the parameter
 #' @noRd
-is_type <- function(param, type) {
-  if (class(param) != type) stop(paste(deparse(substitute(param)), "must be of class", type), call. = F)
+is_type <- function(param, type, null = FALSE) {
+  if (is.null(null)) {
+    if (
+      class(param) != type &
+      !is.null(param)
+        ) {
+      stop(paste(deparse(substitute(param)), "must be of class", type, "or", "NULL"), call. = F)
+    }
+  } else {
+    if (class(param) != type)
+      stop(paste(deparse(substitute(param)), "must be of class", type), call. = F)
+  }
 }
-
 
 
 #' get_name_from_path
