@@ -110,6 +110,7 @@ ee_grab <- function(data = NULL,
   return(product_data)
   
   # remove tmp files local and from drive
+  #try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
   on.exit({
     try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
     unlink(temp_path, recursive = T)

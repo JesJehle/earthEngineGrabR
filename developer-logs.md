@@ -5,7 +5,6 @@
 * change cat to message
 
 # implement features
-* implement get_scale, set default scale if not set.
 * implement export projection control
 * implement info option in ee_grab to extract formatted info about the data product if needed. -- not important
 * add extensibility functionality by separating ee data manipulation and allow the embedding of external scripts
@@ -14,7 +13,6 @@
 
 
 # stabalise
-* test for get_scale function
 * make tmp folder on google drive independent with unique naming - to enable parallel test runs with matrix builds
 * test with a list of product IDs
 * clean up python files

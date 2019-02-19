@@ -1,15 +1,16 @@
 import ee
 
-#ee.Initialize()
+# ee.Initialize()
 
 #info_output = {}
 
 productID = "CIESIN/GPWv4/ancillary-data-grid"
 
-#print(len(info_output))
+# print(len(info_output))
 
-#if info_output:
-    #print(len(info_output))
+# if info_output:
+# print(len(info_output))
+
 
 def get_info(productID):
 
@@ -25,7 +26,6 @@ def get_info(productID):
         info_output['bands'] = product.bandNames().getInfo()
         info_output['epsg'] = info['bands'][0]['crs']
         info_output['tile'] = product.get('title').getInfo()
-
 
     except Exception:
         pass
