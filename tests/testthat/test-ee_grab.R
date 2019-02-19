@@ -40,7 +40,7 @@ test_that("test that ee_grab() raises an error if no valid targetArea is specifi
           {
             skip_test_if_not_possible()
             
-            targetArea = ""
+            target_area_empty = ""
             #earthEngineGrabR:::activate_environments()
             
             product_image <- ee_data_image(
@@ -49,7 +49,7 @@ test_that("test that ee_grab() raises an error if no valid targetArea is specifi
               resolution = 3000
             )
             
-            expect_error(ee_grab(targetArea = targetArea,
+            expect_error(ee_grab(targetArea = target_area_empty,
                                   data = product_image,
                                   verbose = verbose))
           })
