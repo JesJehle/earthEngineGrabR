@@ -88,7 +88,7 @@ test_that("test that upload_as_ft uploads geosjon test data to google drive as f
 })
 
 
-test_that("test that upload_as_ft uploads geosjon test data to google drive as fusion table", {
+test_that("test that upload_as_ft uploads kml test data to google drive as fusion table", {
   earthEngineGrabR:::skip_test_if_not_possible()
   # Issue - upload files on travis with os-osx fails, unresolved.
   name <- paste0("test-upload-", as.character(sample(1:200, 1)))
@@ -129,12 +129,13 @@ test_that("test that upload_as_ft uploads with ~ in path", {
 })
 
 
-
 test_that("test that upload_as_ft throws error with non valid file", {
   skip_test_if_not_possible()
   activate_environments()
   expect_error(upload_as_ft(system.file("data/not-valid.shp", package = "earthEngineGrabR"), "test-upload"))
 })
+
+
 
 
 test_that("test that upload_data uploads test data to google drive as fusion table and returns ID", {

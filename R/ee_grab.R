@@ -83,7 +83,7 @@ ee_grab <- function(data = NULL,
                     verbose = T) {
   # test required dependencies and activates environment for reticulate
   
-  if (is.null(targetArea)) stop("No targetArea specified. \nPlease specify a targetArea with a path to a local geo-file of class character.", call. = F)
+  if (is.null(targetArea | targetArea == "")) stop("No targetArea specified. \nPlease specify a targetArea with a path to a local geo-file of class character.", call. = F)
   is_type(targetArea, "character")
   
   if (is.null(data)) stop("No data specified. \nPlease specify your requested data with a single or a list of ee_data_image() and ee_data_collection() functions.", call. = F)

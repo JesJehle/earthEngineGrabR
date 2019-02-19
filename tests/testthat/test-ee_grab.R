@@ -9,6 +9,7 @@ verbose <- F
 
 targetArea <-
   system.file("data/test-data.shp", package = "earthEngineGrabR")
+
 test_that("Test that get_data_info retrieves info of given Product ID", {
   skip_test_if_not_possible()
   
@@ -32,6 +33,27 @@ test_that("Test that get_data_info retrieves info of given Product ID", {
     )
   )
 })
+
+
+
+test_that("test that ee_grab() raises an error if no valid targetArea is specified",
+          {
+            skip_test_if_not_possible()
+            
+            targetArea = ""
+            #earthEngineGrabR:::activate_environments()
+            
+            product_image <- ee_data_image(
+              datasetID = "CGIAR/SRTM90_V4",
+              spatialReducer = "max",
+              resolution = 3000
+            )
+            
+            expect_error(ee_grab(targetArea = targetArea,
+                                  data = product_image,
+                                  verbose = verbose))
+          })
+
 
 
 
