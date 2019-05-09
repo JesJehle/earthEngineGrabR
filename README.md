@@ -28,7 +28,7 @@ chirps_data <- ee_grab(data = ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DA
                                                  temporalReducer = "sum", 
                                                  timeStart = "2016-01-01",
                                                  timeEnd = "2016-12-31", 
-                                                 scale = 200
+                                                 resolution = 200
                                                  ),
                        targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
                       )
@@ -48,7 +48,7 @@ First 10 features:
 3  12     47000                                           1321.1984 MULTIPOLYGON (((37.10833 -7...
 4   9     19624                                            572.1886 MULTIPOLYGON (((31.87845 -2...
 ```
-The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a [`scale`](https://developers.google.com/earth-engine/scale) of 200 meters per pixel.
+The example calculates the yearly precipitation sum for 2016 and aggregates the spatial mean in the polygons of the target area. The calculations are performed on a [`resolution`](https://developers.google.com/earth-engine/scale) of 200 meters per pixel.
 
 After a short processing time of approximately 1 -2 minutes, `ee_grab()` returns the data.
 
@@ -107,7 +107,7 @@ To test the installation run:
 ```r
 srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                                           spatialReducer = "mean", 
-                                          scale = 100, 
+                                          resolution = 100, 
                                           bandSelection = "elevation"
                                           ),
                     targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
