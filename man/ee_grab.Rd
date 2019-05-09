@@ -4,7 +4,8 @@
 \alias{ee_grab}
 \title{Request and import data from Earth Engine}
 \usage{
-ee_grab(data = NULL, targetArea = NULL, verbose = T)
+ee_grab(data = NULL, targetArea = NULL, verbose = T,
+  testCase = NULL)
 }
 \arguments{
 \item{data}{\code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.}
@@ -12,6 +13,8 @@ ee_grab(data = NULL, targetArea = NULL, verbose = T)
 \item{targetArea}{\code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.}
 
 \item{verbose}{\code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.}
+
+\item{testCase}{\code{character}, simulates user input. For development only. Default is set to \code{NULL}.}
 }
 \value{
 Object of class \code{sf}. \code{ee_grab()} returns the targetArea file with the bands of the requested data added as columns.
@@ -70,7 +73,7 @@ If the requested data is an image use \code{ee_data_image()}, if it's a collecti
 
 srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
                                          spatialReducer = "mean", 
-                                         scale = 100, 
+                                         resolution = 100, 
                                          bandSelection = "elevation"
                                          ),
                    targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
@@ -84,7 +87,7 @@ chirps_data <- ee_grab(data = ee_data_collection(datasetID = "UCSB-CHG/CHIRPS/DA
                                                 temporalReducer = "sum", 
                                                 timeStart = "2016-01-01",
                                                 timeEnd = "2016-12-31", 
-                                                scale = 200
+                                                resolution = 200
                                                 ),
                       targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
                      )                                                    

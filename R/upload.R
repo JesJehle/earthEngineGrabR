@@ -70,8 +70,7 @@ find_ft_on_drive <- function(ft_name){
 #' @param targetArea path to vector data to be uploaded
 #' @return Fusion table ID
 #' @noRd
-upload_data <- function(targetArea, verbose = T) {
-
+upload_data <- function(targetArea, verbose = T, testCase = NULL) {
   target_name <- earthEngineGrabR:::get_name_from_path(targetArea)
   # test if file is already uploaded
   test <- find_ft_on_drive(target_name)
@@ -82,13 +81,29 @@ upload_data <- function(targetArea, verbose = T) {
     }
     upload_as_ft(targetArea, target_name)
   } else {
-    if (verbose == T) {
-      cat("\nupload:", target_name, "is already uploaded", "\n")
+    cat("\nupload:", target_name, "is already uploaded", "\n")
+    reupload <- NULL
+    while (is.null(reupload)) {
+      if (is.null(testCase)) {
+      reupload <-
+        readline(prompt = "Should the file be deleted and uploaded again? [Y/N]: ")
+      } else {
+        reupload <- testCase
+      }
+      reupload_clean <- tolower(reupload)
+      if (!(reupload_clean %in% c("n", "y"))) {
+        reupload <- NULL
+      }
+    }
+    if (reupload_clean == "y") {
+      earthEngineGrabR:::delete_on_drive(target_name)
+      upload_as_ft(targetArea, target_name)
     }
   }
+  
   credential_path <- get_credential_root()
   table_id <- get_ft_id_gd(target_name)
-
+  
   return(table_id)
 }
 

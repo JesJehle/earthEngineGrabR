@@ -12,7 +12,7 @@ ee_data_image(datasetID = "CGIAR/SRTM90_V4", spatialReducer = "mean",
 
 \item{spatialReducer}{\code{string} that specifies the spatial aggregation of the data within the polygons of the targetArea. The spatial reducer can be one of \code{"mean", "median", "min", "max", "mode"}}
 
-\item{resolution}{\code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The scale controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple resolutions, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest resolution less than or equal to the resolution specified by your resolution argument and resamples (using nearest neighbour by default) as necessary. If resolution is left to NULL, the native resolution of the data is used.}
+\item{resolution}{\code{integer} that controls the \href{https://developers.google.com/earth-engine/scale}{scale of analysis} in Earth Engine. The resolution controls the resolution of the data in which the computations are performed. In Earth Engine data is ingested at multiple resolutions, in an image pyramid. When you use an image, Earth Engine chooses a level of the pyramid with the closest resolution less than or equal to the resolution specified by your resolution argument and resamples (using nearest neighbour by default) as necessary. If resolution is left to NULL, the native resolution of the data is used.}
 
 \item{bandSelection}{\code{string} or a \code{vector} of \code{strings} of bands names to select from the requested dataset. By default bandSelection is set to \code{NULL} and all bands of the dataset are used.}
 }

@@ -142,7 +142,7 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   skip_test_if_not_possible()
   earthEngineGrabR:::activate_environments()
   try(googledrive::drive_mv("test-data", verbose = F), silent = T)
-  test_id <- earthEngineGrabR:::upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F)
+  test_id <- earthEngineGrabR:::upload_data(targetArea = system.file("data/test-data.shp", package = "earthEngineGrabR"), verbose = F, testCase = 'y')
 
   # test if file is uploaded
   test_upload <- googledrive::drive_find("test-data", verbose = F)
@@ -154,6 +154,32 @@ test_that("test that upload_data uploads test data to google drive as fusion tab
   on.exit({
     try(googledrive::drive_rm("test-data", verbose = F), silent = T)
   })
+})
+
+
+test_that("test that upload_data reuploads data if needed", {
+  earthEngineGrabR:::activate_environments()
+  earthEngineGrabR:::skip_test_if_not_possible()
+  try(googledrive::drive_rm("map", verbose = F), silent = T)
+  
+  # Issue - upload files on travis with os-osx fails, unresolved.
+  earthEngineGrabR:::upload_data(system.file("data/map.geojson", package = "earthEngineGrabR"))
+  test_upload <- googledrive::drive_find("map$", verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  
+  earthEngineGrabR:::upload_data(system.file("data/map.geojson", package = "earthEngineGrabR"), testCase = "y")
+  test_upload <- googledrive::drive_find("map$", verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  
+  earthEngineGrabR:::upload_data(system.file("data/map.geojson", package = "earthEngineGrabR"), testCase = "n")
+  test_upload <- googledrive::drive_find("map$", verbose = F)
+  test <- try(nrow(test_upload) == 1, silent = T)
+  expect_true(test)
+  
+  try(googledrive::drive_rm("map", verbose = F), silent = T)
+
 })
 
 

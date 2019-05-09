@@ -6,7 +6,7 @@ context("test full ee_grab() function evaluation")
 
 
 verbose <- F
-
+testCase <- "n"
 targetArea <-
   system.file("data/test-data.shp", package = "earthEngineGrabR")
 
@@ -51,7 +51,8 @@ test_that("test that ee_grab() raises an error if no valid targetArea is specifi
             
             expect_error(ee_grab(targetArea = target_area_empty,
                                   data = product_image,
-                                  verbose = verbose))
+                                  verbose = verbose,
+                                  testCase = testCase))
           })
 
 
@@ -70,7 +71,8 @@ test_that("test that ee_grab() works with images by returning the final sf objec
             
             image_test <- ee_grab(targetArea = targetArea,
                                   data = product_image,
-                                  verbose = verbose)
+                                  verbose = verbose,
+                                  testCase = testCase)
             expect_is(image_test, "sf")
           })
 
@@ -83,7 +85,7 @@ test_that("test that ee_grab() works with image collections by returning the fin
             product_image_collection <-
               ee_data_collection(
                 datasetID = "UCSB-CHG/CHIRPS/DAILY",
-                spatialReducer = "mean",
+                spatialReducer = "min",
                 temporalReducer = "mean",
                 timeStart = "2017-01-01",
                 timeEnd = "2017-02-01",
@@ -93,7 +95,8 @@ test_that("test that ee_grab() works with image collections by returning the fin
             
             image_collection_test <- ee_grab(targetArea = targetArea,
                                              data = product_image_collection,
-                                             verbose = verbose)
+                                             verbose = verbose,
+                                             testCase = testCase)
             expect_is(image_collection_test, "sf")
           })
 
@@ -122,7 +125,8 @@ test_that("test that ee_grab() works without setting the resolution arugment",
             
             image_collection_test <- ee_grab(targetArea = targetArea,
                                              data = multiple_products,
-                                             verbose = verbose)
+                                             verbose = verbose,
+                                             testCase = testCase)
             expect_is(image_collection_test, "sf")
           })
 
@@ -149,7 +153,8 @@ test_that("Test that band selection and naming behaves like expected", {
     )
   
   image_test <- ee_grab(data = product_image,
-                        targetArea = targetArea)
+                        targetArea = targetArea,
+                        testCase = testCase)
   
   expect_true(sum(names(image_test) %in% "landcover_s.mean") == 1)
   expect_true(sum(names(image_test) %in% "qa_s.mean") == 0)
@@ -164,7 +169,8 @@ test_that("Test that band selection and naming behaves like expected", {
     )
   
   image_test <- ee_grab(data = product_image,
-                        targetArea = targetArea)
+                        targetArea = targetArea,
+                        testCase = testCase)
   
   expect_true(sum(names(image_test) %in% "landcover_s.mean") == 1)
   expect_true(sum(names(image_test) %in% "qa_s.mean") == 1)
@@ -181,7 +187,8 @@ test_that("Test that band selection and naming behaves like expected", {
     )
   
   image_test <- ee_grab(data = product_collection,
-                        targetArea = targetArea)
+                        targetArea = targetArea,
+                        testCase = testCase)
   expect_length(names(image_test), 17)
   
   # select bands
@@ -197,7 +204,8 @@ test_that("Test that band selection and naming behaves like expected", {
     )
   
   image_test <- ee_grab(data = product_collection,
-                        targetArea = targetArea)
+                        targetArea = targetArea,
+                        testCase = testCase)
   
   expect_length(charmatch(c("pdsi", "vap", "soil"), names(image_test)), 3)
   expect_length(grep(c("t.mean"), names(image_test)[2]), 1)
@@ -217,7 +225,8 @@ test_that("Test that band selection and naming behaves like expected", {
   
   expect_warning(expect_error(ee_grab(
     data = product_collection,
-    targetArea = targetArea
+    targetArea = targetArea,
+    testCase = testCase
   )))
   
   # one band selected
@@ -233,7 +242,8 @@ test_that("Test that band selection and naming behaves like expected", {
     )
   
   test_collection <- ee_grab(data = product_collection,
-                             targetArea = targetArea)
+                             targetArea = targetArea,
+                             testCase = testCase)
   
   expect_length(charmatch(c("soil"), names(test_collection)), 1)
   

@@ -47,6 +47,7 @@
 #' @param data \code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.
 #' @param targetArea \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.
 #' @param verbose \code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.
+#' @param testCase \code{character}, simulates user input. For development only. Default is set to \code{NULL}.
 #' @return Object of class \code{sf}. \code{ee_grab()} returns the targetArea file with the bands of the requested data added as columns.
 #'@examples
 #' \dontrun{
@@ -55,7 +56,7 @@
 #'
 #'srtm_data <- ee_grab(data = ee_data_image(datasetID = "CGIAR/SRTM90_V4", 
 #'                                          spatialReducer = "mean", 
-#'                                          scale = 100, 
+#'                                          resolution = 100, 
 #'                                          bandSelection = "elevation"
 #'                                          ),
 #'                    targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
@@ -69,7 +70,7 @@
 #'                                                 temporalReducer = "sum", 
 #'                                                 timeStart = "2016-01-01",
 #'                                                 timeEnd = "2016-12-31", 
-#'                                                 scale = 200
+#'                                                 resolution = 200
 #'                                                 ),
 #'                       targetArea = system.file("data/territories.shp", package = "earthEngineGrabR")
 #'                      )                                                    
@@ -80,7 +81,8 @@
 #' @export
 ee_grab <- function(data = NULL,
                     targetArea = NULL,
-                    verbose = T) {
+                    verbose = T,
+                    testCase = NULL) {
   # test required dependencies and activates environment for reticulate
   
   if (is.null(targetArea) | targetArea == "") stop("No targetArea specified. \nPlease specify a targetArea with a path to a local geo-file of class character.", call. = F)
@@ -95,7 +97,7 @@ ee_grab <- function(data = NULL,
   # check for equal resolutions of Bands and get native resolution if resolution argument is NULL
   data <- set_resolution(data)
   # upload vector data as fusion table --------------------
-  targetArea_id <- upload_data(targetArea = targetArea, verbose = verbose)
+  targetArea_id <- upload_data(targetArea = targetArea, verbose = verbose, testCase = testCase)
 
   # request data data form google earth engine servers
   ee_response <- request_data(data, targetArea_id)
