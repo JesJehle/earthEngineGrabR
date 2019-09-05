@@ -131,7 +131,13 @@ Use Earth Engine's [Data Catalog](https://developers.google.com/earth-engine/dat
 `ee_grab()` requests and imports data from Earth Engine to R. `ee_grab()` takes two arguments, `data` and `targetArea`. `data` takes a single or a list of `ee_data_image()` and `ee_data_collection()` functions, which define the requested data to `ee_grab()`. If the requested data is an image use `ee_data_image()`, if it's a collection use `ee_data_collection()`. `targetArea` takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.
 
 
+## Changelog
 
+2019-09-05
+
+* Updated Google Drive integration due to changes in the googledrive R package. 
+* Fixed -  Error in googledrive::drive_auth(reset = T, cache = F, verbose = F) : 
+  unused arguments (reset = T, verbose = F)
 
 
 

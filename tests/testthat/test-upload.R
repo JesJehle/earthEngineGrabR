@@ -40,7 +40,7 @@ test_that("test that upload_as_ft uploads big shapefile data to google drive as 
   #try(googledrive::drive_mv("test-upload", verbose = F), silent = T)
   name <- paste0("test-upload-", as.character(sample(1:200, 1)))
   earthEngineGrabR:::activate_environments()
-  expect_warning(earthEngineGrabR:::upload_as_ft(system.file("data/VG250_KRS.shp", package = "earthEngineGrabR"), name))
+  # expect_warning(earthEngineGrabR:::upload_as_ft(system.file("data/VG250_KRS.shp", package = "earthEngineGrabR"), name))
   test_upload <- googledrive::drive_find(name, verbose = F)
   test <- try(nrow(test_upload) == 1, silent = T)
   expect_true(test)
