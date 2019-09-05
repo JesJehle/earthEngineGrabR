@@ -3,18 +3,16 @@
 #' @noRd
 run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
   
-  credential_path <- get_credential_root()
-  gd_credential_path <- file.path(credential_path, credential_name)
-  if (file.exists(gd_credential_path)) file.remove(gd_credential_path)
+#  credential_path <- get_credential_root()
+#  gd_credential_path <- file.path(credential_path, credential_name)
+#  if (file.exists(gd_credential_path)) file.remove(gd_credential_path)
 
-  saveRDS(
-    googledrive::drive_auth(reset = T, cache = F, verbose = F), 
-    gd_credential_path
-    )
+googledrive::drive_auth(cache = T) 
+ 
 
-  while (!(file.exists(gd_credential_path))) {
-    Sys.sleep(1)
-  }
+#  while (!(file.exists(gd_credential_path))) {
+#    Sys.sleep(1)
+#  }
   cat("Googledrive API is authenticated. The token was automatically saved.")
 }
 
@@ -93,8 +91,8 @@ run_oauth_all <- function() {
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @noRd
 gd_auth <- function(credential_name = "gd-credentials.rds") {
-  credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
-  googledrive::drive_auth(credential_path)
+  # credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
+  googledrive::drive_auth(cache = T, email = T)
 }
 
 
@@ -140,11 +138,11 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
 #' @noRd
-test_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json"), with_error = F) {
+test_credentials <- function(credentials = c("credentials", "ft_credentials.json"), with_error = F) {
   credentials_match <-
     try(match.arg(
       credentials,
-      c("gd-credentials.rds", "credentials", "ft_credentials.json"),
+      c("credentials", "ft_credentials.json"),
       several.ok = T
     ), silent = T)
 
