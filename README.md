@@ -3,7 +3,9 @@
 
 <!-- badges: start -->
 
-[![Build Status](https://travis-ci.org/JesJehle/earthEngineGrabR.svg?branch=master)](https://travis-ci.org/JesJehle/earthEngineGrabR) [![Coverage status](https://codecov.io/gh/JesJehle/earthEngineGrabR/branch/master/graph/badge.svg)](https://codecov.io/github/JesJehle/earthEngineGrabR?branch=master) 
+<!--[![Build Status](https://travis-ci.org/JesJehle/earthEngineGrabR.svg?branch=master)](https://travis-ci.org/JesJehle/earthEngineGrabR) --> 
+
+[![Coverage status](https://codecov.io/gh/JesJehle/earthEngineGrabR/branch/master/graph/badge.svg)](https://codecov.io/github/JesJehle/earthEngineGrabR?branch=master) 
 <!-- badges: end -->
 
 The Google Earth Engine ([GEE](https://earthengine.google.com/)) is a cloud computing platform, which offers a multi-petabyte catalog of satellite images and manipulated geospatial data products. It also provides extensive computational resources &mdash;	 available for scientists and developers.
