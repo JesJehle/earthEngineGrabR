@@ -35,10 +35,6 @@
 #' 
 ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   
-  # test installation of sf
-  sf_test <- require(sf, quietly = T)
-  if (!sf_test) stop("Library sf could not be loaded \nPlease install sf to use earthEngineGrabR", call. = F)
-
   library(reticulate)
   # install dependencies -----------------------------------------------------------------------------------------
   
@@ -54,33 +50,43 @@ ee_grab_install <- function(clean_credentials = T, clean_environment = F) {
   # install dependencies via an anaconda environment if test is not treu
   if (!sum(env_test) > 0) {
     tryCatch({
-      if (Sys.info()[["sysname"]] != "Linux") {
-        conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
-        
-        conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
-        
-      } else {
-        
-        conda_create(conda_env_name,
-                     packages = c("Python = 2.7", "gdal=2.1.0", "geos=3.5.0"))
-        conda_install(conda_env_name,
-                      packages = c("earthengine-api", "shapely", 'oauth2client'))
-      }},
+      conda_create(conda_env_name,
+                   packages = c("earthengine-api"))
+      },
       error = function(err)
         stop(paste("Installation problem\n", err), call. = F)
-      
+
     )
   }
-  use_condaenv(conda_env_name)
+  
+  # install dependencies via an anaconda environment if test is not treu
+  # if (!sum(env_test) > 0) {
+  #   tryCatch({
+  #     if (Sys.info()[["sysname"]] != "Linux") {
+  #       conda_create(conda_env_name, packages = c("Python = 2.7", "gdal"))
+  #       
+  #       conda_install(conda_env_name, packages = c("earthengine-api", "shapely"))
+  #       
+  #     } else {
+  #       
+  #       conda_create(conda_env_name,
+  #                    packages = c("Python = 2.7", "gdal=2.1.0", "geos=3.5.0"))
+  #       conda_install(conda_env_name,
+  #                     packages = c("earthengine-api", "shapely", 'oauth2client'))
+  #     }},
+  #     error = function(err)
+  #       stop(paste("Installation problem\n", err), call. = F)
+  #     
+  #   )
+  # }
+  use_condaenv(conda_env_name, required = TRUE)
 
   # test import of all modules.
   tryCatch({
   test_ee <- py_module_available("ee")
-  test_gdal <- py_module_available("gdal")
 
   if (!test_ee) stop("Module ee could not be imported", call. = F)
-  if (!test_gdal) stop("Module gdal could not be imported", call. = F)
-  
+
   }, error = function(err) {
     test_python()
     test_anaconda()

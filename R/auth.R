@@ -9,7 +9,6 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
 
 googledrive::drive_auth(cache = T) 
  
-
 #  while (!(file.exists(gd_credential_path))) {
 #    Sys.sleep(1)
 #  }
@@ -43,32 +42,6 @@ run_ee_oauth <- function() {
   cat("Earth Engine Python API is authenticated \n")
 }
 
-#' Run ft authentication
-#' @noRd
-run_ft_oauth <- function() {
-
-  # source python functions
-  oauth_func_path <- system.file("Python/ee_authorisation_function.py", package = "earthEngineGrabR")
-  load_test <- try(source_python(file = oauth_func_path), silent = T)
-  count <- 1
-  while (class(load_test) == "try-error" & count < 5) {
-    load_test <- try(source_python(file = oauth_func_path), silent = T)
-    count <- count + 1
-  }
-
-  request_ft_code()
-  code <- readline("Enter authorisation code for Fusion Table API here: ")
-  test <- try(request_ft_token(code), silent = T)
-
-  while (class(test) == "try-error") {
-    cat("Problem with Authentication key input. \nPlease follow the authentication steps in the browser and copy paste the authentication token into the R console again.")
-    request_ft_code()
-    code <- readline("enter authorisation code here: ")
-    test <- try(request_ft_token(code), silent = T)
-  }
-  cat("Fusion Table API is authenticated \n")
-}
-
 #' runs earh engine, fusion table and google drive authentication
 #' @param clean_credentials logical weather to delete existing credentials, default = T
 #' @noRd
@@ -78,15 +51,11 @@ run_oauth_all <- function() {
   cat("To authenticate the APIs, please follow the authentication steps in the browser. 
       \nFirst, log in to your google account and allow the API to access data on googles servers.  If the Google account is verified, you will be directed to an authentification token.
       \nSecond, copy paste the authentication token into the R console.
-      \nThis process will be repeated for each of the 3 API's.")
+      \nThis process will be repeated for each of the 2 API's.")
     run_ee_oauth()
-    # fusion table authorisation
-    run_ft_oauth()
     # authentication google drive api
     run_gd_oauth()
 }
-
-
 
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @noRd
@@ -95,22 +64,18 @@ gd_auth <- function(credential_name = "gd-credentials.rds") {
   googledrive::drive_auth(cache = T, email = T)
 }
 
-
-
 #' activate environment
 #' @noRd
 activate_environments <- function(env_name = "earthEngineGrabR") {
   
   credentials_path <- earthEngineGrabR:::get_credential_root()
   
-  sf_test <- require(sf, quietly = T)
   gd_test <- require(googledrive, quietly = T)
   reticulate_test <- require(reticulate, quietly = T)
   
   
-  if (!sf_test | !gd_test | !reticulate_test) stop(
-    paste(" sf_test: ", sf_test,
-    " gd_test: ", gd_test,
+  if (!gd_test | !reticulate_test) stop(
+    paste(" gd_test: ", gd_test,
     " reticulate_test: ", reticulate_test, "\n",
     paste(.libPaths(), collapse = "\n"), "\n",
     "credentials_path: ", credentials_path),
@@ -134,20 +99,19 @@ activate_environments <- function(env_name = "earthEngineGrabR") {
 
 
 
-
 #' Test if credentials can be found in the default location and raises an error message of not.
 #' @param with_error A logical weather to raise an informative error in case of missing credentials.
 #' @noRd
-test_credentials <- function(credentials = c("credentials", "ft_credentials.json"), with_error = F) {
+test_credentials <- function(credentials = c("credentials"), with_error = F) {
   credentials_match <-
     try(match.arg(
       credentials,
-      c("credentials", "ft_credentials.json"),
+      c("credentials"),
       several.ok = T
     ), silent = T)
 
   credential_path <- get_credential_root()
-
+  
   test <- credentials_match %in% list.files(credential_path)
   for (t in test) {
     if (!t & with_error) {
@@ -161,12 +125,12 @@ test_credentials <- function(credentials = c("credentials", "ft_credentials.json
 
 #' deletes credentials to re initialize
 #' @noRd
-delete_credentials <- function(credentials = c("gd-credentials.rds", "credentials", "ft_credentials.json")) {
+delete_credentials <- function(credentials = c("gd-credentials.rds", "credentials")) {
   credential_path <- get_credential_root()
   credentials_match <-
     match.arg(
       credentials,
-      c("gd-credentials.rds", "credentials", "ft_credentials.json"),
+      c("gd-credentials.rds", "credentials"),
       several.ok = T
     )
 

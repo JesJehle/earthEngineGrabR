@@ -15,10 +15,7 @@ test_that("Test that required python modules can be loaded", {
   activate_environments()
   
   test_ee <- py_module_available("ee")
-  test_gdal <- py_module_available("gdal")
-  
-  
-  module_test <- test_ee & test_gdal 
-  expect_true(module_test)
+
+  expect_true(test_ee)
 })
 
