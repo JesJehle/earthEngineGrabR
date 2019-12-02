@@ -32,9 +32,10 @@ googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
   #earthEngineGrabR:::activate_environments()
   
   # if test-download data not on google drive upload it.
-  test <- googledrive::drive_find("test-data", verbose = F)
-  environment_test <- try(nrow(test) == 1, silent = T)
-  expect_true(environment_test)
+  try(earthEngineGrabR:::gd_auth(), silent = T)
+  test <- googledrive::drive_find("CGIAR-SRTM90_V4_s-mean.geojson", verbose = F)
+  environment_test <- try(nrow(test) > 0, silent = T)
+  if (!environment_test) stop(paste("Testing is not possible. \n", "files on google drive: ", environment_test))
 #})
 
 
@@ -53,7 +54,5 @@ googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F)
 # if tmp dir exists delete it
 #})
 
-temp_path <- get_temp_path(F)
-if (dir.exists(temp_path)) unlink(temp_path, recursive = T)
 
 #}

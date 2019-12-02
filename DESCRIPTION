@@ -1,13 +1,13 @@
 Package: earthEngineGrabR
 Title: Simplify the acquisition of remote sensing data
-Version: 0.1.0.2
+Version: 0.2.0.0
 Authors@R: c(
     person("Janusch", "Jehle", email = "JesJehle@gmx.de", role = c("aut", "cre")),
     person("Severin", "Hauenstein", email = "severin.hauenstein@biom.uni-freiburg.de", role = c("aut"))
     )
 Description: The earthEngineGrabR is an interface between R and the GEE, to extracts data from the Earth Engine Data Catalog in a user-defined target area and a user-defined aggregation process. 
 License: GPL-3
-SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0), Anaconda3 (>=5.2.0) 
+SystemRequirements: Anaconda3 (>=5.2.0) 
 BugReports: https://github.com/JesJehle/earthEngineGrabR/issues
 URL: https://jesjehle.github.io/earthEngineGrabR
 Encoding: UTF-8
@@ -17,12 +17,9 @@ Depends:
     R (>= 3.0)
 imports: 
     googledrive, 
-    reticulate, 
-    sf,
-    tools
+    reticulate
 Suggests: 
+    devtools,
     testthat,
-    roxygen2,
-    class,
-    Matrix,
-    covr
+    roxygen2
+

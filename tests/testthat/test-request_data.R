@@ -2,6 +2,7 @@ library(earthEngineGrabR)
 
 context("Test EE request functionality")
 #if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
+targetArea <- "users/JesJehle/eeg_min_test"
 
 activate_environments()
 #}
@@ -18,7 +19,7 @@ test_that(
       bandSelection = NULL
     )
     
-    df$ftID <- earthEngineGrabR:::get_ft_id_gd("test-data")
+    df$ftID <- targetArea
     earthEngineGrabR:::delete_on_drive(df$productNameFull)
     
     status <- earthEngineGrabR:::get_data(df)
@@ -26,58 +27,21 @@ test_that(
       status,
       c(
         "creation_timestamp_ms",
+        "start_timestamp_ms",
+        "name",
         "state",
         "task_type",
         "description",
         "id",
         "update_timestamp_ms"
-      )
+      ),
+      ignore.order = TRUE
     )
     test <-
       earthEngineGrabR:::wait_for_file_on_drive(df$productNameFull, verbose = F)
     expect_true(test)
   }
 )
-
-
-test_that(
-  "test that reguest_data processes multiple data on earth engine and exports it to drive while returning status of process",
-  {
-    skip_test_if_not_possible()
-    
-    df <- list(
-      ee_data_image(
-        datasetID = "CGIAR/SRTM90_V4",
-        spatialReducer = "mode",
-        resolution = 3000,
-        bandSelection = NULL
-      ),
-      ee_data_collection(
-        datasetID = "UCSB-CHG/CHIRPS/DAILY",
-        spatialReducer = "max",
-        temporalReducer = "mean",
-        timeStart = "2017-01-01",
-        timeEnd = "2017-01-20",
-        resolution = 5000
-      )
-    )
-    
-    ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
-    
-    delete_on_drive(df[[1]]$productNameFull)
-    delete_on_drive(df[[2]]$productNameFull)
-    status <- earthEngineGrabR:::request_data(df, ft_id)
-    
-    test_1 <-
-      wait_for_file_on_drive(df[[1]]$productNameFull, verbose = F)
-    test_2 <-
-      wait_for_file_on_drive(df[[2]]$productNameFull, verbose = F)
-    
-    expect_true(test_1 & test_2)
-    expect_length(status, 2)
-  }
-)
-
 
 
 test_that("test that bug: OverflowError: Python int too large to convert to C long, is fixed",
@@ -91,7 +55,7 @@ test_that("test that bug: OverflowError: Python int too large to convert to C lo
               bandSelection = NULL
             )
             
-            target_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+            target_id <- targetArea
             
             status <- earthEngineGrabR:::request_data(df, target_id)
             expect_is(status, "character")
@@ -110,13 +74,14 @@ test_that("test that bug: OverflowError: Python int too large to convert to C lo
 
 
 
-test_that("test that get_data raises a meaninfull message whitout crashing",
+test_that("test that get_data raises a meaninfull message without crashing",
           {
             skip_test_if_not_possible()
             
+            
             # wrong product ID
             df <- ee_data_image(datasetID = "CGIAR/wrong")
-            df$ftID <- get_ft_id_gd("test-data")
+            df$ftID <- targetArea
             
             status <- get_data(df)
             expect_match(status, "Error")
@@ -132,7 +97,7 @@ test_that("test that get_data raises a meaninfull message whitout crashing",
               resolution = 4000
             )
             
-            df$ftID <- get_ft_id_gd("test-data")
+            df$ftID <- targetArea
             
             status <- get_data(df)
             expect_match(status, "Error")
@@ -140,67 +105,6 @@ test_that("test that get_data raises a meaninfull message whitout crashing",
           })
 
 
-test_that(
-  "test that request_data return anly the valid exports and gives warings no errors with wrong input",
-  {
-    skip_test_if_not_possible()
-    df <- list(
-      ee_data_image(
-        datasetID = "CGIAR/SRTM90_V4",
-        spatialReducer = "min",
-        resolution = 3000,
-        bandSelection = NULL
-      ),
-      
-      ee_data_collection(
-        datasetID = "UCSB-CHG/CHIRPS/DAILY",
-        timeStart = "1950-01-01",
-        timeEnd = "1955-01-01",
-        spatialReducer = "mean",
-        temporalReducer = "mean",
-        resolution = 4000
-      ),
-      ee_data_image(
-        datasetID = "CGIAR/SRTM90_V4",
-        spatialReducer = "mode",
-        resolution = 3000,
-        bandSelection = NULL
-      )
-    )
-    
-    ft_id <- get_ft_id_gd("test-data")
-    
-    status <- expect_warning(request_data(df, ft_id))
-    
-    expect_true(sum(is.na(status)) == 0)
-    expect_length(status, 2)
-  }
-)
-
-
-test_that("test that check_processing raises warning if task failed", {
-  skip_test_if_not_possible()
-  
-  df <- list(
-    ee_data_image(
-      datasetID = "CGIAR/SRTM90_V4",
-      spatialReducer = "max",
-      resolution = 0,
-      bandSelection = NULL
-    ),
-    ee_data_image(
-      datasetID = "CGIAR/SRTM90_V4",
-      spatialReducer = "mode",
-      resolution = 3000,
-      bandSelection = NULL
-    )
-  )
-  
-  ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
-  
-  ee_respones <- expect_warning(request_data(df, ft_id))
-  
-})
 
 test_that("test that check_processing raises error if task failed and no valid requests left",
           {
@@ -213,7 +117,7 @@ test_that("test that check_processing raises error if task failed and no valid r
               bandSelection = NULL
             )
             
-            ft_id <- earthEngineGrabR:::get_ft_id_gd("test-data")
+            ft_id <- targetArea
             
             ee_respones <-
               expect_error(expect_warning(earthEngineGrabR:::request_data(df, ft_id)))
@@ -226,7 +130,6 @@ test_that("test that check_scale raises an error with Bands of different resolut
             earthEngineGrabR:::skip_test_if_not_possible()
             different_res <- 'COPERNICUS/S2'
             expect_error(earthEngineGrabR:::check_scale(different_res))
-            
           })
 
 test_that("test that check_scale returns resolutions with bands of same resolution",
@@ -242,7 +145,6 @@ test_that("test that check_scale raises an error with non valid id", {
   fail <- 'wrong_name'
   expect_error(earthEngineGrabR:::check_scale(fail))
 })
-
 
 
 #if (!identical(Sys.getenv("NOT_CRAN"), "false")) {
