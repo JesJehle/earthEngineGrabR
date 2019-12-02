@@ -6,8 +6,11 @@ run_gd_oauth <- function(credential_name = "gd-credentials.rds") {
 #  credential_path <- get_credential_root()
 #  gd_credential_path <- file.path(credential_path, credential_name)
 #  if (file.exists(gd_credential_path)) file.remove(gd_credential_path)
-
-googledrive::drive_auth(cache = T) 
+  credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
+  # try(googledrive::drive_auth(cache = T, email = T), silent = T) 
+  googledrive::drive_auth(token = readRDS(credential_path), cache = T, email = T)
+  
+# try(googledrive::drive_auth(cache = T, email = T), silent = T) 
  
 #  while (!(file.exists(gd_credential_path))) {
 #    Sys.sleep(1)
@@ -59,8 +62,10 @@ run_oauth_all <- function() {
 #' retreves credentials and runs google drive authorisation via googledrive::drive_auth()
 #' @noRd
 gd_auth <- function(credential_name = "gd-credentials.rds") {
-  # credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
-  googledrive::drive_auth(cache = T, email = T)
+  credential_path <- file.path(earthEngineGrabR:::get_credential_root(), credential_name)
+  # try(googledrive::drive_auth(cache = T, email = T), silent = T) 
+  googledrive::drive_auth(token = readRDS(credential_path), cache = T, email = T)
+  
 }
 
 #' activate environment

@@ -89,7 +89,7 @@ ee_grab <- function(data = NULL,
   if (is.null(targetAreaAssetPath) | targetAreaAssetPath == "") stop("No targetArea specified. \nPlease specify a targetArea with a path to a asset on GEE of class character.", call. = F)
   is_type(targetAreaAssetPath, "character")
   
-  if (is.null(data)) stop("No data specified. \nPlease specify your requested data with a single or a list of ee_data_image() and ee_data_collection() functions.", call. = F)
+  if (is.null(data) | !is.list(data[1])) stop("No data specified. \nPlease specify your requested data with a single ee_data_image() or ee_data_collection() functions.", call. = F)
 
   earthEngineGrabR:::activate_environments("earthEngineGrabR")
   try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
