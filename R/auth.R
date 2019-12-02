@@ -26,7 +26,6 @@ run_ee_oauth <- function() {
     load_test <- try(source_python(file = oauth_func_path), silent = T)
     count <- count + 1
   }
-
   request_ee_code()
 
   code <- readline("Enter authorisation code for Earth Engine API here: ")

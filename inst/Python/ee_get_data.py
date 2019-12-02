@@ -16,8 +16,7 @@ def select_reducer_with_outputName(reducer, product_name):
     elif reducer == 'max':
         reducer = ee.Reducer.max().setOutputs(product_name)
     else:
-        print 'Parameter should be mean, median, mode or sum'
-        sys.exit()
+        print('Parameter should be mean, median, mode or sum')
     return reducer
 
 
@@ -35,8 +34,7 @@ def select_reducer(reducer):
     elif reducer == 'max':
         reducer = ee.Reducer.max()
     else:
-        print 'Parameter should be mean, median, mode or sum'
-        sys.exit()
+        print('Parameter should be mean, median, mode or sum')
     return reducer
 
 
@@ -175,7 +173,7 @@ def get_data_image(
         productID,
         productName,
         spatialReducer,
-        ft_id,
+        asset_path,
         outputFormat,
         resolution,
         bandSelection=None,
@@ -183,7 +181,7 @@ def get_data_image(
 
     ee.Initialize()
 
-    polygon = ee.FeatureCollection(ft_id)
+    polygon = ee.FeatureCollection(asset_path)
 
     if bandSelection == None:
         product_image = ee.Image(productID)
@@ -211,7 +209,7 @@ def get_data_collection(
         productID,
         productName,
         spatialReducer,
-        ft_id,
+        asset_path,
         outputFormat,
         resolution,
         temporalReducer='mean',
@@ -221,7 +219,7 @@ def get_data_collection(
         test=False):
 
     ee.Initialize()
-    polygon = ee.FeatureCollection(ft_id)
+    polygon = ee.FeatureCollection(asset_path)
 
     if bandSelection is None:
         product_collection = ee.ImageCollection(productID)

@@ -7,15 +7,69 @@ context("test full ee_grab() function evaluation")
 
 verbose <- F
 testCase <- "n"
-targetArea <-
-  system.file("data/test-data.shp", package = "earthEngineGrabR")
+targetArea <- "users/JesJehle/eeg_min_test"
+
+# test
+targetAreaAssetPath = targetArea
+data = product_image
+verbose = verbose
+testCase = testCase
+
+
+test_that("test that ee_grab() works with images by returning the final sf object",
+          {
+            skip_test_if_not_possible()
+            #earthEngineGrabR:::activate_environments()
+            
+            product_image <- ee_data_image(
+              datasetID = "CGIAR/SRTM90_V4",
+              spatialReducer = "max",
+              resolution = 3000
+            )
+            
+            image_test <- ee_grab(targetAreaAssetPath = targetArea,
+                                  data = product_image,
+                                  verbose = verbose,
+                                  testCase = testCase)
+            expect_is(image_test, "sf")
+          })
+
+
+test_that("test that ee_grab() works with image collections by returning the final sf object",
+          {
+            skip_test_if_not_possible()
+            activate_environments()
+            
+            product_image_collection <-
+              ee_data_collection(
+                datasetID = "UCSB-CHG/CHIRPS/DAILY",
+                spatialReducer = "min",
+                temporalReducer = "mean",
+                timeStart = "2017-01-01",
+                timeEnd = "2017-02-01",
+                resolution = 3000,
+                bandSelection = NULL
+              )
+            
+            image_collection_test <- ee_grab(targetArea = targetArea,
+                                             data = product_image_collection,
+                                             verbose = verbose,
+                                             testCase = testCase)
+            expect_is(image_collection_test, "sf")
+          })
+
+
+
+
+
+
 
 test_that("Test that get_data_info retrieves info of given Product ID", {
   skip_test_if_not_possible()
   
   # test images
   productID_image <- "CGIAR/SRTM90_V4"
-  info_image <- get_data_info(productID_image)
+  info_image <- path:::get_data_info(productID_image)
   expect_named(info_image, c("tile", "bands", "data_type", "epsg"))
   
   # test image collections
@@ -57,48 +111,6 @@ test_that("test that ee_grab() raises an error if no valid targetArea is specifi
 
 
 
-
-test_that("test that ee_grab() works with images by returning the final sf object",
-          {
-            skip_test_if_not_possible()
-            #earthEngineGrabR:::activate_environments()
-            
-            product_image <- ee_data_image(
-              datasetID = "CGIAR/SRTM90_V4",
-              spatialReducer = "max",
-              resolution = 3000
-            )
-            
-            image_test <- ee_grab(targetArea = targetArea,
-                                  data = product_image,
-                                  verbose = verbose,
-                                  testCase = testCase)
-            expect_is(image_test, "sf")
-          })
-
-
-test_that("test that ee_grab() works with image collections by returning the final sf object",
-          {
-            skip_test_if_not_possible()
-            activate_environments()
-            
-            product_image_collection <-
-              ee_data_collection(
-                datasetID = "UCSB-CHG/CHIRPS/DAILY",
-                spatialReducer = "min",
-                temporalReducer = "mean",
-                timeStart = "2017-01-01",
-                timeEnd = "2017-02-01",
-                resolution = 3000,
-                bandSelection = NULL
-              )
-            
-            image_collection_test <- ee_grab(targetArea = targetArea,
-                                             data = product_image_collection,
-                                             verbose = verbose,
-                                             testCase = testCase)
-            expect_is(image_collection_test, "sf")
-          })
 
 test_that("test that ee_grab() works without setting the resolution arugment",
           {

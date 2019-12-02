@@ -80,36 +80,34 @@
 #' 
 #' @export
 ee_grab <- function(data = NULL,
-                    targetArea = NULL,
+                    targetAreaAssetPath = NULL,
                     verbose = T,
-                    testCase = NULL) {
+                    testCase = NULL,
+                    download_path =  getwd()) {
   # test required dependencies and activates environment for reticulate
   
-  if (is.null(targetArea) | targetArea == "") stop("No targetArea specified. \nPlease specify a targetArea with a path to a local geo-file of class character.", call. = F)
-  is_type(targetArea, "character")
+  if (is.null(targetAreaAssetPath) | targetAreaAssetPath == "") stop("No targetArea specified. \nPlease specify a targetArea with a path to a asset on GEE of class character.", call. = F)
+  is_type(targetAreaAssetPath, "character")
   
   if (is.null(data)) stop("No data specified. \nPlease specify your requested data with a single or a list of ee_data_image() and ee_data_collection() functions.", call. = F)
-  is_type(targetArea, "character")
-  
-  activate_environments("earthEngineGrabR")
+
+  earthEngineGrabR:::activate_environments("earthEngineGrabR")
   try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
   
   # check for equal resolutions of Bands and get native resolution if resolution argument is NULL
   data <- set_resolution(data)
   # upload vector data as fusion table --------------------
-  targetArea_id <- upload_data(targetArea = targetArea, verbose = verbose, testCase = testCase)
+  targetArea_id <- targetAreaAssetPath
 
   # request data data form google earth engine servers
   ee_response <- request_data(data, targetArea_id)
 
   # create temp dir
-  temp_path <- get_temp_path()
   # download data data form google drive
-  download_data(ee_response = ee_response, verbose = verbose, temp_path = temp_path)
+  download_data(ee_response = ee_response, verbose = verbose, temp_path = download_path)
   # import data to R
-  product_data <- import_data(ee_response, verbose = verbose, temp_path = temp_path)
 
-  return(product_data)
+  return(NULL)
   
   # remove tmp files local and from drive
   #try(googledrive::drive_rm("earthEngineGrabR-tmp", verbose = F), silent = T)
