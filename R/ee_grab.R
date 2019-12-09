@@ -27,9 +27,9 @@
 #'
 #' \code{ee_grab()} requests and imports data from Earth Engine to R.
 #' \code{ee_grab()} takes two arguments, \code{data} and \code{targetArea}.
-#' \code{data} takes a single or a \code{list} of \code{ee_data_image()} and \code{ee_data_collection()} functions, which define the requested data to \code{ee_grab()}.
+#' \code{data} takes a \code{ee_data_image()} or \code{ee_data_collection()} function, which define the requested data to \code{ee_grab()}.
 #' If the requested data is an image use \code{ee_data_image()}, if it's a collection use \code{ee_data_collection()}.
-#' \code{targetAreo} takes a path to a local geo-file, which defines the spatial target in which the data sould be aggregated.
+#' \code{targetAreaAssetPath} takes a path spedifiying a \href{https://developers.google.com/earth-engine/datasets/}{table asset} on GEE which defines the spatial target in which the data sould be aggregated.
 #'
 #'
 #'
@@ -46,7 +46,7 @@
 #'   4. Import - The data is imported to R and merged.
 
 #' @param data \code{list} of \code{ee_data_image()} or \code{ee_data_collection()} functions which define the requested data. Multiple functions are passed inside a \code{list}, while a single function can be passed directly.
-#' @param targetArea \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.
+#' @param targetAreaAssetPath \code{character} path to a local geo-file that should be used as a targetArea (.shp, .geojson, .kml). If the file is already uploaded, the upload is skipped.
 #' @param verbose \code{logical}, whether to inform the user about the processing state of the data. Default is set to \code{True}.
 #' @param testCase \code{character}, simulates user input. For development only. Default is set to \code{NULL}.
 #' @return Object of class \code{sf}. \code{ee_grab()} returns the targetArea file with the bands of the requested data added as columns.
@@ -90,7 +90,7 @@ ee_grab <- function(data = NULL,
   if (is.null(targetAreaAssetPath) |
       targetAreaAssetPath == "")
     stop(
-      "No targetArea specified. \nPlease specify a targetArea with a path to a asset on GEE of class character.",
+      "No targetAreaAssetPath specified. \nPlease specify a path to a asset on GEE of class character.",
       call. = F
     )
   is_type(targetAreaAssetPath, "character")

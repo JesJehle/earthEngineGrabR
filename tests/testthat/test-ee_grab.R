@@ -17,6 +17,39 @@ targetArea <- "users/JesJehle/eeg_min_test"
 # testCase = testCase
 test_folder = "~/Documents/ee_rest/"
 
+
+test_that("test that ee_grab() works with NOAA/CFSR",
+          {
+            skip_test_if_not_possible()
+            earthEngineGrabR:::activate_environments()
+            
+            product_image_collection <-
+              ee_data_collection(
+                datasetID = "NOAA/CFSR",
+                spatialReducer = "min",
+                temporalReducer = "mean",
+                timeStart = "2017-01-01",
+                timeEnd = "2018-02-01",
+                resolution = 3000,
+                bandSelection = NULL
+              )
+            
+            test <- ee_grab(
+              targetAreaAssetPath = targetArea,
+              data = product_image_collection,
+              verbose = verbose,
+              testCase = testCase,
+              download_path = test_folder
+            )
+            expect_true(product_image$productNameFull %in% list.files(test_folder))
+          })
+
+
+
+
+
+
+
 test_that("test that ee_grab() works with images by returning the final sf object",
           {
             skip_test_if_not_possible()
