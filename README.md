@@ -149,16 +149,19 @@ This process will be repeated for each API. If the function runs successfully, a
 
 ## Changelog
 
+20-01-24
+
+* Fixed Conda installation error caused by `ee_grab_install()`
+
 2019-12-09
 
 * Major changes due to the shut down of the Fusion table service
 
-
 2019-09-05
 
 * Updated Google Drive integration due to changes in the googledrive R package. 
-* Fixed - Error in googledrive::drive_auth(reset = T, cache = F, verbose = F) : 
- unused arguments (reset = T, verbose = F)
+* Fixed - Error in `googledrive::drive_auth(reset = T, cache = F, verbose = F)` : 
+ unused arguments `(reset = T, verbose = F)`
 
 
 
