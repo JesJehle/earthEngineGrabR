@@ -19,3 +19,7 @@ test_that("Test that required python modules can be loaded", {
   expect_true(test_ee)
 })
 
+# create temp folder for tests
+temp_path <- get_temp_path(T)
+
+

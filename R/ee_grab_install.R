@@ -53,8 +53,8 @@ ee_grab_install <-
     # install dependencies via an anaconda environment if test is not treu
     if (!sum(env_test) > 0) {
       tryCatch({
-        conda_create(conda_env_name,
-                     packages = c("earthengine-api"))
+        conda_create(envname=conda_env_name)
+        conda_install(envname=conda_env_name, package="earthengine-api", forge = TRUE)
       },
       error = function(err)
         stop(paste("Installation problem\n", err), call. = F))

@@ -15,10 +15,10 @@ targetArea <- "users/JesJehle/eeg_min_test"
 # data = product_image
 # verbose = verbose
 # testCase = testCase
-test_folder = "~/Documents/ee_rest/"
+test_folder <- get_temp_path(F)
 
 
-test_that("test that ee_grab() works with NOAA/CFSR",
+test_that("test that ee_grab() works causes a waring and an error with NOAA/CFSR (for given time range there is no data)",
           {
             skip_test_if_not_possible()
             earthEngineGrabR:::activate_environments()
@@ -34,14 +34,14 @@ test_that("test that ee_grab() works with NOAA/CFSR",
                 bandSelection = NULL
               )
             
-            test <- ee_grab(
+            test <- expect_error(expect_warning(ee_grab(
               targetAreaAssetPath = targetArea,
               data = product_image_collection,
               verbose = verbose,
               testCase = testCase,
               download_path = test_folder
-            )
-            expect_true(product_image$productNameFull %in% list.files(test_folder))
+            )))
+            # expect_true(product_image$productNameFull %in% list.files(test_folder))
           })
 
 

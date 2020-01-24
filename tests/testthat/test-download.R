@@ -12,7 +12,7 @@ context("Download functionalities")
 
 test_file <- "CGIAR-SRTM90_V4_s-mean.geojson"
 # test_file <- "test_SRTM.geojson"
-temp_dir <- earthEngineGrabR:::get_temp_path()
+temp_dir <- get_temp_path(F)
 
 # }
 # googledrive::drive_download("test_SRTM.geojson", path = file.path(test_dir, "test_SRTM.geojson"), overwrite = T)
