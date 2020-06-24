@@ -35,20 +35,20 @@ run_ee_oauth <- function() {
     load_test <- try(source_python(file = oauth_func_path), silent = T)
     count <- count + 1
   }
-  request_ee_code()
+  verify <- request_ee_code()
   
   code <-
     readline("Enter authorisation code for Earth Engine API here: ")
   
-  test <- try(request_ee_token(code), silent = T)
+  test <- try(request_ee_token(code, verify), silent = T)
   
   while (class(test) == "try-error") {
     cat(
       "Problem with Authentication key input. \nPlease follow the authentication steps in the browser and copy paste the authentication token into the R console again."
     )
-    request_ee_code()
+    verify <- request_ee_code()
     code <- readline("enter authorisation code here: ")
-    test <- try(request_ee_token(code), silent = T)
+    test <- try(request_ee_token(code, verify), silent = T)
   }
   cat("Earth Engine Python API is authenticated \n")
 }
